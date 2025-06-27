@@ -1,27 +1,33 @@
-import React from 'react'
-import Navbar from './landing/Navbar' 
-import Home from './landing/Home' 
-import About from './landing/About' 
-import Events from './landing/Events' 
-import OurTutors from './landing/OurTutors' 
-import ContactUs from './landing/ContactUs' 
+import React from "react";
 
+import Home from "./landing pages/Home";
+import About from "./landing pages/About";
+import Events from "./landing pages/Events";
+import OurTutors from "./landing pages/OurTutors";
+import ContactUs from "./landing pages/ContactUs";
 
-
-function LandingPage() {
+const LandingPage = () => {
   return (
-    <div>
-      <Navbar />
-      <div className="p-6">
-        {/* Landing content goes here */}
-     <Home />
-     <About />
-     <Events/>
-     <OurTutors />
-     <ContactUs />
+    <>
+      <div className="min-h-screen flex-col">
+        <div id="home-section">
+          <Home />
+        </div>
+        <div id="about-section">
+          <About />
+        </div>
+        <div id="events-section">
+          <Events />
+        </div>
+        <div id="our-tutors-section">
+          <OurTutors />
+        </div>
+        <div id="contact-us-section">
+          <ContactUs />
+        </div>
       </div>
-    </div>
-  )
-}
+    </>
+  );
+};
 
-export default LandingPage
+export default LandingPage;

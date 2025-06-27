@@ -1,23 +1,23 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Routes, Route} from 'react-router-dom'
 
-// Public Pages
+import Navbar from './components/Navbar'
+
+// Landing Pages
 import LandingPage from './LandingPage'
-
-
+import Login from './landing pages/Login'
+import Register from './landing pages/Register'
 
 function App() {
   return (
     <div>
-      <Router>
+      
+        <Navbar />
         <Routes>
-          {/* Public Pages */}
           <Route path="/" element={<LandingPage />} />
-        
-
-          
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
-      </Router>
     </div>
   )
 }
