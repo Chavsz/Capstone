@@ -9,7 +9,7 @@ CREATE TABLE users(
   user_name VARCHAR(255) NOT NULL,
   user_email VARCHAR(255) NOT NULL,
   user_password VARCHAR(255) NOT NULL,
-  user_role VARCHAR(20) NOT NULL
+  user_role VARCHAR(20) NOT NULL DEFAULT 'student'
 );
 
 -- data stored

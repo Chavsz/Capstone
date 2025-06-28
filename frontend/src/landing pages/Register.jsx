@@ -7,7 +7,7 @@ const Register = ({ setAuth }) => {
     name: "",
     email: "",
     password: "",
-    role: "tutor", // default role
+    role: "student", // default role
   });
 
   const { name, email, password, role } = inputs;
@@ -37,7 +37,7 @@ const Register = ({ setAuth }) => {
     <>
       <div className="flex flex-col items-center justify-center h-screen">
         <h1 className="text-2xl font-bold">Register</h1>
-        <form className="flex flex-col gap-2">
+        <form onSubmit={onSubmitForm} className="flex flex-col gap-2">
           <input
             className="p-2 rounded-md border-2 border-gray-300"
             type="text"
@@ -62,10 +62,6 @@ const Register = ({ setAuth }) => {
             value={password}
             onChange={(e) => onChange(e)}
           />
-          <select name="role" value={role} onChange={onChange}>
-            <option value="tutor">Tutor</option>
-            <option value="student">Student</option>
-          </select>
           <button
             className="p-2 rounded-md bg-blue-500 text-white"
             type="submit"
