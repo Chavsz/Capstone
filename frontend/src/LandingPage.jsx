@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "./components/Navbar";
 
 import Home from "./landing pages/Home";
 import About from "./landing pages/About";
@@ -10,10 +9,6 @@ import ContactUs from "./landing pages/ContactUs";
 const LandingPage = () => {
   return (
     <>
-      {/* Navbar added at the top */}
-      <Navbar />
-
-      {/* Main landing page content */}
       <div className="min-h-screen flex-col">
         <div id="home-section">
           <Home />
