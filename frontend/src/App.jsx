@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 
@@ -9,11 +14,16 @@ import LandingPage from "./LandingPage";
 import Login from "./landing pages/Login";
 import Register from "./landing pages/Register";
 
-// Dashboard 
+// Dashboard
 import TemporayDash from "./pages/TemporayDash";
 
-function App() {
+import ASDashboard from "./pages/AdminnStaff/Dashboard";
+import LavRoom from "./pages/AdminnStaff/Lavroom";
+import Users from "./pages/AdminnStaff/Users";
+import Landing from "./pages/AdminnStaff/Landing";
+import Switch from "./pages/AdminnStaff/Switch";
 
+function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const setAuth = (boolean) => {
@@ -42,9 +52,45 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
-          <Route exact path="/login" element={!isAuthenticated ? <Login setAuth={setAuth} /> : <Navigate to="/dashboard" />} />
-          <Route exact path="/register" element={!isAuthenticated ? <Register setAuth={setAuth} /> : <Navigate to="/login" />} />
-          <Route exact path="/dashboard" element={isAuthenticated ? <TemporayDash setAuth={setAuth} /> : <Navigate to="/login" />} />
+          <Route
+            exact
+            path="/login"
+            element={
+              !isAuthenticated ? (
+                <Login setAuth={setAuth} />
+              ) : (
+                <Navigate to="/dashboard" />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/register"
+            element={
+              !isAuthenticated ? (
+                <Register setAuth={setAuth} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/dashboard"
+            element={
+              isAuthenticated ? (
+                <TemporayDash setAuth={setAuth} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route exact path="/asdashboard" element={<ASDashboard />} />
+          <Route exact path="/lavroom" element={<LavRoom />} />
+          <Route exact path="/users" element={<Users />} />
+          <Route exact path="/landing" element={<Landing />} />
+          <Route exact path="/switch" element={<Switch />} />
         </Routes>
       </Router>
     </div>
