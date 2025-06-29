@@ -5,6 +5,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -23,7 +24,9 @@ import Users from "./pages/AdminnStaff/Users";
 import Landing from "./pages/AdminnStaff/Landing";
 import Switch from "./pages/AdminnStaff/Switch";
 
-function App() {
+// Component to conditionally render Navbar
+function AppContent() {
+  const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const setAuth = (boolean) => {
@@ -46,54 +49,63 @@ function App() {
     isAuth();
   }, []);
 
+  // Don't render Navbar on dashboard route
+  const shouldShowNavbar = location.pathname !== "/dashboard";
+
   return (
     <div>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route exact path="/" element={<LandingPage />} />
-          <Route
-            exact
-            path="/login"
-            element={
-              !isAuthenticated ? (
-                <Login setAuth={setAuth} />
-              ) : (
-                <Navigate to="/dashboard" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/register"
-            element={
-              !isAuthenticated ? (
-                <Register setAuth={setAuth} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/dashboard"
-            element={
-              isAuthenticated ? (
-                <TemporayDash setAuth={setAuth} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+      {shouldShowNavbar && <Navbar />}
+      <Routes>
+        <Route exact path="/" element={<LandingPage />} />
+        <Route
+          exact
+          path="/login"
+          element={
+            !isAuthenticated ? (
+              <Login setAuth={setAuth} />
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
+        />
+        <Route
+          exact
+          path="/register"
+          element={
+            !isAuthenticated ? (
+              <Register setAuth={setAuth} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          exact
+          path="/dashboard"
+          element={
+            isAuthenticated ? (
+              <TemporayDash setAuth={setAuth} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          <Route exact path="/asdashboard" element={<ASDashboard />} />
-          <Route exact path="/lavroom" element={<LavRoom />} />
-          <Route exact path="/users" element={<Users />} />
-          <Route exact path="/landing" element={<Landing />} />
-          <Route exact path="/switch" element={<Switch />} />
-        </Routes>
-      </Router>
+        <Route exact path="/asdashboard" element={<ASDashboard />} />
+        <Route exact path="/lavroom" element={<LavRoom />} />
+        <Route exact path="/users" element={<Users />} />
+        <Route exact path="/landing" element={<Landing />} />
+        <Route exact path="/switch" element={<Switch />} />
+      </Routes>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
