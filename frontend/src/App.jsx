@@ -16,8 +16,8 @@ import Login from "./landing pages/Login";
 import Register from "./landing pages/Register";
 
 // Dashboards
-import TuteeDashboard from "./pages/Tutee/TuteeDashboard"; //role = student
-import TutorDashboard from "./pages/Tutor/TutorDashboard"; //role = tutor
+import TuteePage from "./pages/Tutee/TuteePage"; //role = student
+import TutorPage from "./pages/Tutor/TutorPage"; //role = tutor
 import AdminPage from "./pages/AdminnStaff/AdminPage"; //role = admin
 
 // Role-based dashboard component
@@ -28,9 +28,9 @@ function RoleBasedDashboard({ setAuth }) {
     case "admin":
       return <AdminPage setAuth={setAuth} />;
     case "tutor":
-      return <TutorDashboard setAuth={setAuth} />;
+      return <TutorPage setAuth={setAuth} />;
     case "student":
-      return <TuteeDashboard setAuth={setAuth} />;
+      return <TuteePage setAuth={setAuth} />;
     default:
       // Redirect to login if role is not recognized
       return <Navigate to="/login" />;
