@@ -22,8 +22,8 @@ router.post("/register", validInfo, async (req, res) => {
     }
 
     //3. Only allow tutor or student roles
-    if (!['tutor', 'student','admin'].includes(role)) {
-      return res.status(401).send("Role must be either tutor or student");
+    if (!['tutor','student','admin'].includes(role)) {
+      return res.status(401).send("Role must be either tutor, student or admin");
     }
 
     //4. bcrypt the user password

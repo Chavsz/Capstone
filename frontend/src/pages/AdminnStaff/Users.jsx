@@ -1,14 +1,8 @@
 import React from 'react'
-import Sidebar from "../AdminnStaff/Sidebar";
 
-function Users() {
+const Users = () => {
   return (
-    <div className="flex">
-      <Sidebar />
-      <section id="ourtutors" className="min-h-screen flex-1 flex items-center justify-center bg-white">
-        <h1 className="text-3xl font-bold">This is the Users page</h1>
-      </section>
-    </div>
+    <div className="min-h-screen flex-1 flex flex-col items-center justify-center bg-white"><h1>Users</h1></div>
   )
 }
 

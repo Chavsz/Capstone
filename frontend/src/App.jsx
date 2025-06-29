@@ -15,14 +15,27 @@ import LandingPage from "./LandingPage";
 import Login from "./landing pages/Login";
 import Register from "./landing pages/Register";
 
-// Dashboard
-import TemporayDash from "./pages/TemporayDash";
+// Dashboards
+import TuteeDashboard from "./pages/Tutee/TuteeDashboard"; //role = student
+import TutorDashboard from "./pages/Tutor/TutorDashboard"; //role = tutor
+import AdminPage from "./pages/AdminnStaff/AdminPage"; //role = admin
 
-import ASDashboard from "./pages/AdminnStaff/Dashboard";
-import LavRoom from "./pages/AdminnStaff/Lavroom";
-import Users from "./pages/AdminnStaff/Users";
-import Landing from "./pages/AdminnStaff/Landing";
-import Switch from "./pages/AdminnStaff/Switch";
+// Role-based dashboard component
+function RoleBasedDashboard({ setAuth }) {
+  const role = localStorage.getItem("role");
+
+  switch (role) {
+    case "admin":
+      return <AdminPage setAuth={setAuth} />;
+    case "tutor":
+      return <TutorDashboard setAuth={setAuth} />;
+    case "student":
+      return <TuteeDashboard setAuth={setAuth} />;
+    default:
+      // Redirect to login if role is not recognized
+      return <Navigate to="/login" />;
+  }
+}
 
 // Component to conditionally render Navbar
 function AppContent() {
@@ -37,6 +50,7 @@ function AppContent() {
     try {
       const response = await axios.get("http://localhost:5000/auth/is-verify", {
         headers: { token: localStorage.getItem("token") },
+        role: localStorage.getItem("role"),
       });
 
       response.data ? setIsAuthenticated(true) : setIsAuthenticated(false);
@@ -49,8 +63,8 @@ function AppContent() {
     isAuth();
   }, []);
 
-  // Don't render Navbar on dashboard route
-  const shouldShowNavbar = location.pathname !== "/dashboard";
+  // Don't render Navbar on dashboard routes
+  const shouldShowNavbar = !location.pathname.startsWith("/dashboard");
 
   return (
     <div>
@@ -81,21 +95,15 @@ function AppContent() {
         />
         <Route
           exact
-          path="/dashboard"
+          path="/dashboard/*"
           element={
             isAuthenticated ? (
-              <TemporayDash setAuth={setAuth} />
+              <RoleBasedDashboard setAuth={setAuth} />
             ) : (
               <Navigate to="/login" />
             )
           }
         />
-
-        <Route exact path="/asdashboard" element={<ASDashboard />} />
-        <Route exact path="/lavroom" element={<LavRoom />} />
-        <Route exact path="/users" element={<Users />} />
-        <Route exact path="/landing" element={<Landing />} />
-        <Route exact path="/switch" element={<Switch />} />
       </Routes>
     </div>
   );

@@ -14,10 +14,12 @@ CREATE TABLE users(
 
 -- data stored
 INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Chavyst', 'chavyst@gmail.com', '123456', 'student'); --role = tutee
-INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Chavy', 'chavy.com', 'chavy123', 'tutor'); --role = tutor
-INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('ChavyAdmin', 'admin@gmail.com', 'adminpassword', 'admin'); --role = admin
+INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Chavy', 'chavy@gmail.com', 'chavy123', 'tutor'); --role = admin
+INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('ChavyAdmin', 'admin@gmail.com', 'admin123', 'admin'); --role = tutor
 
+--queries
 SELECT * FROM users;
+UPDATE users SET user_role = 'admin' WHERE user_name = 'Chavy';
 
 
 

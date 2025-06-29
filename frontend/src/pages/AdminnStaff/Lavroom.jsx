@@ -1,18 +1,9 @@
-import React from "react";
-import Sidebar from './Sidebar';
+import React from 'react'
 
 const Lavroom = () => {
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="min-h-screen flex-1 flex flex-col items-center justify-center bg-white"><h1>Lavroom</h1></div>
+  )
+}
 
-      <div className="content" style={{ marginLeft: '220px', padding: '20px' }}>
-        <h1>THIS is the Lavroom PAGE</h1>
-        <p>Manage your Lavroom settings here.</p>
-      </div>
-    </div>
-  );
-};
-
-export default Lavroom;
+export default Lavroom
