@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-  function Dashboard({ setAuth }) {
+import * as fiIcons from "react-icons/fi";
+
+// Components
+import { Cards, CardCharts } from "../../components/cards";
+
+function Dashboard({ setAuth }) {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
 
@@ -34,21 +39,32 @@ import axios from 'axios';
 
   return (
     <div className="flex">
-      <section className="min-h-screen flex-1 flex flex-col items-center justify-center bg-white">
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-purple-600">Admin Dashboard</h1>
-          <h2 className="text-xl">Welcome, {name}!</h2>
-          {role && <h3 className="text-lg text-gray-600">Role: {role}</h3>}
-          <div className="mt-6">
+      <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
+        <div className="">
+          <div className="flex justify-between items-center">
+            <h2 className="text-[24px] font-bold text-[#132c91]">Welcome, {name}!</h2>
             <button
-              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors"
               onClick={(e) => logout(e)}
             >
-              Logout
+              <fiIcons.FiLogOut />
             </button>
           </div>
+
+          <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
+            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={10} />
+            <Cards title="Evaluations" icon={<fiIcons.FiCheckSquare />} count={10} />
+            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={10} />
+            <Cards title="Cancellations" icon={<fiIcons.FiCalendar />} count={10} />
+          </div>
+
+          {/* Line and bar chart cards */}
+          <div className="mt-6 grid grid-cols-2 gap-6">
+            <CardCharts title="Sessions" /> 
+            <CardCharts title="BookedSessions" />
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
