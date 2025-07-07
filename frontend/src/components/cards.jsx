@@ -15,7 +15,7 @@ export const Cards = ({ title, icon, count }) => {
   );
 };
 
-export const CardCharts = ({ title }) => {
+export const CardsOne = ({ title }) => {
   return (
     <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
       <p className="text-[#132c91] font-semibold">{title}</p>

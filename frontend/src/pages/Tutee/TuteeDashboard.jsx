@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+// Components
+import { CardsOne } from "../../components/cards";
 
 const TuteeDashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
@@ -33,21 +36,46 @@ const TuteeDashboard = ({ setAuth }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">Student Dashboard</h1>
-        <div className="text-center space-y-4">
+    <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
+      <div className="">
+        <div className="flex justify-between items-center">
           <h2 className="text-xl">Welcome, {name}!</h2>
-          {role && <h3 className="text-lg text-gray-600">Role: {role}</h3>}
-          <div className="mt-6">
-            <button
-              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
-              onClick={(e) => logout(e)}
-            >
-              Logout
-            </button>
+
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
+            onClick={(e) => logout(e)}
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7">
+          <div className="row-span-2">
+            <CardsOne title="Announcements" />
+          </div>
+          <div>
+            <CardsOne title="Book an Appointment" />
+          </div>
+          <div>
+            <CardsOne title="Next Sessions" />
           </div>
         </div>
+
+        <div className="mt-6 grid grid-cols-2 grid-rows-3 gap-7">
+          <div className="row-span-3">
+            <CardsOne title="Booking History" />
+          </div>
+          <div>
+            <CardsOne title="Top Tutors" />
+          </div>
+          <div>
+            <CardsOne title="Top Colleges" />
+          </div>
+          <div>
+            <CardsOne title="Top Reasons" />
+          </div>
+        </div>
+
       </div>
     </div>
   );

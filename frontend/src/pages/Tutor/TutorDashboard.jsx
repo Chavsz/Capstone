@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+//icons
+import * as fiIcons from "react-icons/fi";
+
+// Components
+import { Cards, CardsOne } from "../../components/cards";
 
 const TutorDashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
@@ -33,13 +39,13 @@ const TutorDashboard = ({ setAuth }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-center mb-6 text-green-600">Tutor Dashboard</h1>
-        <div className="text-center space-y-4">
-          <h2 className="text-xl">Welcome, {name}!</h2>
-          {role && <h3 className="text-lg text-gray-600">Role: {role}</h3>}
-          <div className="mt-6">
+    <div className="flex">
+      <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
+        <div className="">
+          <div className="flex justify-between items-center">
+            <h2 className="ttext-[24px] font-bold text-[#132c91]">
+              Welcome, {name}!
+            </h2>
             <button
               className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
               onClick={(e) => logout(e)}
@@ -47,6 +53,34 @@ const TutorDashboard = ({ setAuth }) => {
               Logout
             </button>
           </div>
+
+          <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
+            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={10} />
+            <Cards
+              title="Evaluations"
+              icon={<fiIcons.FiCheckSquare />}
+              count={10}
+            />
+            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={10} />
+            <Cards
+              title="Cancellations"
+              icon={<fiIcons.FiCalendar />}
+              count={10}
+            />
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7">
+            <div className="row-span-2">
+              <CardsOne title="Sessions" />
+            </div>
+            <div>
+              <CardsOne title="Next Sessions" />
+            </div>
+            <div>
+              <CardOne title="Announcements" />
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
