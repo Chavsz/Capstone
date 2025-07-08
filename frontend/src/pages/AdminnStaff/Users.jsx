@@ -3,27 +3,28 @@ import axios from "axios";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [selectedType, setSelectedType] = useState("admin");
 
-  //get all users
-  // const getUsers = async () => {
-  //   try {
-  //     const response = await axios.get(`http://localhost:5000/users/${selectedType}`);
-  //     console.log(response.data);
-  //     setUsers(response.data);
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // };
+  //get users by role
+  const getUsers = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/users/${selectedType}`);
+      console.log(response.data);
+      setUsers(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
-  // useEffect(() => {
-  //   getUsers();
-  // }, []);
+  useEffect(() => {
+    getUsers();
+  }, [selectedType]);
 
   return (
     <div className="min-h-screen bg-white p-6">
       <h1>Users</h1>
 
-      {/* <div className="my-6 flex justify-around items-center">
+      <div className="my-6 flex justify-around items-center">
         {["admin", "student", "tutor"].map((type) => (
           <button
             key={type}
@@ -35,9 +36,9 @@ const Users = () => {
             {type}
           </button>
         ))}
-      </div> */}
+      </div>
 
-      {/* <div>
+      <div>
         <h2 className="text-lg font-bold mb-2">{selectedType}</h2>
         <ul>
           {users.map((user) => (
@@ -48,7 +49,7 @@ const Users = () => {
             </li>
           ))}
         </ul>
-      </div> */}
+      </div>
 
 
     </div>
