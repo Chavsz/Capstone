@@ -8,9 +8,21 @@ const Users = () => {
   //get users by role
   const getUsers = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/${selectedType}`);
+      const response = await axios.get(
+        `http://localhost:5000/users/${selectedType}`
+      );
       console.log(response.data);
       setUsers(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  //delete user
+  const deleteUser = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/users/${id}`);
+      getUsers();
     } catch (err) {
       console.error(err.message);
     }
@@ -40,18 +52,26 @@ const Users = () => {
 
       <div>
         <h2 className="text-lg font-bold mb-2">{selectedType}</h2>
+
+        {/* Not working */}
+        <div className="mb-4 w-[300px]"> 
+          <input
+            type="text"
+            placeholder="Search"
+            className="border-2 border-gray-300 rounded-md p-2 w-full"
+          />
+        </div>
+
         <ul>
           {users.map((user) => (
-            <li key={user.user_id} className="mb-2 border-b pb-2">
-              <div>Name: {user.user_name}</div>
-              <div>Email: {user.user_email}</div>
-              <div>Role: {user.user_role}</div>
+            <li key={user.user_id} className="mb-2 border p-2.5 rounded-md">
+              <div className='p-0.5'>Name: {user.user_name}</div>
+              <div className='p-0.5'>Email: {user.user_email}</div>
+              <div className="flex justify-between items-center p-0.5">Role: {user.user_role} <button className="bg-red-500 text-white px-2 py-1 rounded-md" onClick={() => deleteUser(user.user_id)}>Delete</button></div>
             </li>
           ))}
         </ul>
       </div>
-
-
     </div>
   );
 };
