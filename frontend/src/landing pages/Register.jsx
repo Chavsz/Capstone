@@ -26,6 +26,7 @@ const Register = ({ setAuth }) => {
       );
 
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
 
       setAuth(true);
     } catch (err) {

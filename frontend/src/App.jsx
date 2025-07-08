@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   BrowserRouter as Router,
@@ -46,7 +46,7 @@ function AppContent() {
     setIsAuthenticated(boolean);
   };
 
-  async function isAuth() {
+  const isAuth = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:5000/auth/is-verify", {
         headers: { token: localStorage.getItem("token") },
@@ -57,11 +57,11 @@ function AppContent() {
     } catch (err) {
       console.error(err.message);
     }
-  }
+  }, []);
 
   useEffect(() => {
     isAuth();
-  }, []);
+  }, [isAuth]);
 
   // Don't render Navbar on dashboard routes
   const shouldShowNavbar = !location.pathname.startsWith("/dashboard");
