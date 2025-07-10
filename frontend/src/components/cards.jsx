@@ -22,3 +22,18 @@ export const CardsOne = ({ title }) => {
     </div>
   );
 };
+
+export const LavRoomCards = ({ startTime, endTime, room, tutor, student }) => {
+  return (
+    <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
+      <p className="text-[#132c91] font-semibold">Start: {startTime} - End: {endTime}</p>
+
+      <div className="flex justify-between  flex-col border-t border-[#d1d1d1] mt-2 p-1.5">
+        <p>Room: {room}</p>
+        <p>Tutor: {tutor}</p>
+        <p>Student: {student}</p>
+      </div>
+
+    </div>
+  );
+};

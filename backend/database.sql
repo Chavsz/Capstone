@@ -12,7 +12,26 @@ CREATE TABLE users(
   user_role VARCHAR(20) NOT NULL DEFAULT 'student'
 );
 
--- data stored
+--Profile Tutor table
+CREATE TABLE profile (
+  profile_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+  program VARCHAR(100),
+  college VARCHAR(100),
+  year_level VARCHAR(20),
+  specialization VARCHAR(100),
+  topics TEXT
+);
+
+--Tutor Schedule table
+CREATE TABLE schedule (
+  schedule_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  profile_id uuid REFERENCES profile(profile_id) ON DELETE CASCADE,
+  schedule_date DATE,
+  schedule_time TIME
+);
+
+--data stored
 INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Chavyst', 'chavyst@gmail.com', '123456', 'student'); --role = tutee
 INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Chavy', 'chavy@gmail.com', 'chavy123', 'tutor'); --role = tutor
 INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('ChavyAdmin', 'admin@gmail.com', 'admin123', 'admin'); --role = admin

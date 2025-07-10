@@ -1,8 +1,10 @@
 import React from 'react'
 
+
+
 const Landing = () => {
   return (
-    <div className="min-h-screen flex-1 flex flex-col items-center justify-center bg-white"><h1>Landing</h1></div>
+    <div className="min-h-screen bg-white p-6"><h1>Landing</h1></div>
   )
 }
 

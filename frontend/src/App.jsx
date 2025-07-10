@@ -110,11 +110,7 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <Router>
-      <AppContent />
-    </Router>
-  );
+  return <AppContent />;
 }
 
 export default App;

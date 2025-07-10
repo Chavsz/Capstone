@@ -77,7 +77,7 @@ const TutorDashboard = ({ setAuth }) => {
               <CardsOne title="Next Sessions" />
             </div>
             <div>
-              <CardOne title="Announcements" />
+              <CardsOne title="Announcements" />
             </div>
           </div>
 

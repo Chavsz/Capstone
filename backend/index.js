@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -43,13 +44,25 @@ app.get("/users/:role", async (req, res) => {
   }
 });
 
-//delete user route
+//delete user 
 
 app.delete("/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const deleteUser = await pool.query("DELETE FROM users WHERE user_id = $1", [id]);
     res.json("User was deleted");
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+//switch user role 
+app.put("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    const updateUser = await pool.query("UPDATE users SET user_role = $1 WHERE user_id = $2", [role, id]);
+    res.json("User role was updated");
   } catch (err) {
     console.error(err.message);
   }
