@@ -77,5 +77,53 @@ router.post("/profile-image", authorization, upload.single('profile_image'), asy
     res.status(500).send("Server error");
   }
 });
+//homeimage
+router.post("/home-image", authorization, upload.single('home_image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const homeImageUrl = `/uploads/${req.file.filename}`;  // Construct image URL
+    
+    // Update the landing page with the new home image URL
+    const pool = require("../db");
+    const existing = await pool.query(
+      "SELECT * FROM landing WHERE id = $1",
+      [1]  // Pass the appropriate landing page ID here
+    );
+
+    if (existing.rows.length > 0) {
+      // Delete old image if it exists
+      const oldImage = existing.rows[0].home_image;
+      if (oldImage && oldImage.startsWith('/uploads/')) {
+        const oldImagePath = path.join(__dirname, '..', 'public', oldImage.substring(8));
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);  // Remove old file from the server
+        }
+      }
+
+      // Update the home image in the database
+      await pool.query(
+        "UPDATE landing SET home_image = $1 WHERE id = $2",
+        [homeImageUrl, 1]  // Make sure to pass the correct landing page ID here
+      );
+    } else {
+      // Insert new home image if no data exists
+      await pool.query(
+        "INSERT INTO landing (home_image) VALUES ($1)",
+        [homeImageUrl]
+      );
+    }
+
+    res.json({ 
+      message: "Home image uploaded successfully",
+      homeImageUrl: homeImageUrl 
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router; 

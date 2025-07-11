@@ -33,6 +33,20 @@ CREATE TABLE schedule (
   end_time TIME NOT NULL
 );
 
+--Landing Page Table
+CREATE TABLE landing (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),        -- UUID as the primary key with automatic generation
+  home_image VARCHAR(255) NOT NULL,                        -- Home image URL
+  home_title VARCHAR(255) NOT NULL,                        -- Home title text
+  home_description TEXT NOT NULL,                          -- Home description text
+  home_more VARCHAR(255) NOT NULL,                         -- Home "Learn More" button text
+  about_image VARCHAR(255) NOT NULL,                       -- About image URL
+  about_title VARCHAR(255) NOT NULL,                       -- About title text
+  about_description TEXT NOT NULL,                         -- About description text
+  about_link VARCHAR(255) NOT NULL,                        -- About link URL
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp for record creation
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP          -- Timestamp for record updates
+);
 -- Example: Insert multiple time slots for a tutor on Monday
 -- INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ('<tutor_user_id>', 'Monday', '07:00', '11:00');
 -- INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ('<tutor_user_id>', 'Monday', '13:00', '14:30');

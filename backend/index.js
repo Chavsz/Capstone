@@ -75,6 +75,11 @@ app.put("/users/:id", async (req, res) => {
   }
 });
 
+//landingpage
+app.use("/landing", require("./routes/landing"));
+
+
+
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
 });
