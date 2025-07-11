@@ -9,6 +9,9 @@ const pool = require("./db");
 app.use(express.json()); //req.body
 app.use(cors());
 
+// Serve static files from the public directory
+app.use('/uploads', express.static('public/uploads'));
+
 //Routes//
 
 //Register and Login Routes
@@ -18,6 +21,10 @@ app.use("/auth", require("./routes/jwtAuth"));
 //dashboard route
 
 app.use("/dashboard", require("./routes/dashboard"));
+
+//upload route
+
+app.use("/upload", require("./routes/upload"));
 
 //get all users route
 
