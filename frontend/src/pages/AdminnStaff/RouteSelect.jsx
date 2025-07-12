@@ -33,6 +33,12 @@ const RouteSelect = () => {
           <p className="text-md font-semibold">Landing</p>
         </div>
       </Link>
+      <Link to="/dashboard/event" className="block text-white">
+        <div className="flex items-center gap-2">
+          <piIcons.PiUserSwitchBold />
+          <p className="text-md font-semibold">Events/Announcements</p>
+        </div>
+      </Link>
       <Link to="/dashboard/switch" className="block text-white">
         <div className="flex items-center gap-2">
           <piIcons.PiUserSwitchBold />

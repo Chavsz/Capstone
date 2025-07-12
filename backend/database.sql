@@ -47,6 +47,19 @@ CREATE TABLE landing (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp for record creation
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP          -- Timestamp for record updates
 );
+
+--Event Page Table
+CREATE TABLE event (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),               -- Auto-incrementing primary key
+  event_title VARCHAR(255) NOT NULL,    -- Event title
+  event_description TEXT NOT NULL,     -- Event description
+  event_time TIME,                     -- Event time
+  event_date DATE,                     -- Event date
+  event_location VARCHAR(255),         -- Event location
+  event_image VARCHAR(255),            -- Path to event image (nullable if no image)
+  created_at TIMESTAMP DEFAULT NOW(),  -- Timestamp for when the event was created
+  updated_at TIMESTAMP DEFAULT NOW()   -- Timestamp for when the event was last updated
+);
 -- Example: Insert multiple time slots for a tutor on Monday
 -- INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ('<tutor_user_id>', 'Monday', '07:00', '11:00');
 -- INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ('<tutor_user_id>', 'Monday', '13:00', '14:30');

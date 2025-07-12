@@ -125,5 +125,55 @@ router.post("/home-image", authorization, upload.single('home_image'), async (re
     res.status(500).send("Server error");
   }
 });
+//eventimage
+router.post("/event-image/:event_id", authorization, upload.single('event_image'), async (req, res) => {
+  try {
+    const eventId = req.params.event_id;  
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const eventImageUrl = `/uploads/${req.file.filename}`;
+
+    const pool = require("../db");
+
+    // Check if the event already exists
+    const existing = await pool.query(
+      "SELECT * FROM event WHERE id = $1",
+      [eventId]  // Use the event ID passed in the URL
+    );
+
+    if (existing.rows.length > 0) {
+      // Delete the old image if it exists
+      const oldImage = existing.rows[0].event_image;
+      if (oldImage && oldImage.startsWith('/uploads/')) {
+        const oldImagePath = path.join(__dirname, '..', 'public', oldImage.substring(8));
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);  // Remove old file from the server
+        }
+      }
+
+      await pool.query(
+        "UPDATE event SET event_image = $1 WHERE id = $2",
+        [eventImageUrl, eventId]  
+      );
+    } else {
+      // Insert new event image if the event doesn't exist
+      await pool.query(
+        "INSERT INTO event (id, event_image) VALUES ($1, $2)",
+        [eventId, eventImageUrl]
+      );
+    }
+
+    res.json({
+      message: "Event image uploaded successfully",
+      eventImageUrl: eventImageUrl
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router; 

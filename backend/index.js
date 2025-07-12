@@ -78,6 +78,8 @@ app.put("/users/:id", async (req, res) => {
 //landingpage
 app.use("/landing", require("./routes/landing"));
 
+//eventpage
+app.use("/event", require("./routes/event"));
 
 
 app.listen(5000, () => {
