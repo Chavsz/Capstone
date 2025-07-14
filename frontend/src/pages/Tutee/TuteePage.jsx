@@ -11,6 +11,7 @@ import Profile from "./Profile";
 import Request from "./Request";
 import Schedules from "./Schedules";
 import Switch from "./Switch";
+import Appointment from "./Appointment";
 
 function TuteePage({ setAuth }) {
   return (
@@ -26,6 +27,7 @@ function TuteePage({ setAuth }) {
             element={<TuteeDashboard setAuth={setAuth} />}
           />
           <Route exact path="/profile" element={<Profile />} />
+          <Route exact path="/appointment" element={<Appointment />} />
           <Route exact path="/request" element={<Request />} />
           <Route exact path="/schedules" element={<Schedules />} />
           <Route exact path="/switch" element={<Switch />} />

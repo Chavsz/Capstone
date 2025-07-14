@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Schedules = () => {
+const Schedule = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -9,7 +9,7 @@ const Schedules = () => {
   const getAppointments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/appointment/tutee", {
+      const response = await axios.get("http://localhost:5000/appointment/tutor", {
         headers: { token }
       });
       setAppointments(response.data);
@@ -21,21 +21,19 @@ const Schedules = () => {
     }
   };
 
-  const handleDelete = async (appointmentId) => {
-    if (!window.confirm("Are you sure you want to delete this appointment?")) {
-      return;
-    }
-
+  const handleStatusUpdate = async (appointmentId, status) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/appointment/${appointmentId}`, {
-        headers: { token }
-      });
+      await axios.put(
+        `http://localhost:5000/appointment/${appointmentId}/status`,
+        { status },
+        { headers: { token } }
+      );
       getAppointments(); // Refresh the list
-      setMessage("Appointment deleted successfully");
+      setMessage(`Appointment ${status} successfully`);
     } catch (err) {
       console.error(err.message);
-      setMessage("Error deleting appointment");
+      setMessage("Error updating appointment status");
     }
   };
 
@@ -93,7 +91,7 @@ const Schedules = () => {
 
       {appointments.length === 0 ? (
         <div className="mt-6 text-center text-gray-500">
-          <p>No appointments found. Book your first appointment!</p>
+          <p>No appointments found. Students will appear here when they book sessions with you.</p>
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -113,23 +111,26 @@ const Schedules = () => {
                 <p><strong>Mode:</strong> {appointment.mode_of_session}</p>
                 <p><strong>Date:</strong> {formatDate(appointment.date)}</p>
                 <p><strong>Time:</strong> {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
-                <p><strong>Tutor:</strong> {appointment.tutor_name}</p>
-                {appointment.tutor_name && (
-                  <>
-                    <p><strong>Program:</strong> {appointment.program || "Not specified"}</p>
-                    <p><strong>College:</strong> {appointment.college || "Not specified"}</p>
-                    <p><strong>Specialization:</strong> {appointment.specialization || "Not specified"}</p>
-                  </>
-                )}
+                <p><strong>Student:</strong> {appointment.student_name}</p>
               </div>
 
-              <div className="mt-4">
-                <button 
-                  onClick={() => handleDelete(appointment.appointment_id)}
-                  className="bg-gray-500 text-white rounded-md px-4 py-2 text-sm hover:bg-gray-600"
-                >
-                  Delete
-                </button>
+              <div className="mt-4 flex gap-2">
+                {appointment.status === 'pending' && (
+                  <>
+                    <button 
+                      onClick={() => handleStatusUpdate(appointment.appointment_id, 'confirmed')}
+                      className="bg-[#132c91] text-white rounded-md px-4 py-2 text-sm hover:bg-[#0f1f6b]"
+                    >
+                      Confirm
+                    </button>
+                    <button 
+                      onClick={() => handleStatusUpdate(appointment.appointment_id, 'declined')}
+                      className="bg-[#e02402] text-white rounded-md px-4 py-2 text-sm hover:bg-[#b81d02]"
+                    >
+                      Decline
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -139,4 +140,4 @@ const Schedules = () => {
   );
 };
 
-export default Schedules;
+export default Schedule;

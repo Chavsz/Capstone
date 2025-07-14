@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 // Tutor Pages
 import TutorDashboard from "./TutorDashboard";
 import Profile from "./Profile";
-import Schedules from "./schedules";
+import Schedules from "./Schedule";
 import Switch from "./Switch";
 
 function TutorPage({ setAuth }) {

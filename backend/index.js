@@ -75,11 +75,26 @@ app.put("/users/:id", async (req, res) => {
   }
 });
 
+//get tutor details
+
+app.get("/profile/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const tutor = await pool.query("SELECT * FROM profile WHERE user_id = $1", [id]);
+    res.json(tutor.rows);
+  } catch (err) { 
+    console.error(err.message);
+  }
+});
+
 //landingpage
 app.use("/landing", require("./routes/landing"));
 
 //eventpage
 app.use("/event", require("./routes/event"));
+
+//appointmentpage
+app.use("/appointment", require("./routes/appointment"));
 
 
 app.listen(5000, () => {

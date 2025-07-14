@@ -33,6 +33,21 @@ CREATE TABLE schedule (
   end_time TIME NOT NULL
 );
 
+CREATE TABLE appointment (
+  appointment_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+  tutor_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+  subject VARCHAR(255) NOT NULL,
+  topic VARCHAR(255) NOT NULL,
+  mode_of_session VARCHAR(255) NOT NULL,
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  status VARCHAR(255) NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
 --Landing Page Table
 CREATE TABLE landing (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),        -- UUID as the primary key with automatic generation
@@ -50,16 +65,28 @@ CREATE TABLE landing (
 
 --Event Page Table
 CREATE TABLE event (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),               -- Auto-incrementing primary key
-  event_title VARCHAR(255) NOT NULL,    -- Event title
-  event_description TEXT NOT NULL,     -- Event description
-  event_time TIME,                     -- Event time
-  event_date DATE,                     -- Event date
-  event_location VARCHAR(255),         -- Event location
-  event_image VARCHAR(255),            -- Path to event image (nullable if no image)
-  created_at TIMESTAMP DEFAULT NOW(),  -- Timestamp for when the event was created
-  updated_at TIMESTAMP DEFAULT NOW()   -- Timestamp for when the event was last updated
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),               
+  event_title VARCHAR(255) NOT NULL,    
+  event_description TEXT NOT NULL,     
+  event_time TIME,                    
+  event_date DATE,                     
+  event_location VARCHAR(255),         
+  event_image VARCHAR(255),            
+  created_at TIMESTAMP DEFAULT NOW(),  
+  updated_at TIMESTAMP DEFAULT NOW()   
 );
+
+-- Auto-incrementing primary key
+-- Auto-incrementing primary key
+-- Event title
+-- Event description
+-- Event time
+-- Event date
+-- Event location
+-- Timestamp for when the event was created
+-- Timestamp for when the event was last updated
+
+-- Path to event image (nullable if no image)
 -- Example: Insert multiple time slots for a tutor on Monday
 -- INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ('<tutor_user_id>', 'Monday', '07:00', '11:00');
 -- INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ('<tutor_user_id>', 'Monday', '13:00', '14:30');

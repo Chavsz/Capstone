@@ -6,6 +6,7 @@ const RouteSelect = () => {
     <div className='space-y-3'>
         <Link to="/dashboard" className='block text-white'>Dashboard</Link>
         <Link to="/dashboard/profile" className='block text-white'>Profile</Link>
+        <Link to="/dashboard/appointment" className='block text-white'>Appointment</Link>
         <Link to="/dashboard/request" className='block text-white'>Request</Link>
         <Link to="/dashboard/schedules" className='block text-white'>Schedules</Link>
         <Link to="/dashboard/switch" className='block text-white'>Switch</Link>
