@@ -7,29 +7,74 @@ import * as fiIcons from "react-icons/fi";
 // Components
 import { Cards, CardsOne } from "../../components/cards";
 
+// Star display component
+const StarDisplay = ({ value }) => {
+  const rounded = Math.round(value * 10) / 10;
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span key={star} className={`text-2xl ${star <= Math.round(rounded) ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+      ))}
+      <span className="ml-2 text-lg font-semibold text-gray-700">{rounded}</span>
+    </div>
+  );
+};
+
 const TutorDashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
+  const [userId, setUserId] = useState("");
+  const [avgRating, setAvgRating] = useState(null);
 
   async function getName() {
     try {
       const response = await axios.get("http://localhost:5000/dashboard", {
         headers: { token: localStorage.getItem("token") },
       });
-
       setName(response.data.user_name);
       if (response.data.user_role) {
         setRole(response.data.user_role);
         localStorage.setItem("role", response.data.user_role);
+      }
+      // Assume user_id is available in the token or fetch separately
+      if (response.data.user_id) {
+        setUserId(response.data.user_id);
+      } else {
+        // fallback: fetch user_id from profile
+        const profileRes = await axios.get("http://localhost:5000/dashboard/profile", {
+          headers: { token: localStorage.getItem("token") },
+        });
+        if (profileRes.data && profileRes.data.user_id) setUserId(profileRes.data.user_id);
       }
     } catch (err) {
       console.error(err.message);
     }
   }
 
+  // Fetch feedbacks and calculate average rating
+  async function getAverageRating(uid) {
+    try {
+      if (!uid) return;
+      const response = await axios.get(`http://localhost:5000/appointment/tutor/${uid}/feedback`);
+      const feedbacks = response.data;
+      if (feedbacks.length === 0) {
+        setAvgRating(null);
+        return;
+      }
+      const avg = feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length;
+      setAvgRating(avg);
+    } catch (err) {
+      setAvgRating(null);
+    }
+  }
+
   useEffect(() => {
     getName();
   }, []);
+
+  useEffect(() => {
+    if (userId) getAverageRating(userId);
+  }, [userId]);
 
   const logout = (e) => {
     e.preventDefault();
@@ -43,9 +88,22 @@ const TutorDashboard = ({ setAuth }) => {
       <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
         <div className="">
           <div className="flex justify-between items-center">
-            <h2 className="ttext-[24px] font-bold text-[#132c91]">
-              Welcome, {name}!
-            </h2>
+            <div>
+              <h2 className="ttext-[24px] font-bold text-[#132c91]">
+                Welcome, {name}!
+              </h2>
+              {/* Show average rating if available */}
+              <div className="mt-2">
+                {avgRating !== null ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Your Rating:</span>
+                    <StarDisplay value={avgRating} />
+                  </div>
+                ) : (
+                  <span className="text-gray-500">No ratings yet</span>
+                )}
+              </div>
+            </div>
             <button
               className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
               onClick={(e) => logout(e)}

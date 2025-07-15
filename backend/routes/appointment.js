@@ -160,4 +160,116 @@ router.delete("/:id", authorization, async (req, res) => {
   }
 });
 
+// Delete appointment by admin
+router.delete("/admin/:id", authorization, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      "DELETE FROM appointment WHERE appointment_id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Appointment not found" });
+    }
+
+    res.json({ message: "Appointment deleted successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Submit feedback (rating only) for a completed appointment
+router.post("/:id/feedback", authorization, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating } = req.body;
+    const user_id = req.user;
+
+    // Validate rating
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return res.status(400).json({ error: "Rating must be an integer between 1 and 5." });
+    }
+
+    // Check appointment exists, belongs to user, and is completed
+    const appointmentResult = await pool.query(
+      `SELECT * FROM appointment WHERE appointment_id = $1 AND user_id = $2 AND status = 'completed'`,
+      [id, user_id]
+    );
+    if (appointmentResult.rows.length === 0) {
+      return res.status(403).json({ error: "You can only rate your own completed appointments." });
+    }
+    const appointment = appointmentResult.rows[0];
+
+    // Check if feedback already exists for this appointment
+    const feedbackResult = await pool.query(
+      `SELECT * FROM feedback WHERE user_id = $1 AND tutor_id = $2 AND appointment_id = $3`,
+      [user_id, appointment.tutor_id, id]
+    );
+    if (feedbackResult.rows.length > 0) {
+      return res.status(400).json({ error: "Feedback already submitted for this appointment." });
+    }
+
+    // Insert feedback (no comment)
+    const insertResult = await pool.query(
+      `INSERT INTO feedback (user_id, tutor_id, rating, appointment_id) VALUES ($1, $2, $3, $4) RETURNING *`,
+      [user_id, appointment.tutor_id, rating, id]
+    );
+
+    res.json({ message: "Feedback submitted successfully.", feedback: insertResult.rows[0] });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Get all feedback for a tutor (by tutor_id)
+router.get("/tutor/:id/feedback", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      `SELECT feedback_id, user_id, tutor_id, appointment_id, rating, created_at FROM feedback WHERE tutor_id = $1`,
+      [id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Get feedback ratings for all appointments for a tutor
+router.get("/tutor/:id/appointment-feedback", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      `SELECT appointment_id, rating FROM feedback WHERE tutor_id = $1`,
+      [id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Get all feedbacks for the logged-in tutee
+router.get("/feedback/tutee", authorization, async (req, res) => {
+  try {
+    const user_id = req.user;
+    const result = await pool.query(
+      `SELECT * FROM feedback WHERE user_id = $1`,
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;

@@ -4,6 +4,7 @@ import axios from "axios";
 const Lavroom = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
 
   const getAppointments = async () => {
     try {
@@ -55,6 +56,24 @@ const Lavroom = () => {
     }
   };
 
+  const handleDelete = async (appointmentId) => {
+    if (!window.confirm("Are you sure you want to delete this appointment?")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/appointment/admin/${appointmentId}`, {
+        headers: { token }
+      });
+      getAppointments(); // Refresh the list
+      setMessage("Appointment deleted successfully");
+    } catch (err) {
+      console.error(err.message);
+      setMessage("Error deleting appointment");
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white p-6">
@@ -101,15 +120,27 @@ const Lavroom = () => {
                   </p>
                   <p className="text-gray-600">Date: {formatDate(appointment.date)}</p>
                   <p className="text-gray-600">
-                    {formatTime(appointment.start_time)} -{" "}
-                    {formatTime(appointment.end_time)}
+                    Start Time: {formatTime(appointment.start_time)} -{" "}
+                    End Time: {formatTime(appointment.end_time)}
                   </p>
+
+                  <button 
+                  onClick={() => handleDelete(appointment.appointment_id)}
+                  className="bg-red-500 text-white rounded-md px-4 py-2 text-sm hover:bg-red-400 mt-4"
+                >
+                  Delete
+                </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+      {message && (
+        <div className={`mt-4 p-3 rounded-md ${message.includes("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+          {message}
+        </div>
+      )}
     </div>
   );
 };

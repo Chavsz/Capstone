@@ -52,8 +52,10 @@ CREATE TABLE feedback (
   feedback_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
   tutor_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
-  rating INT NOT NULL,
-  comment TEXT NOT NULL,
+  appointment_id uuid REFERENCES appointment(appointment_id) ON DELETE CASCADE,
+  rating INT NOT NULL,  -- 1-5 stars
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
 
 --Landing Page Table

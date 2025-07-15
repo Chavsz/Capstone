@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Star display component
+const StarDisplay = ({ value }) => {
+  const rounded = Math.round(value * 10) / 10;
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span key={star} className={`text-xl ${star <= Math.round(rounded) ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+      ))}
+      <span className="ml-1 text-base font-semibold text-gray-700">{rounded}</span>
+    </div>
+  );
+};
+
 const Schedule = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [feedbacks, setFeedbacks] = useState({}); // { appointment_id: rating }
+  const [userId, setUserId] = useState("");
 
   const getAppointments = async () => {
     try {
@@ -21,6 +36,51 @@ const Schedule = () => {
     }
   };
 
+  // Get current tutor's user id
+  const getUserId = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/dashboard", {
+        headers: { token }
+      });
+      if (response.data.user_id) setUserId(response.data.user_id);
+      else {
+        // fallback: fetch from profile
+        const profileRes = await axios.get("http://localhost:5000/dashboard/profile", {
+          headers: { token }
+        });
+        if (profileRes.data && profileRes.data.user_id) setUserId(profileRes.data.user_id);
+      }
+    } catch (err) {
+      // ignore
+    }
+  };
+
+  // Fetch feedbacks for all appointments for this tutor
+  const getFeedbacks = async (uid) => {
+    try {
+      if (!uid) return;
+      const response = await axios.get(`http://localhost:5000/appointment/tutor/${uid}/appointment-feedback`);
+      // Map feedbacks by appointment_id
+      const feedbackMap = {};
+      response.data.forEach(fb => {
+        if (fb.appointment_id) feedbackMap[fb.appointment_id] = fb.rating;
+      });
+      setFeedbacks(feedbackMap);
+    } catch (err) {
+      setFeedbacks({});
+    }
+  };
+
+  useEffect(() => {
+    getAppointments();
+    getUserId();
+  }, []);
+
+  useEffect(() => {
+    if (userId) getFeedbacks(userId);
+  }, [userId]);
+
   const handleStatusUpdate = async (appointmentId, status) => {
     try {
       const token = localStorage.getItem("token");
@@ -29,7 +89,6 @@ const Schedule = () => {
         { status },
         { headers: { token } }
       );
-      
       getAppointments(); // Refresh the list
       setMessage(`Appointment ${status} successfully`);
     } catch (err) {
@@ -37,10 +96,6 @@ const Schedule = () => {
       setMessage("Error updating appointment status");
     }
   };
-
-  useEffect(() => {
-    getAppointments();
-  }, []);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -66,6 +121,8 @@ const Schedule = () => {
         return 'bg-green-100 text-green-800';
       case 'declined':
         return 'bg-red-100 text-red-800';
+      case 'completed':
+        return 'bg-blue-100 text-blue-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -106,15 +163,23 @@ const Schedule = () => {
                   {appointment.status}
                 </span>
               </div>
-              
               <div className="space-y-2 text-sm">
                 <p><strong>Topic:</strong> {appointment.topic}</p>
                 <p><strong>Mode:</strong> {appointment.mode_of_session}</p>
                 <p><strong>Date:</strong> {formatDate(appointment.date)}</p>
                 <p><strong>Time:</strong> {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
                 <p><strong>Student:</strong> {appointment.student_name}</p>
+                {/* Show rating for completed appointments if available */}
+                {appointment.status === 'completed' && feedbacks[appointment.appointment_id] && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Rating:</span>
+                    <StarDisplay value={feedbacks[appointment.appointment_id]} />
+                  </div>
+                )}
+                {appointment.status === 'completed' && !feedbacks[appointment.appointment_id] && (
+                  <div className="mt-2 text-gray-400">No rating yet</div>
+                )}
               </div>
-
               <div className="mt-4 flex gap-2">
                 {appointment.status === 'pending' && (
                   <>
