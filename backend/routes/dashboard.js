@@ -118,5 +118,16 @@ router.delete("/schedule/:id", authorization, async (req, res) => {
   }
 });
 
+// get all appointments
+
+router.get("/appointments", authorization, async (req, res) => {
+  try {
+    const appointments = await pool.query("SELECT * FROM appointment");
+    res.json(appointments.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;

@@ -5,14 +5,31 @@ const authorization = require("../middleware/authorization");
 // Create a new appointment
 router.post("/", authorization, async (req, res) => {
   try {
-    const { tutor_id, subject, topic, mode_of_session, date, start_time, end_time } = req.body;
+    const {
+      tutor_id,
+      subject,
+      topic,
+      mode_of_session,
+      date,
+      start_time,
+      end_time,
+    } = req.body;
     const user_id = req.user;
 
     const result = await pool.query(
       `INSERT INTO appointment (user_id, tutor_id, subject, topic, mode_of_session, date, start_time, end_time, status) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending') 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending') 
        RETURNING *`,
-      [user_id, tutor_id, subject, topic, mode_of_session, date, start_time, end_time]
+      [
+        user_id,
+        tutor_id,
+        subject,
+        topic,
+        mode_of_session,
+        date,
+        start_time,
+        end_time,
+      ]
     );
 
     res.json(result.rows[0]);
@@ -28,11 +45,11 @@ router.get("/tutee", authorization, async (req, res) => {
     const user_id = req.user;
     const result = await pool.query(
       `SELECT a.*, u.user_name as tutor_name, p.program, p.college, p.year_level, p.specialization 
-       FROM appointment a 
-       JOIN users u ON a.tutor_id = u.user_id 
-       LEFT JOIN profile p ON a.tutor_id = p.user_id 
-       WHERE a.user_id = $1 
-       ORDER BY a.date DESC, a.start_time DESC`,
+        FROM appointment a 
+        JOIN users u ON a.tutor_id = u.user_id 
+        LEFT JOIN profile p ON a.tutor_id = p.user_id 
+        WHERE a.user_id = $1 
+        ORDER BY a.date DESC, a.start_time DESC`,
       [user_id]
     );
     res.json(result.rows);
@@ -48,10 +65,10 @@ router.get("/tutor", authorization, async (req, res) => {
     const tutor_id = req.user;
     const result = await pool.query(
       `SELECT a.*, u.user_name as student_name 
-       FROM appointment a 
-       JOIN users u ON a.user_id = u.user_id 
-       WHERE a.tutor_id = $1 
-       ORDER BY a.date DESC, a.start_time DESC`,
+        FROM appointment a 
+        JOIN users u ON a.user_id = u.user_id 
+        WHERE a.tutor_id = $1 
+        ORDER BY a.date DESC, a.start_time DESC`,
       [tutor_id]
     );
     res.json(result.rows);
@@ -75,7 +92,9 @@ router.put("/:id/status", authorization, async (req, res) => {
     );
 
     if (appointment.rows.length === 0) {
-      return res.status(403).json({ error: "Not authorized to update this appointment" });
+      return res
+        .status(403)
+        .json({ error: "Not authorized to update this appointment" });
     }
 
     const result = await pool.query(
@@ -102,7 +121,9 @@ router.delete("/:id", authorization, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(403).json({ error: "Not authorized to delete this appointment" });
+      return res
+        .status(403)
+        .json({ error: "Not authorized to delete this appointment" });
     }
 
     res.json({ message: "Appointment deleted successfully" });
@@ -112,4 +133,4 @@ router.delete("/:id", authorization, async (req, res) => {
   }
 });
 
-module.exports = router; 
+module.exports = router;

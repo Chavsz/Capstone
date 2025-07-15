@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import * as fiIcons from "react-icons/fi";
 
 // Components
@@ -9,6 +10,7 @@ import { Cards, CardsOne } from "../../components/cards";
 function Dashboard({ setAuth }) {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
+  const [appointments, setAppointments] = useState([]);
 
   async function getName() {
     try {
@@ -26,9 +28,42 @@ function Dashboard({ setAuth }) {
     }
   }
 
+  async function getAppointments() {
+    try {
+      const response = await axios.get("http://localhost:5000/dashboard/appointments", {
+        headers: { token: localStorage.getItem("token") },
+      });
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   useEffect(() => {
     getName();
+    getAppointments();
   }, []);
+
+  // Helper: Get weekday name from date string
+  function getWeekday(dateString) {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const date = new Date(dateString);
+    return days[date.getDay()];
+  }
+
+  // Prepare data for bar chart: confirmed appointments per weekday
+  const confirmedAppointments = appointments.filter(a => a.status === "confirmed");
+  const weekdayCounts = confirmedAppointments.reduce((acc, appt) => {
+    const weekday = getWeekday(appt.date);
+    acc[weekday] = (acc[weekday] || 0) + 1;
+    return acc;
+  }, {});
+  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const barChartData = weekdays.map(day => ({
+    weekday: day,
+    count: weekdayCounts[day] || 0
+  }));
+
 
   const logout = (e) => {
     e.preventDefault();
@@ -99,8 +134,19 @@ function Dashboard({ setAuth }) {
                 </select>
               </div>
             </div>
+
+            {/* confirmed Appointments bar chart */}
             <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
               <p className="text-[#132c91] font-semibold">Booked Sessions</p>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="weekday" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#132c91" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
