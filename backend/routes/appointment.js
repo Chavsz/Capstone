@@ -78,6 +78,34 @@ router.get("/tutor", authorization, async (req, res) => {
   }
 });
 
+
+//get all appointments data for admin
+router.get("/admin", authorization, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT 
+        a.appointment_id,
+        a.date,
+        a.start_time,
+        a.end_time,
+        a.subject,
+        a.topic,
+        a.mode_of_session,
+        a.status,
+        t.user_name AS tutor_name,
+        s.user_name AS student_name
+      FROM appointment a
+      JOIN users t ON a.tutor_id = t.user_id
+      JOIN users s ON a.user_id = s.user_id
+      ORDER BY a.date DESC, a.start_time DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // Update appointment status (confirm/decline)
 router.put("/:id/status", authorization, async (req, res) => {
   try {

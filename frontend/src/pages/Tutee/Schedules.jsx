@@ -97,7 +97,9 @@ const Schedules = () => {
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {appointments.map((appointment) => (
+          
+          {/* filter out declined appointments */}
+          {appointments.filter(appointment => appointment.status !== 'declined').map((appointment) => (
             <div key={appointment.appointment_id} className="bg-[#fafafa] p-6 rounded-lg shadow-md">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-lg font-semibold text-[#132c91]">
