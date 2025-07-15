@@ -78,7 +78,6 @@ router.get("/tutor", authorization, async (req, res) => {
   }
 });
 
-
 //get all appointments data for admin
 router.get("/admin", authorization, async (req, res) => {
   try {

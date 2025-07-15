@@ -118,9 +118,9 @@ router.delete("/schedule/:id", authorization, async (req, res) => {
   }
 });
 
-// get all appointments
+// get all appointments for admin dashboard
 
-router.get("/appointments", authorization, async (req, res) => {
+router.get("/appointment/admin", authorization, async (req, res) => {
   try {
     const appointments = await pool.query("SELECT * FROM appointment");
     res.json(appointments.rows);

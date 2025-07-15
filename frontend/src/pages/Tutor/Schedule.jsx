@@ -29,6 +29,7 @@ const Schedule = () => {
         { status },
         { headers: { token } }
       );
+      
       getAppointments(); // Refresh the list
       setMessage(`Appointment ${status} successfully`);
     } catch (err) {
@@ -130,6 +131,30 @@ const Schedule = () => {
                       Decline
                     </button>
                   </>
+                )}
+                {appointment.status === 'confirmed' && (
+                  <>
+                    <button
+                      onClick={() => handleStatusUpdate(appointment.appointment_id, 'started')}
+                      className="bg-[#1e90ff] text-white rounded-md px-4 py-2 text-sm hover:bg-[#1565c0]"
+                    >
+                      Start Session
+                    </button>
+                    <button
+                      onClick={() => handleStatusUpdate(appointment.appointment_id, 'cancelled')}
+                      className="bg-[#e02402] text-white rounded-md px-4 py-2 text-sm hover:bg-[#b81d02]"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
+                {(appointment.status === 'started' || appointment.status === 'ongoing') && (
+                  <button
+                    onClick={() => handleStatusUpdate(appointment.appointment_id, 'completed')}
+                    className="bg-[#16a34a] text-white rounded-md px-4 py-2 text-sm hover:bg-[#166534]"
+                  >
+                    Complete Appointment
+                  </button>
                 )}
               </div>
             </div>

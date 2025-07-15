@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Cell,
+} from "recharts";
 import * as fiIcons from "react-icons/fi";
 
 // Components
@@ -30,9 +41,12 @@ function Dashboard({ setAuth }) {
 
   async function getAppointments() {
     try {
-      const response = await axios.get("http://localhost:5000/dashboard/appointments", {
-        headers: { token: localStorage.getItem("token") },
-      });
+      const response = await axios.get(
+        "http://localhost:5000/dashboard/appointment/admin",
+        {
+          headers: { token: localStorage.getItem("token") },
+        }
+      );
       setAppointments(response.data);
     } catch (err) {
       console.error(err.message);
@@ -52,17 +66,34 @@ function Dashboard({ setAuth }) {
   }
 
   // Prepare data for bar chart: confirmed appointments per weekday
-  const confirmedAppointments = appointments.filter(a => a.status === "confirmed");
+  const confirmedAppointments = appointments.filter(
+    (a) =>
+      a.status === "confirmed" ||
+      a.status === "started" ||
+      a.status === "completed"
+  );
   const weekdayCounts = confirmedAppointments.reduce((acc, appt) => {
     const weekday = getWeekday(appt.date);
     acc[weekday] = (acc[weekday] || 0) + 1;
     return acc;
   }, {});
   const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const barChartData = weekdays.map(day => ({
+  const barChartData = weekdays.map((day) => ({
     weekday: day,
-    count: weekdayCounts[day] || 0
+    count: weekdayCounts[day] || 0,
   }));
+
+  // Total number of cancelled appointments
+  const cancelledAppointments = appointments.filter(
+    (a) => a.status === "cancelled"
+  );
+  const cancelledCount = cancelledAppointments.length;
+
+  //Total number of completed appointments
+  const completedAppointments = appointments.filter(
+    (a) => a.status === "completed"
+  );
+  const completedCount = completedAppointments.length;
 
   const barColors = [
     "#ea5545", // Mon
@@ -71,9 +102,8 @@ function Dashboard({ setAuth }) {
     "#bdcf32", // Thu
     "#27aeef", // Fri
     "#b33dc6", // Sat
-    "#ffa300"  // Sun
+    "#ffa300", // Sun
   ];
-
 
   const logout = (e) => {
     e.preventDefault();
@@ -99,7 +129,7 @@ function Dashboard({ setAuth }) {
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
-            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={10} />
+            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={completedCount}/>
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
@@ -109,7 +139,7 @@ function Dashboard({ setAuth }) {
             <Cards
               title="Cancellations"
               icon={<fiIcons.FiCalendar />}
-              count={10}
+              count={cancelledCount}
             />
           </div>
 
@@ -149,14 +179,20 @@ function Dashboard({ setAuth }) {
             <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
               <p className="text-[#132c91] font-semibold">Booked Sessions</p>
               <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <BarChart
+                  data={barChartData}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="weekday" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
                   <Bar dataKey="count">
                     {barChartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={barColors[index % barColors.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={barColors[index % barColors.length]}
+                      />
                     ))}
                   </Bar>
                 </BarChart>

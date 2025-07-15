@@ -48,6 +48,14 @@ CREATE TABLE appointment (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE feedback (
+  feedback_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+  tutor_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+  rating INT NOT NULL,
+  comment TEXT NOT NULL,
+);
+
 --Landing Page Table
 CREATE TABLE landing (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),        -- UUID as the primary key with automatic generation
