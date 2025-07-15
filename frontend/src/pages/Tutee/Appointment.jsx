@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Appointment = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [tutors, setTutors] = useState([]);
   const [tutorDetails, setTutorDetails] = useState({});
   const [selectedTutor, setSelectedTutor] = useState(null);
@@ -104,6 +105,14 @@ const Appointment = () => {
     getTutors();
   }, []);
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredTutors = tutors.filter((tutor) =>
+    tutor.user_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-white p-6">
       <h1 className="text-[#132c91] font-bold text-2xl">Appointment</h1>
@@ -188,7 +197,14 @@ const Appointment = () => {
             <p className="text-lg font-bold text-[#132c91]">Tutors</p>
           </div>
           <div className="flex justify-between flex-col gap-4">
-            {tutors.map((tutor) => (
+            <input
+              type="text"
+              placeholder="Search Tutors"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+            {filteredTutors.map((tutor) => (
               <div key={tutor.user_id} className="p-3 bg-[#d9d9d9] rounded-md">
                 <p className="font-semibold">{tutor.user_name}</p>
                 <p>Rating: 4.5</p>

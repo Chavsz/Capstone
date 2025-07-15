@@ -64,6 +64,16 @@ function Dashboard({ setAuth }) {
     count: weekdayCounts[day] || 0
   }));
 
+  const barColors = [
+    "#ea5545", // Mon
+    "#ef9b20", // Tue
+    "#edbf33", // Wed
+    "#bdcf32", // Thu
+    "#27aeef", // Fri
+    "#b33dc6", // Sat
+    "#ffa300"  // Sun
+  ];
+
 
   const logout = (e) => {
     e.preventDefault();
@@ -144,7 +154,11 @@ function Dashboard({ setAuth }) {
                   <XAxis dataKey="weekday" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
-                  <Bar dataKey="count" fill="#132c91" />
+                  <Bar dataKey="count">
+                    {barChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={barColors[index % barColors.length]} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
