@@ -272,4 +272,28 @@ router.get("/feedback/tutee", authorization, async (req, res) => {
   }
 });
 
+// Get count of completed appointments for tutee that are not yet rated
+router.get("/tutee/unrated-count", authorization, async (req, res) => {
+  try {
+    const user_id = req.user;
+    const result = await pool.query(
+      `SELECT COUNT(*) AS unrated_count
+       FROM appointment a
+       WHERE a.user_id = $1
+         AND a.status = 'completed'
+         AND NOT EXISTS (
+           SELECT 1 FROM feedback f
+           WHERE f.user_id = a.user_id
+             AND f.tutor_id = a.tutor_id
+             AND f.appointment_id = a.appointment_id
+         )`,
+      [user_id]
+    );
+    res.json({ unrated_count: parseInt(result.rows[0].unrated_count, 10) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;

@@ -7,6 +7,7 @@ import { CardsOne } from "../../components/cards";
 const TuteeDashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
+  const [unratedCount, setUnratedCount] = useState(0);
 
   async function getName() {
     try {
@@ -24,8 +25,20 @@ const TuteeDashboard = ({ setAuth }) => {
     }
   }
 
+  async function fetchUnratedCount() {
+    try {
+      const response = await axios.get("http://localhost:5000/appointment/tutee/unrated-count", {
+        headers: { token: localStorage.getItem("token") },
+      });
+      setUnratedCount(response.data.unrated_count);
+    } catch (err) {
+      console.error("Failed to fetch unrated count", err);
+    }
+  }
+
   useEffect(() => {
     getName();
+    fetchUnratedCount();
   }, []);
 
   const logout = (e) => {
@@ -50,8 +63,15 @@ const TuteeDashboard = ({ setAuth }) => {
         </div>
 
         <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7">
+        {/* Announcements */}
           <div className="row-span-2">
-            <CardsOne title="Announcements" />
+            <CardsOne title="Announcements">
+              {unratedCount > 0 && (
+                <div className="text-red-600 font-semibold mt-2">
+                  You have {unratedCount} appointment{unratedCount > 1 ? 's' : ''} to rate.
+                </div>
+              )}
+            </CardsOne>
           </div>
           <div>
             <CardsOne title="Book an Appointment" />
