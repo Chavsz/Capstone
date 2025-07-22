@@ -86,6 +86,13 @@ CREATE TABLE event (
   updated_at TIMESTAMP DEFAULT NOW()   
 );
 
+--Announcement Page Table
+CREATE TABLE announcement ( 
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    announcement_content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 -- Auto-incrementing primary key
 -- Auto-incrementing primary key
 -- Event title

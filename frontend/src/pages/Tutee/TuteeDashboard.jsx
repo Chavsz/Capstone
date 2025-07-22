@@ -3,11 +3,13 @@ import axios from "axios";
 
 // Components
 import { CardsOne } from "../../components/cards";
+import { Announcement } from "../../components/cards";
 
 const TuteeDashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [unratedCount, setUnratedCount] = useState(0);
+  const [announcement, setAnnouncement] = useState(null);
 
   async function getName() {
     try {
@@ -39,6 +41,14 @@ const TuteeDashboard = ({ setAuth }) => {
   useEffect(() => {
     getName();
     fetchUnratedCount();
+     axios.get('http://localhost:5000/announcement')
+    .then((response) => {
+      console.log('Fetched announcement:', response.data); // Debugging line
+      setAnnouncement(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching announcement:', error);
+    });
   }, []);
 
   const logout = (e) => {
@@ -71,8 +81,11 @@ const TuteeDashboard = ({ setAuth }) => {
                   You have {unratedCount} appointment{unratedCount > 1 ? 's' : ''} to rate.
                 </div>
               )}
-            </CardsOne>
+            </CardsOne> 
           </div>
+          <div>
+           <Announcement title="Announcement" announcement={announcement} />
+           </div>
           <div>
             <CardsOne title="Book an Appointment" />
           </div>

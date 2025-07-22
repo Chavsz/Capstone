@@ -6,6 +6,7 @@ import * as fiIcons from "react-icons/fi";
 
 // Components
 import { Cards, CardsOne } from "../../components/cards";
+import { Announcement } from "../../components/cards";
 
 // Star display component
 const StarDisplay = ({ value }) => {
@@ -25,6 +26,7 @@ const TutorDashboard = ({ setAuth }) => {
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [userId, setUserId] = useState("");
   const [avgRating, setAvgRating] = useState(null);
+  const [announcement, setAnnouncement] = useState(null);
 
   async function getName() {
     try {
@@ -70,7 +72,17 @@ const TutorDashboard = ({ setAuth }) => {
 
   useEffect(() => {
     getName();
+
+    axios.get('http://localhost:5000/announcement')
+    .then((response) => {
+      console.log('Fetched announcement:', response.data); // Debugging line
+      setAnnouncement(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching announcement:', error);
+    });
   }, []);
+
 
   useEffect(() => {
     if (userId) getAverageRating(userId);
@@ -134,8 +146,8 @@ const TutorDashboard = ({ setAuth }) => {
             <div>
               <CardsOne title="Next Sessions" />
             </div>
-            <div>
-              <CardsOne title="Announcements" />
+           <div className="row-span-2">
+               <Announcement title="Announcement" announcement={announcement} />
             </div>
           </div>
 

@@ -18,7 +18,7 @@ function About() {
   }, []);
 
   return (
-    <section id="Home" className="min-h-screen flex items-center justify-between bg-[#ffffff] p-10">
+    <section id="Home" className="min-h-screen flex items-center justify-between bg-[#4b6de9] p-10">
      
       <div className="w-3/4">
         <img
