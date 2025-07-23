@@ -52,7 +52,7 @@ const RouteSelect = () => {
 
 const Route = ({ to, selected, Icon, title, handleSelect }) => {
   return (
-    <Link to={to} className={`flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm transition-[box-shadow,_background-color,_color] ${selected ? "bg-white text-[#76acf5] shadow" : "hover:bg-[#b3d3ff] text-white shadow-none"}`} onClick={() => handleSelect(to)}>
+    <Link to={to} className={`flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm transition-[box-shadow,_background-color,_color] ${selected ? "bg-white text-[#76acf5] shadow" : "hover:bg-[#b3d3ff]  text-white shadow-none"}`} onClick={() => handleSelect(to)}>
       <Icon className={`${selected ? "text-[#76acf5]" : ""}`} />
       <p className="text-md font-semibold">{title}</p>
     </Link>
