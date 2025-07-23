@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
-import axios from "axios";
 
 // components
 import Sidebar from "./Sidebar";
@@ -15,9 +14,9 @@ import Appointment from "./Appointment";
 
 function TuteePage({ setAuth }) {
   return (
-    <div className="grid gap-4 grid-cols-[200px_1fr] bg-[#76acf5]">
+    <div className="grid grid-cols-[240px_1fr] bg-[#76acf5]">
       <div>
-        <Sidebar />
+        <Sidebar setAuth={setAuth} />
       </div>
       <div className="">
         <Routes>

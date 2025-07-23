@@ -14,14 +14,23 @@ const StarDisplay = ({ value }) => {
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
-        <span key={star} className={`text-2xl ${star <= Math.round(rounded) ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+        <span
+          key={star}
+          className={`text-2xl ${
+            star <= Math.round(rounded) ? "text-yellow-400" : "text-gray-300"
+          }`}
+        >
+          ★
+        </span>
       ))}
-      <span className="ml-2 text-lg font-semibold text-gray-700">{rounded}</span>
+      <span className="ml-2 text-lg font-semibold text-gray-700">
+        {rounded}
+      </span>
     </div>
   );
 };
 
-const TutorDashboard = ({ setAuth }) => {
+const TutorDashboard = () => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [userId, setUserId] = useState("");
@@ -43,10 +52,14 @@ const TutorDashboard = ({ setAuth }) => {
         setUserId(response.data.user_id);
       } else {
         // fallback: fetch user_id from profile
-        const profileRes = await axios.get("http://localhost:5000/dashboard/profile", {
-          headers: { token: localStorage.getItem("token") },
-        });
-        if (profileRes.data && profileRes.data.user_id) setUserId(profileRes.data.user_id);
+        const profileRes = await axios.get(
+          "http://localhost:5000/dashboard/profile",
+          {
+            headers: { token: localStorage.getItem("token") },
+          }
+        );
+        if (profileRes.data && profileRes.data.user_id)
+          setUserId(profileRes.data.user_id);
       }
     } catch (err) {
       console.error(err.message);
@@ -57,13 +70,16 @@ const TutorDashboard = ({ setAuth }) => {
   async function getAverageRating(uid) {
     try {
       if (!uid) return;
-      const response = await axios.get(`http://localhost:5000/appointment/tutor/${uid}/feedback`);
+      const response = await axios.get(
+        `http://localhost:5000/appointment/tutor/${uid}/feedback`
+      );
       const feedbacks = response.data;
       if (feedbacks.length === 0) {
         setAvgRating(null);
         return;
       }
-      const avg = feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length;
+      const avg =
+        feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length;
       setAvgRating(avg);
     } catch (err) {
       setAvgRating(null);
@@ -73,27 +89,19 @@ const TutorDashboard = ({ setAuth }) => {
   useEffect(() => {
     getName();
 
-    axios.get('http://localhost:5000/announcement')
-    .then((response) => {
-      console.log('Fetched announcement:', response.data); // Debugging line
-      setAnnouncement(response.data);
-    })
-    .catch((error) => {
-      console.error('Error fetching announcement:', error);
-    });
+    axios
+      .get("http://localhost:5000/announcement")
+      .then((response) => {
+        setAnnouncement(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching announcement:", error);
+      });
   }, []);
-
 
   useEffect(() => {
     if (userId) getAverageRating(userId);
   }, [userId]);
-
-  const logout = (e) => {
-    e.preventDefault();
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setAuth(false);
-  };
 
   return (
     <div className="flex">
@@ -108,7 +116,9 @@ const TutorDashboard = ({ setAuth }) => {
               <div className="mt-2">
                 {avgRating !== null ? (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium">Your Rating:</span>
+                    <span className="text-gray-700 font-medium">
+                      Your Rating:
+                    </span>
                     <StarDisplay value={avgRating} />
                   </div>
                 ) : (
@@ -116,12 +126,6 @@ const TutorDashboard = ({ setAuth }) => {
                 )}
               </div>
             </div>
-            <button
-              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
-              onClick={(e) => logout(e)}
-            >
-              Logout
-            </button>
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
@@ -146,11 +150,10 @@ const TutorDashboard = ({ setAuth }) => {
             <div>
               <CardsOne title="Next Sessions" />
             </div>
-           <div className="row-span-2">
-               <Announcement title="Announcement" announcement={announcement} />
+            <div className="row-span-2">
+              <Announcement title="Announcement" announcement={announcement} />
             </div>
           </div>
-
         </div>
       </div>
     </div>

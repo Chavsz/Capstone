@@ -3,9 +3,8 @@ import axios from "axios";
 
 // Components
 import { CardsOne } from "../../components/cards";
-import { Announcement } from "../../components/cards";
 
-const TuteeDashboard = ({ setAuth }) => {
+const TuteeDashboard = () => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [unratedCount, setUnratedCount] = useState(0);
@@ -29,63 +28,76 @@ const TuteeDashboard = ({ setAuth }) => {
 
   async function fetchUnratedCount() {
     try {
-      const response = await axios.get("http://localhost:5000/appointment/tutee/unrated-count", {
-        headers: { token: localStorage.getItem("token") },
-      });
+      const response = await axios.get(
+        "http://localhost:5000/appointment/tutee/unrated-count",
+        {
+          headers: { token: localStorage.getItem("token") },
+        }
+      );
       setUnratedCount(response.data.unrated_count);
     } catch (err) {
       console.error("Failed to fetch unrated count", err);
     }
   }
 
+  async function fetchAnnouncement() {
+    axios
+      .get("http://localhost:5000/announcement")
+      .then((response) => {
+        setAnnouncement(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching announcement:", error);
+      });
+  }
+
   useEffect(() => {
     getName();
     fetchUnratedCount();
-     axios.get('http://localhost:5000/announcement')
-    .then((response) => {
-      console.log('Fetched announcement:', response.data); // Debugging line
-      setAnnouncement(response.data);
-    })
-    .catch((error) => {
-      console.error('Error fetching announcement:', error);
-    });
+    fetchAnnouncement();
   }, []);
-
-  const logout = (e) => {
-    e.preventDefault();
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setAuth(false);
-  };
 
   return (
     <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
       <div className="">
         <div className="flex justify-between items-center">
           <h2 className="text-xl">Welcome, {name}!</h2>
-
-          <button
-            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md transition-colors"
-            onClick={(e) => logout(e)}
-          >
-            Logout
-          </button>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7">
-        {/* Announcements */}
-          <div className="row-span-2">
-            <CardsOne title="Announcements">
-              {unratedCount > 0 && (
-                <div className="text-red-600 font-semibold mt-2">
-                  You have {unratedCount} appointment{unratedCount > 1 ? 's' : ''} to rate.
-                </div>
-              )}
-            </CardsOne> 
+        {/* Notices */}
+        {/* <div>
+          <CardsOne title="Announcements">
+            {unratedCount > 0 && (
+              <div className="text-red-600 font-semibold mt-2">
+                You have {unratedCount} appointment{unratedCount > 1 ? "s" : ""}{" "}
+                to rate.
+              </div>
+            )}
+          </CardsOne>
+        </div> */}
+
+        <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7 h-full">
+          {/* Announcements */}
+          <div className="row-span-2 h-full">
+            <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md h-full flex flex-col">
+              <p className="text-[#132c91] font-semibold">Announcement</p>
+              <div className="mt-2 flex-1">
+                {announcement ? (
+                  <div>
+                    {announcement.announcement_content ? (
+                      <p className="text-gray-700">
+                        {announcement.announcement_content}
+                      </p>
+                    ) : (
+                      <p className="text-gray-600">No content available</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-600">No announcement found.</p>
+                )}
+              </div>
+            </div>
           </div>
-          <div>
-           <Announcement title="Announcement" announcement={announcement} />
-           </div>
           <div>
             <CardsOne title="Book an Appointment" />
           </div>
@@ -108,7 +120,6 @@ const TuteeDashboard = ({ setAuth }) => {
             <CardsOne title="Top Reasons" />
           </div>
         </div>
-
       </div>
     </div>
   );

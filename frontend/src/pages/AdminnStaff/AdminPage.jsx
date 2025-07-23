@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import axios from "axios";
 
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
@@ -11,10 +9,11 @@ import Users from "./Users";
 import Event from "./Event";
 
 function AdminPage({ setAuth }) {
+
   return (
-    <div className="grid gap-4 grid-cols-[200px_1fr] bg-[#76acf5]">
+    <div className="grid grid-cols-[240px_1fr] bg-[#76acf5]">
       <div>
-        <Sidebar />
+        <Sidebar setAuth={setAuth} />
       </div>
       <div className="">
         <Routes>

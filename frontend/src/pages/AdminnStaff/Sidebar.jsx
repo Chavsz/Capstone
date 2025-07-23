@@ -1,11 +1,31 @@
 import React from "react";
 import RouteSelect from "./RouteSelect";
 
-const Sidebar = () => {
+import * as fiIcons from "react-icons/fi";
+
+const Sidebar = ({ setAuth }) => {
+  //logout
+  const logout = (e) => {
+    e.preventDefault();
+    setAuth(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    // window.location.href = "/";
+  };
+
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-center text-white mb-4">LAV Admin</h1>
-      <RouteSelect />
+    <div className="p-4 text-white ">
+      <h1 className="text-2xl font-bold text-center text-white mb-4">
+        LAV 
+      </h1>
+
+      <div>
+        <RouteSelect />
+
+        <button className="flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm hover:bg-[#b3d3ff] text-white shadow-none " onClick={(e) => logout(e)}>
+          <fiIcons.FiLogOut /> <p className="text-md font-semibold">Log out</p>
+        </button>
+      </div>
     </div>
   );
 };

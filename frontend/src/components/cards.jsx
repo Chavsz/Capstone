@@ -39,6 +39,7 @@ export const LavRoomCards = ({ startTime, endTime, room, tutor, student }) => {
   );
 };
 
+//Announcement Card
 export const Announcement = ({ title, announcement }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">

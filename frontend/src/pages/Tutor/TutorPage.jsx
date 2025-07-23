@@ -13,9 +13,9 @@ import Switch from "./Switch";
 
 function TutorPage({ setAuth }) {
   return (
-    <div className="grid gap-4 grid-cols-[200px_1fr] bg-[#76acf5]">
+    <div className="grid grid-cols-[240px_1fr] bg-[#76acf5]">
       <div>
-        <Sidebar />
+        <Sidebar setAuth={setAuth} />
       </div>
       <div className="">
         <Routes>

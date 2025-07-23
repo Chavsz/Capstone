@@ -1,17 +1,81 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+
+import * as mdIcons from "react-icons/md";
+import * as fiIcons from "react-icons/fi";
+import * as piIcons from "react-icons/pi";
+import * as faIcons from "react-icons/fa6";
 
 const RouteSelect = () => {
-  return (
-    <div className='space-y-3'>
-        <Link to="/dashboard" className='block text-white'>Dashboard</Link>
-        <Link to="/dashboard/profile" className='block text-white'>Profile</Link>
-        <Link to="/dashboard/appointment" className='block text-white'>Appointment</Link>
-        <Link to="/dashboard/request" className='block text-white'>Request</Link>
-        <Link to="/dashboard/schedules" className='block text-white'>Schedules</Link>
-        <Link to="/dashboard/switch" className='block text-white'>Switch</Link>
-    </div>
-  )
-}
+  const [selected, setSelected] = useState(window.location.pathname);
 
-export default RouteSelect
+  const handleSelect = (to) => {
+    setSelected(to);
+  };
+
+  return (
+    <div className="space-y-1">
+      <Route
+        to="/dashboard"
+        selected={selected === "/dashboard"}
+        Icon={mdIcons.MdOutlineDashboard}
+        title="Dashboard"
+        handleSelect={handleSelect}
+      />
+      <Route
+        to="/dashboard/profile"
+        selected={selected === "/dashboard/profile"}
+        Icon={fiIcons.FiUsers}
+        title="Profile"
+        handleSelect={handleSelect}
+      />
+      <Route
+        to="/dashboard/appointment"
+        selected={selected === "/dashboard/appointment"}
+        Icon={mdIcons.MdCalendarMonth}
+        title="Appointment"
+        handleSelect={handleSelect}
+      />
+      <Route
+        to="/dashboard/request"
+        selected={selected === "/dashboard/request"}
+        Icon={faIcons.FaRegNewspaper}
+        title="Request"
+        handleSelect={handleSelect}
+      />
+      <Route
+        to="/dashboard/schedules"
+        selected={selected === "/dashboard/schedules"}
+        Icon={mdIcons.MdCalendarMonth}
+        title="Schedules"
+        handleSelect={handleSelect}
+      />
+      <Route
+        to="/dashboard/switch"
+        selected={selected === "/dashboard/switch"}
+        Icon={piIcons.PiUserSwitchBold}
+        title="Switch"
+        handleSelect={handleSelect}
+      />
+    </div>
+  );
+};
+
+const Route = ({ to, selected, Icon, title, handleSelect }) => {
+  return (
+    <Link
+      to={to}
+      className={`flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm transition-[box-shadow,_background-color,_color] ${
+        selected
+          ? "bg-white text-[#76acf5] shadow"
+          : "hover:bg-[#b3d3ff] text-white shadow-none"
+      }`}
+      onClick={() => handleSelect(to)}
+    >
+      <Icon className={`${selected ? "text-[#76acf5]" : ""}`} />
+      <p className="text-md font-semibold">{title}</p>
+    </Link>
+  );
+};
+
+export default RouteSelect;
