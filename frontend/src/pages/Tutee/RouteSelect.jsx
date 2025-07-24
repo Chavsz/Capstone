@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import * as mdIcons from "react-icons/md";
 import * as fiIcons from "react-icons/fi";
 import * as piIcons from "react-icons/pi";
-import * as faIcons from "react-icons/fa6";
 
 const RouteSelect = () => {
   const [selected, setSelected] = useState(window.location.pathname);
@@ -34,13 +33,6 @@ const RouteSelect = () => {
         selected={selected === "/dashboard/appointment"}
         Icon={mdIcons.MdCalendarMonth}
         title="Appointment"
-        handleSelect={handleSelect}
-      />
-      <Route
-        to="/dashboard/request"
-        selected={selected === "/dashboard/request"}
-        Icon={faIcons.FaRegNewspaper}
-        title="Request"
         handleSelect={handleSelect}
       />
       <Route

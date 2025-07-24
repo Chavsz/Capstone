@@ -92,10 +92,12 @@ router.get("/admin", authorization, async (req, res) => {
         a.mode_of_session,
         a.status,
         t.user_name AS tutor_name,
-        s.user_name AS student_name
+        s.user_name AS student_name,
+        f.rating
       FROM appointment a
       JOIN users t ON a.tutor_id = t.user_id
       JOIN users s ON a.user_id = s.user_id
+      LEFT JOIN feedback f ON f.appointment_id = a.appointment_id
       ORDER BY a.date DESC, a.start_time DESC`
     );
     res.json(result.rows);
@@ -171,9 +173,7 @@ router.delete("/admin/:id", authorization, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "Appointment not found" });
+      return res.status(404).json({ error: "Appointment not found" });
     }
 
     res.json({ message: "Appointment deleted successfully" });
@@ -192,7 +192,9 @@ router.post("/:id/feedback", authorization, async (req, res) => {
 
     // Validate rating
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      return res.status(400).json({ error: "Rating must be an integer between 1 and 5." });
+      return res
+        .status(400)
+        .json({ error: "Rating must be an integer between 1 and 5." });
     }
 
     // Check appointment exists, belongs to user, and is completed
@@ -201,7 +203,9 @@ router.post("/:id/feedback", authorization, async (req, res) => {
       [id, user_id]
     );
     if (appointmentResult.rows.length === 0) {
-      return res.status(403).json({ error: "You can only rate your own completed appointments." });
+      return res
+        .status(403)
+        .json({ error: "You can only rate your own completed appointments." });
     }
     const appointment = appointmentResult.rows[0];
 
@@ -211,7 +215,9 @@ router.post("/:id/feedback", authorization, async (req, res) => {
       [user_id, appointment.tutor_id, id]
     );
     if (feedbackResult.rows.length > 0) {
-      return res.status(400).json({ error: "Feedback already submitted for this appointment." });
+      return res
+        .status(400)
+        .json({ error: "Feedback already submitted for this appointment." });
     }
 
     // Insert feedback (no comment)
@@ -220,7 +226,10 @@ router.post("/:id/feedback", authorization, async (req, res) => {
       [user_id, appointment.tutor_id, rating, id]
     );
 
-    res.json({ message: "Feedback submitted successfully.", feedback: insertResult.rows[0] });
+    res.json({
+      message: "Feedback submitted successfully.",
+      feedback: insertResult.rows[0],
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -290,6 +299,29 @@ router.get("/tutee/unrated-count", authorization, async (req, res) => {
       [user_id]
     );
     res.json({ unrated_count: parseInt(result.rows[0].unrated_count, 10) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Get all feedbacks for admin
+router.get("/feedback/admin", authorization, async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM feedback");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// get all feedbacks by tutor_id
+router.get("/feedback/tutor/:id", authorization, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query("SELECT * FROM feedback WHERE tutor_id = $1", [id]);
+    res.json(result.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Server error" });

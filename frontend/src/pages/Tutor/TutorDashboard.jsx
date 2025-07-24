@@ -36,6 +36,9 @@ const TutorDashboard = () => {
   const [userId, setUserId] = useState("");
   const [avgRating, setAvgRating] = useState(null);
   const [announcement, setAnnouncement] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   async function getName() {
     try {
@@ -86,22 +89,68 @@ const TutorDashboard = () => {
     }
   }
 
+  const getAppointments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/appointment/tutor", {
+        headers: { token }
+      });
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err.message);
+      setMessage("Error loading appointments");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  async function getAnnouncement() {
+    try {
+      const response = await axios.get("http://localhost:5000/announcement");
+      setAnnouncement(response.data);
+    } catch (err) {
+      console.error(err.message)
+    }
+  }
+
+  async function getFeedbacks() {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:5000/appointment/feedback/tutor/${userId}`,
+        { headers: { token } }
+      );
+      setFeedbacks(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   useEffect(() => {
     getName();
-
-    axios
-      .get("http://localhost:5000/announcement")
-      .then((response) => {
-        setAnnouncement(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching announcement:", error);
-      });
+    getAnnouncement();
+    getAppointments();
   }, []);
 
   useEffect(() => {
-    if (userId) getAverageRating(userId);
+    if (userId) {
+      getAverageRating(userId);
+      getFeedbacks();
+    }
   }, [userId]);
+
+  const completedAppointments = appointments.filter(
+    (a) => a.status === "completed"
+  );
+
+  const cancelledAppointments = appointments.filter(
+    (a) => a.status === "cancelled" || a.status === "declined"
+  );
+
+  const requestAppointments = appointments.filter(
+    (a) => a.status === "pending"
+  );
+
 
   return (
     <div className="flex">
@@ -129,17 +178,17 @@ const TutorDashboard = () => {
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
-            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={10} />
+            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={completedAppointments.length} />
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
-              count={10}
+              count={feedbacks.length}
             />
-            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={10} />
+            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={requestAppointments.length} />
             <Cards
               title="Cancellations"
               icon={<fiIcons.FiCalendar />}
-              count={10}
+              count={cancelledAppointments.length}
             />
           </div>
 

@@ -7,8 +7,8 @@ export const Cards = ({ title, icon, count }) => {
         <p className="text-[#132c91] font-semibold">{title}</p>
         <p className="text-2xl">{icon}</p>
       </div>
-      <p className="text-2xl font-bold">{count}</p>
-      <div className="border-t border-[#76acf5] mt-2 p-1.5">
+      <p className="text-[30px] font-bold pl-4 py-3">{count}</p>
+      <div className="">
         <p className="text-[13.5px]">Lorem ipsum dolor</p>
       </div>
     </div>

@@ -65,7 +65,7 @@ const TuteeDashboard = () => {
         </div>
 
         {/* Notices */}
-        {/* <div>
+        <div>
           <CardsOne title="Announcements">
             {unratedCount > 0 && (
               <div className="text-red-600 font-semibold mt-2">
@@ -74,7 +74,7 @@ const TuteeDashboard = () => {
               </div>
             )}
           </CardsOne>
-        </div> */}
+        </div>
 
         <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7 h-full">
           {/* Announcements */}

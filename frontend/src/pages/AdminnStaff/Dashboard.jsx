@@ -22,6 +22,7 @@ function Dashboard() {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [appointments, setAppointments] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
 
   async function getName() {
     try {
@@ -53,9 +54,21 @@ function Dashboard() {
     }
   }
 
+  async function getFeedbacks() {
+    try {
+      const response = await axios.get("http://localhost:5000/appointment/feedback/admin", {
+        headers: { token: localStorage.getItem("token") },
+      });
+      setFeedbacks(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   useEffect(() => {
     getName();
     getAppointments();
+    getFeedbacks();
   }, []);
 
   // Helper: Get weekday name from date string
@@ -93,7 +106,11 @@ function Dashboard() {
   const completedAppointments = appointments.filter(
     (a) => a.status === "completed"
   );
+
   const completedCount = completedAppointments.length;
+
+  //Total number of feedbacks
+  const feedbackCount = feedbacks.length;
 
   const barColors = [
     "#ea5545", // Mon
@@ -118,17 +135,21 @@ function Dashboard() {
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
             <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={completedCount}/>
+
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
-              count={10}
+              count={feedbackCount}
             />
-            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={10} />
+
+            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={appointments.length} />
+
             <Cards
               title="Cancellations"
               icon={<fiIcons.FiCalendar />}
               count={cancelledCount}
             />
+
           </div>
 
           {/* Line and bar chart cards */}
