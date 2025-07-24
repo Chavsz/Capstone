@@ -14,46 +14,52 @@ const RouteSelect = () => {
 
   return (
     <div className="space-y-1">
-
       <Route
         to="/dashboard"
         selected={selected === "/dashboard"}
-        Icon={mdIcons.MdOutlineDashboard }
+        Icon={mdIcons.MdOutlineDashboard}
         title="Dashboard"
         handleSelect={handleSelect}
       />
       <Route
         to="/dashboard/lavroom"
         selected={selected === "/dashboard/lavroom"}
-        Icon={mdIcons.MdCalendarMonth  }
+        Icon={mdIcons.MdCalendarMonth}
         title="Lavroom"
         handleSelect={handleSelect}
       />
       <Route
         to="/dashboard/users"
         selected={selected === "/dashboard/users"}
-        Icon={fiIcons.FiUsers }
+        Icon={fiIcons.FiUsers}
         title="Users"
         handleSelect={handleSelect}
       />
       <Route
         to="/dashboard/landingadmin"
         selected={selected === "/dashboard/landingadmin"}
-        Icon={mdIcons.MdHome }
+        Icon={mdIcons.MdHome}
         title="Landing"
+        handleSelect={handleSelect}
+      />
+      <Route
+        to="/dashboard/announcments"
+        selected={selected === "/dashboard/announcments"}
+        Icon={mdIcons.MdOutlineAnnouncement}
+        title="Announcements"
         handleSelect={handleSelect}
       />
       <Route
         to="/dashboard/event"
         selected={selected === "/dashboard/event"}
         Icon={mdIcons.MdOutlineAnnouncement}
-        title="Events/Announc"
+        title="Events"
         handleSelect={handleSelect}
       />
       <Route
         to="/dashboard/switch"
         selected={selected === "/dashboard/switch"}
-        Icon={piIcons.PiUserSwitchBold }
+        Icon={piIcons.PiUserSwitchBold}
         title="Switch"
         handleSelect={handleSelect}
       />
@@ -63,7 +69,15 @@ const RouteSelect = () => {
 
 const Route = ({ to, selected, Icon, title, handleSelect }) => {
   return (
-    <Link to={to} className={`flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm transition-[box-shadow,_background-color,_color] ${selected ? "bg-white text-[#76acf5] shadow" : "hover:bg-[#b3d3ff] text-white shadow-none"}`} onClick={() => handleSelect(to)}>
+    <Link
+      to={to}
+      className={`flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm transition-[box-shadow,_background-color,_color] ${
+        selected
+          ? "bg-white text-[#76acf5] shadow"
+          : "hover:bg-[#b3d3ff] text-white shadow-none"
+      }`}
+      onClick={() => handleSelect(to)}
+    >
       <Icon className={`${selected ? "text-[#76acf5]" : ""}`} />
       <p className="text-md font-semibold">{title}</p>
     </Link>

@@ -7,6 +7,7 @@ import Lavroom from "./Lavroom";
 import Switch from "./Switch";
 import Users from "./Users";
 import Event from "./Event";
+import Announcments from "./Announcments";
 
 function AdminPage({ setAuth }) {
 
@@ -26,6 +27,7 @@ function AdminPage({ setAuth }) {
           <Route exact path="/lavroom" element={<Lavroom />} />
           <Route exact path="/switch" element={<Switch />} />
           <Route exact path="/event" element={<Event />} />
+          <Route exact path="/announcments" element={<Announcments />} />
           <Route exact path="/users" element={<Users />} />
         </Routes>
       </div>
