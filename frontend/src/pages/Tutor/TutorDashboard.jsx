@@ -6,7 +6,6 @@ import * as fiIcons from "react-icons/fi";
 
 // Components
 import { Cards, CardsOne } from "../../components/cards";
-import { Announcement } from "../../components/cards";
 
 // Star display component
 const StarDisplay = ({ value }) => {
@@ -92,9 +91,12 @@ const TutorDashboard = () => {
   const getAppointments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/appointment/tutor", {
-        headers: { token }
-      });
+      const response = await axios.get(
+        "http://localhost:5000/appointment/tutor",
+        {
+          headers: { token },
+        }
+      );
       setAppointments(response.data);
     } catch (err) {
       console.error(err.message);
@@ -109,7 +111,7 @@ const TutorDashboard = () => {
       const response = await axios.get("http://localhost:5000/announcement");
       setAnnouncement(response.data);
     } catch (err) {
-      console.error(err.message)
+      console.error(err.message);
     }
   }
 
@@ -151,7 +153,6 @@ const TutorDashboard = () => {
     (a) => a.status === "pending"
   );
 
-
   return (
     <div className="flex">
       <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
@@ -178,13 +179,21 @@ const TutorDashboard = () => {
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
-            <Cards title="Sessions" icon={<fiIcons.FiCalendar />} count={completedAppointments.length} />
+            <Cards
+              title="Sessions"
+              icon={<fiIcons.FiCalendar />}
+              count={completedAppointments.length}
+            />
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
               count={feedbacks.length}
             />
-            <Cards title="Tutee Request" icon={<fiIcons.FiUser />} count={requestAppointments.length} />
+            <Cards
+              title="Tutee Request"
+              icon={<fiIcons.FiUser />}
+              count={requestAppointments.length}
+            />
             <Cards
               title="Cancellations"
               icon={<fiIcons.FiCalendar />}
@@ -196,11 +205,31 @@ const TutorDashboard = () => {
             <div className="row-span-2">
               <CardsOne title="Sessions" />
             </div>
+
+            {/* Announcements */}
+            <div className=" h-full">
+              <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md h-full flex flex-col">
+                <p className="text-[#132c91] font-semibold">Announcement</p>
+                <div className="mt-2 flex-1">
+                  {announcement ? (
+                    <div>
+                      {announcement.announcement_content ? (
+                        <p className="text-gray-700">
+                          {announcement.announcement_content}
+                        </p>
+                      ) : (
+                        <p className="text-gray-600">No content available</p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">No announcement found.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div>
               <CardsOne title="Next Sessions" />
-            </div>
-            <div className="row-span-2">
-              <Announcement title="Announcement" announcement={announcement} />
             </div>
           </div>
         </div>

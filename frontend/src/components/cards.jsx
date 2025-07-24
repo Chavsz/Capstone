@@ -39,26 +39,4 @@ export const LavRoomCards = ({ startTime, endTime, room, tutor, student }) => {
   );
 };
 
-//Announcement Card
-export const Announcement = ({ title, announcement }) => {
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">{title}</h2>
-
-      {announcement ? (
-        <div>
-          
-          {announcement.announcement_content ? (
-            <p className="text-gray-700 mb-4">{announcement.announcement_content}</p>
-          ) : (
-            <p className="text-gray-600">No content available</p>
-          )}
-        </div>
-      ) : (
-        <p className="text-gray-600">No announcement found.</p>
-      )}
-    </div>
-  );
-};
-
 
