@@ -167,15 +167,17 @@ function Dashboard() {
 
   return (
     <div className="flex">
-      <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
+      <div className="min-h-screen flex-1 flex flex-col bg-[#ffffff] p-6">
         <div className="">
           <div className="flex justify-between items-center">
-            <h2 className="text-[24px] font-bold text-[#132c91]">
+            {/* <h2 className="text-[24px] font-bold text-[#132c91]">
               Welcome, {name}!
-            </h2>
+            </h2> */}
+
+            <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
           </div>
 
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
+          <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-6">
             <Cards
               title="Sessions"
               icon={<fiIcons.FiCalendar />}
@@ -202,9 +204,9 @@ function Dashboard() {
           </div>
 
           {/* Line and bar chart cards */}
-          <div className="mt-6 grid grid-cols-2 gap-6">
+          <div className="mt-6 grid grid-cols-2 gap-4">
             {/* confirmed Appointments bar chart */}
-            <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
               <p className="text-[#132c91] font-semibold">Booked Sessions</p>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart
@@ -228,7 +230,7 @@ function Dashboard() {
             </div>
 
             {/* Area Chart for Appointments */}
-            <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
               <div className="flex justify-between items-center mb-2">
                 <p className="text-[#132c91] font-semibold">Appointments Overview</p>
                 <select

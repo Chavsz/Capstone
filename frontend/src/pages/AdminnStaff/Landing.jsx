@@ -80,7 +80,7 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Landing Page Settings</h1>
+      <h1 className="text-[24px] font-bold text-[#132c91]">Landing</h1>
      
       {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
 

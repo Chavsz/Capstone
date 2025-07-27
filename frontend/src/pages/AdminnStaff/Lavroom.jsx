@@ -85,7 +85,7 @@ const Lavroom = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-[#132c91] font-bold text-2xl">Lavroom</h1>
+      <h1 className="text-[24px] font-bold text-[#132c91]">Lavroom</h1>
 
       <div className="bg-gray-100 p-6 rounded-lg mt-6">
         <div className="grid grid-cols-3 gap-6">

@@ -34,7 +34,7 @@ const Users = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1>Users</h1>
+      <h1 className="text-[24px] font-bold text-[#132c91]">Users</h1>
 
       <div className="my-6 flex justify-around items-center">
         {["admin", "student", "tutor"].map((type) => (

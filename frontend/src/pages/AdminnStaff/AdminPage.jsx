@@ -10,9 +10,10 @@ import Event from "./Event";
 import Announcments from "./Announcments";
 
 function AdminPage({ setAuth }) {
+  // #f0f3f7
 
   return (
-    <div className="grid grid-cols-[240px_1fr] bg-[#76acf5]">
+    <div className="grid grid-cols-[240px_1fr] bg-[#f0f5fa]">
       <div>
         <Sidebar setAuth={setAuth} />
       </div>

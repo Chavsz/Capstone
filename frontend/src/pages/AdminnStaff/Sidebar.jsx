@@ -16,14 +16,14 @@ const Sidebar = ({ setAuth }) => {
   return (
     <div className="p-4 text-white sticky top-0 ">
       <div className="top-4 h-[calc(100vh-32px-50px)]">
-        <h1 className="text-2xl font-bold text-center text-white mb-4">LAV</h1>
+        <h1 className="text-2xl font-bold text-center text-[#132c91] mb-9">LAV</h1>
 
         <RouteSelect />
       </div>
 
       <div>
         <button
-          className="flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm hover:bg-[#b3d3ff] text-white shadow-none "
+          className="flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm hover:bg-[#b3d3ff] text-[#696969] shadow-none "
           onClick={(e) => logout(e)}
         >
           <fiIcons.FiLogOut /> <p className="text-md font-semibold">Log out</p>

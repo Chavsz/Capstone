@@ -123,9 +123,7 @@ const Event = () => {
     <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100 font-sans">
       {/* Event Section */}
       <main className="w-full p-6 flex flex-col">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6 pb-4">
-          Events
-        </h1>
+      <h1 className="text-[24px] font-bold text-[#132c91]">Events</h1>
 
         {/* Event Form */}
         <section className="bg-white p-6 rounded-lg shadow-md mb-8">
