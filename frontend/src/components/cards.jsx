@@ -17,7 +17,7 @@ export const Cards = ({ title, icon, count }) => {
 
 export const CardsOne = ({ title, children }) => {
   return (
-    <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
+    <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
       <p className="text-[#132c91] font-semibold">{title}</p>
       {children && <div>{children}</div>}
     </div>

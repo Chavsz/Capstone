@@ -159,6 +159,7 @@ const TutorDashboard = () => {
         <div className="">
           <div className="flex justify-between items-center">
             <div>
+            <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
               <h2 className="ttext-[24px] font-bold text-[#132c91]">
                 Welcome, {name}!
               </h2>
@@ -208,7 +209,7 @@ const TutorDashboard = () => {
 
             {/* Announcements */}
             <div className=" h-full">
-              <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md h-full flex flex-col">
+              <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] h-full flex flex-col">
                 <p className="text-[#132c91] font-semibold">Announcement</p>
                 <div className="mt-2 flex-1">
                   {announcement ? (

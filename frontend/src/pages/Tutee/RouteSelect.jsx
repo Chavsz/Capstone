@@ -14,6 +14,8 @@ const RouteSelect = () => {
 
   return (
     <div className="space-y-1">
+      <p className="text-[13px] font-extralight text-[#696969]">MENU</p>
+
       <Route
         to="/dashboard"
         selected={selected === "/dashboard"}
@@ -59,12 +61,12 @@ const Route = ({ to, selected, Icon, title, handleSelect }) => {
       to={to}
       className={`flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm transition-[box-shadow,_background-color,_color] ${
         selected
-          ? "bg-white text-[#76acf5] shadow"
-          : "hover:bg-[#b3d3ff] text-white shadow-none"
+          ? "bg-[#e0ecfd] text-[#132c91] shadow"
+          : "hover:bg-[#e0ecfd] text-[#696969] shadow-none"
       }`}
-      onClick={() => handleSelect(to)}
+      onClick={() => handleSelect(to)}  
     >
-      <Icon className={`${selected ? "text-[#76acf5]" : ""}`} />
+      <Icon className={`${selected ? "text-[#132c91]" : ""}`} />
       <p className="text-md font-semibold">{title}</p>
     </Link>
   );

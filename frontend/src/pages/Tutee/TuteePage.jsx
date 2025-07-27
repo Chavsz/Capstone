@@ -13,7 +13,7 @@ import Appointment from "./Appointment";
 
 function TuteePage({ setAuth }) {
   return (
-    <div className="grid grid-cols-[240px_1fr] bg-[#76acf5]">
+    <div className="grid grid-cols-[240px_1fr] bg-[#f0f5fa]">
       <div>
         <Sidebar setAuth={setAuth} />
       </div>
