@@ -22,7 +22,7 @@ const Sidebar = ({ setAuth }) => {
 
       <div>
         <button
-          className="flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 text-sm hover:bg-[#e0ecfd] text-[#696969] shadow-none "
+          className="flex items-center justify-start gap-2 w-full rounded px-2 py-1.5 cursor-pointer text-sm hover:bg-[#e0ecfd] text-[#696969] shadow-none "
           onClick={(e) => logout(e)}
         >
           <fiIcons.FiLogOut /> <p className="text-md font-semibold">Log out</p>

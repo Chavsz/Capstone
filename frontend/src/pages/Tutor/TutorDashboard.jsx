@@ -283,7 +283,7 @@ const TutorDashboard = () => {
             />
           </div>
 
-          <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-7 h-[470px]">
+          <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-7">
             <div className="lg:row-span-2">
               {/* Area Chart for Appointments */}
               <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
@@ -337,35 +337,34 @@ const TutorDashboard = () => {
               </div>
             </div>
 
-            {/* Announcements */}
-
-            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
-              <p className="text-[#132c91] font-semibold">Announcement</p>
-              <div className="mt-2 ">
-                {announcement ? (
-                  <div>
-                    {announcement.announcement_content ? (
-                      <p className="text-gray-700">
-                        {announcement.announcement_content}
-                      </p>
-                    ) : (
-                      <p className="text-gray-600">No content available</p>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-gray-600">No announcement found.</p>
-                )}
+            <div className="lg:row-span-2 flex flex-col gap-7">
+              {/* Announcements */}
+              <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+                <p className="text-[#132c91] font-semibold">Announcement</p>
+                <div className="mt-2 ">
+                  {announcement ? (
+                    <div>
+                      {announcement.announcement_content ? (
+                        <p className="text-gray-700">
+                          {announcement.announcement_content}
+                        </p>
+                      ) : (
+                        <p className="text-gray-600">No content available</p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">No announcement found.</p>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div>
               {/* Next Sessions Table */}
-              <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF] h-[320px]">
+              <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF] flex-1">
                 <p className="text-[#132c91] font-semibold mb-4">
                   Confirmed Sessions Today
                 </p>
                 {nextSessions.length > 0 ? (
-                  <div className="overflow-x-auto overflow-y-auto max-h-40">
+                  <div className="overflow-x-auto overflow-y-auto h-[180px]">
                     <table className="w-full text-[#1a1a1a]">
                       <thead>
                         <tr className="border-b border-[#EBEDEF]">
@@ -399,9 +398,11 @@ const TutorDashboard = () => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-gray-400 text-center py-8">
-                    No confirmed sessions today
-                  </p>
+                  <div className="flex items-center justify-center h-[180px]">
+                    <p className="text-gray-400 text-center">
+                      No confirmed sessions today
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

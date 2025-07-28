@@ -67,7 +67,7 @@ const TuteeDashboard = () => {
 
         {/* Notices */}
         <div>
-          <CardsOne title="Announcements">
+          <CardsOne title="Notifications">
             {unratedCount > 0 && (
               <div className="text-red-600 font-semibold mt-2">
                 You have {unratedCount} appointment{unratedCount > 1 ? "s" : ""}{" "}
