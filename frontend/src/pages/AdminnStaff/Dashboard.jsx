@@ -204,7 +204,7 @@ function Dashboard() {
           </div>
 
           {/* Line and bar chart cards */}
-          <div className="mt-6 grid grid-cols-2 gap-4">
+          <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4">
             {/* confirmed Appointments bar chart */}
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
               <p className="text-[#132c91] font-semibold">Booked Sessions</p>

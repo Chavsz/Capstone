@@ -1,5 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Cell,
+  AreaChart,
+  Area,
+  Legend,
+} from "recharts";
 
 //icons
 import * as fiIcons from "react-icons/fi";
@@ -38,6 +53,7 @@ const TutorDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [areaRange, setAreaRange] = useState("7d");
 
   async function getName() {
     try {
@@ -141,6 +157,31 @@ const TutorDashboard = () => {
     }
   }, [userId]);
 
+  // Helper: Filter appointments by date range
+  function filterByRange(appts, range) {
+    const now = new Date();
+    let startDate;
+    if (range === "7d") {
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - 6);
+    } else if (range === "30d") {
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - 29);
+    } else if (range === "3m") {
+      startDate = new Date(now);
+      startDate.setMonth(now.getMonth() - 3);
+    }
+    return appts.filter(
+      (a) => new Date(a.date) >= startDate && new Date(a.date) <= now
+    );
+  }
+
+  // Helper: Format date as 'Mon DD'
+  function formatShortDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  }
+
   const completedAppointments = appointments.filter(
     (a) => a.status === "completed"
   );
@@ -149,9 +190,47 @@ const TutorDashboard = () => {
     (a) => a.status === "cancelled" || a.status === "declined"
   );
 
-  const requestAppointments = appointments.filter(
-    (a) => a.status === "pending"
+  // Prepare area chart data
+  const filteredAppointments = filterByRange(appointments, areaRange);
+  // Get all unique dates in range
+  const dateSet = new Set(filteredAppointments.map((a) => a.date));
+  const sortedDates = Array.from(dateSet).sort();
+  // Build data for each date
+  const areaChartData = sortedDates.map((date) => {
+    const booked = filteredAppointments.filter((a) => a.date === date).length;
+    const completed = filteredAppointments.filter(
+      (a) => a.date === date && a.status === "completed"
+    ).length;
+    const cancelled = filteredAppointments.filter(
+      (a) =>
+        a.date === date && (a.status === "cancelled" || a.status === "declined")
+    ).length;
+    return { date, booked, completed, cancelled };
+  });
+
+  // Get next sessions for today (only confirmed appointments)
+  const nextSessions = appointments.filter(
+    (a) =>
+      new Date(a.date).toDateString() === new Date().toDateString() &&
+      a.status === "confirmed"
   );
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (timeString) => {
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
 
   return (
     <div className="flex">
@@ -159,7 +238,9 @@ const TutorDashboard = () => {
         <div className="">
           <div className="flex justify-between items-center">
             <div>
-            <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+              <h1 className="text-[24px] font-bold text-[#132c91]">
+                Dashboard
+              </h1>
               <h2 className="ttext-[24px] font-bold text-[#132c91]">
                 Welcome, {name}!
               </h2>
@@ -193,7 +274,7 @@ const TutorDashboard = () => {
             <Cards
               title="Tutee Request"
               icon={<fiIcons.FiUser />}
-              count={requestAppointments.length}
+              count={appointments.length}
             />
             <Cards
               title="Cancellations"
@@ -202,35 +283,127 @@ const TutorDashboard = () => {
             />
           </div>
 
-          <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7">
-            <div className="row-span-2">
-              <CardsOne title="Sessions" />
+          <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-7 h-[470px]">
+            <div className="lg:row-span-2">
+              {/* Area Chart for Appointments */}
+              <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-[#132c91] font-semibold">
+                    Appointments Overview
+                  </p>
+                  <select
+                    value={areaRange}
+                    onChange={(e) => setAreaRange(e.target.value)}
+                    className="bg-white border-0 outline-0 text-[#132c91] text-sm rounded-md p-[2px]"
+                  >
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                    <option value="3m">Last 3 Months</option>
+                  </select>
+                </div>
+                <ResponsiveContainer width="100%" height={400}>
+                  <AreaChart
+                    data={areaChartData}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tickFormatter={formatShortDate} />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip labelFormatter={formatShortDate} />
+                    <Legend />
+                    <Area
+                      type="monotone"
+                      dataKey="booked"
+                      stroke="#27aeef"
+                      fill="#27aeef33"
+                      name="Booked"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="completed"
+                      stroke="#bdcf32"
+                      fill="#bdcf3233"
+                      name="Completed"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="cancelled"
+                      stroke="#ea5545"
+                      fill="#ea554533"
+                      name="Cancelled"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
 
             {/* Announcements */}
-            <div className=" h-full">
-              <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] h-full flex flex-col">
-                <p className="text-[#132c91] font-semibold">Announcement</p>
-                <div className="mt-2 flex-1">
-                  {announcement ? (
-                    <div>
-                      {announcement.announcement_content ? (
-                        <p className="text-gray-700">
-                          {announcement.announcement_content}
-                        </p>
-                      ) : (
-                        <p className="text-gray-600">No content available</p>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600">No announcement found.</p>
-                  )}
-                </div>
+
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+              <p className="text-[#132c91] font-semibold">Announcement</p>
+              <div className="mt-2 ">
+                {announcement ? (
+                  <div>
+                    {announcement.announcement_content ? (
+                      <p className="text-gray-700">
+                        {announcement.announcement_content}
+                      </p>
+                    ) : (
+                      <p className="text-gray-600">No content available</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-600">No announcement found.</p>
+                )}
               </div>
             </div>
 
             <div>
-              <CardsOne title="Next Sessions" />
+              {/* Next Sessions Table */}
+              <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF] h-[320px]">
+                <p className="text-[#132c91] font-semibold mb-4">
+                  Confirmed Sessions Today
+                </p>
+                {nextSessions.length > 0 ? (
+                  <div className="overflow-x-auto overflow-y-auto max-h-40">
+                    <table className="w-full text-[#1a1a1a]">
+                      <thead>
+                        <tr className="border-b border-[#EBEDEF]">
+                          <th className="text-left font-bold py-3 px-2">
+                            Time
+                          </th>
+                          <th className="text-left font-bold py-3 px-2">
+                            Student
+                          </th>
+                          <th className="text-left font-bold py-3 px-2">
+                            Date
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {nextSessions.map((session) => (
+                          <tr
+                            key={session.appointment_id}
+                            className="border-b border-[#EBEDEF]"
+                          >
+                            <td className="py-3 px-2">
+                              {formatTime(session.start_time)} - {formatTime(session.end_time) }
+                            </td>
+                            <td className="py-3 px-2">
+                              {session.student_name || "N/A"}
+                            </td>
+                            <td className="py-3 px-2">{formatDate(session.date)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-center py-8">
+                    No confirmed sessions today
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
