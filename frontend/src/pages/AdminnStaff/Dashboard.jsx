@@ -165,6 +165,12 @@ function Dashboard() {
     "#ffa300", // Sun
   ];
 
+  const dateToday = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  })
+
   return (
     <div className="flex">
       <div className="min-h-screen flex-1 flex flex-col bg-[#ffffff] p-6">
@@ -175,6 +181,12 @@ function Dashboard() {
             </h2> */}
 
             <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+
+            {/* Show date today */}
+            <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
+            {dateToday}
+            </p> 
+
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-6">
