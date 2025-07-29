@@ -57,12 +57,23 @@ const TuteeDashboard = () => {
     fetchAnnouncement();
   }, []);
 
+  const dateToday = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
       <div className="">
         <div className="flex justify-between items-center">
           {/* <h2 className="text-xl">Welcome, {name}!</h2> */}
           <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+
+          {/* Show date today */}
+          <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
+            {dateToday}
+          </p>
         </div>
 
         {/* Notices */}
@@ -107,8 +118,8 @@ const TuteeDashboard = () => {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 grid-rows-3 gap-7">
-          <div className="row-span-3">
+        <div className="mt-6 grid grid-cols-3 grid-rows-3 gap-7">
+          <div className="row-span-3 col-span-2">
             <CardsOne title="Booking History" />
           </div>
           <div>
@@ -121,6 +132,7 @@ const TuteeDashboard = () => {
             <CardsOne title="Top Reasons" />
           </div>
         </div>
+        
       </div>
     </div>
   );

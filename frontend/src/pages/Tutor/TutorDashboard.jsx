@@ -216,48 +216,53 @@ const TutorDashboard = () => {
   );
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const formatTime = (timeString) => {
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
+  const dateToday = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div className="flex">
       <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
         <div className="">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-[24px] font-bold text-[#132c91]">
-                Dashboard
-              </h1>
-              <h2 className="ttext-[24px] font-bold text-[#132c91]">
-                Welcome, {name}!
-              </h2>
-              {/* Show average rating if available */}
-              <div className="mt-2">
-                {avgRating !== null ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-700 font-medium">
-                      Your Rating:
-                    </span>
-                    <StarDisplay value={avgRating} />
-                  </div>
-                ) : (
-                  <span className="text-gray-500">No ratings yet</span>
-                )}
+            <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+
+            {/* Show date today */}
+            <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
+              {dateToday}
+            </p>
+          </div>
+
+          <h2 className="ttext-[24px] font-bold text-[#132c91]">
+            Welcome, {name}!
+          </h2>
+          {/* Show average rating if available */}
+          <div className="mt-2">
+            {avgRating !== null ? (
+              <div className="flex items-center gap-2">
+                <span className="text-gray-700 font-medium">Your Rating:</span>
+                <StarDisplay value={avgRating} />
               </div>
-            </div>
+            ) : (
+              <span className="text-gray-500">No ratings yet</span>
+            )}
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
@@ -386,12 +391,15 @@ const TutorDashboard = () => {
                             className="border-b border-[#EBEDEF]"
                           >
                             <td className="py-3 px-2">
-                              {formatTime(session.start_time)} - {formatTime(session.end_time) }
+                              {formatTime(session.start_time)} -{" "}
+                              {formatTime(session.end_time)}
                             </td>
                             <td className="py-3 px-2">
                               {session.student_name || "N/A"}
                             </td>
-                            <td className="py-3 px-2">{formatDate(session.date)}</td>
+                            <td className="py-3 px-2">
+                              {formatDate(session.date)}
+                            </td>
                           </tr>
                         ))}
                       </tbody>

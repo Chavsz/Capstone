@@ -83,7 +83,7 @@ const Announcments = () => {
   };
 
   return (
-    <div className="min-h-screen flex-col bg-gray-100 font-sans p-6">
+    <div className="min-h-screen flex-col bg-white font-sans p-6">
       {/* Announcement Section */}
       <aside className=" flex-col">
       <h1 className="text-[24px] font-bold text-[#132c91]">Announcements</h1>

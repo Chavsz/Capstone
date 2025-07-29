@@ -64,7 +64,7 @@ function AppContent() {
   }, [isAuth]);
 
   // Don't render Navbar on dashboard routes
-  const shouldShowNavbar = !location.pathname.startsWith("/dashboard");
+  const shouldShowNavbar = !location.pathname.startsWith("/dashboard") && !location.pathname.startsWith("/login") && !location.pathname.startsWith("/register");
 
   return (
     <div>

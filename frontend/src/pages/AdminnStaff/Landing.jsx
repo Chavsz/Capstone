@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Landing = () => {
-  const [landingData, setLandingData] = useState(null);  
+  const [landingData, setLandingData] = useState(null);
   const [formData, setFormData] = useState({
-    home_image: null,  
-    home_title: '',
-    home_description: '',
-    home_more: '',
+    home_image: null,
+    home_title: "",
+    home_description: "",
+    home_more: "",
     about_image: null,
-    about_title: '',
-    about_description: '',
-    about_link: ''
+    about_title: "",
+    about_description: "",
+    about_link: "",
   });
-  const [isSaving, setIsSaving] = useState(false); 
-  const [successMessage, setSuccessMessage] = useState('');  
+  const [isSaving, setIsSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    axios.get('http://localhost:5000/landing') 
-      .then(response => {
-        setLandingData(response.data);  
+    axios
+      .get("http://localhost:5000/landing")
+      .then((response) => {
+        setLandingData(response.data);
         setFormData({
           home_image: response.data.home_image,
           home_title: response.data.home_title,
@@ -28,65 +29,76 @@ const Landing = () => {
           about_image: response.data.about_image,
           about_title: response.data.about_title,
           about_description: response.data.about_description,
-          about_link: response.data.about_link
+          about_link: response.data.about_link,
         });
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "home_image" || name === "about_image") {
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
-        [name]: files[0]  
+        [name]: files[0],
       }));
     } else {
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
-        [name]: value  
+        [name]: value,
       }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSaving(true);  
+    setIsSaving(true);
 
     const form = new FormData();
-    form.append('home_image', formData.home_image); 
-    form.append('home_title', formData.home_title);
-    form.append('home_description', formData.home_description);
-    form.append('home_more', formData.home_more);
-    form.append('about_image', formData.about_image); 
-    form.append('about_title', formData.about_title);
-    form.append('about_description', formData.about_description);
-    form.append('about_link', formData.about_link);
+    form.append("home_image", formData.home_image);
+    form.append("home_title", formData.home_title);
+    form.append("home_description", formData.home_description);
+    form.append("home_more", formData.home_more);
+    form.append("about_image", formData.about_image);
+    form.append("about_title", formData.about_title);
+    form.append("about_description", formData.about_description);
+    form.append("about_link", formData.about_link);
 
-    axios.post('http://localhost:5000/landing', form)
-      .then(response => {
-        console.log('Landing data updated:', response.data);
-        setLandingData(response.data);  
-        setSuccessMessage('Changes saved successfully!');  
+    axios
+      .post("http://localhost:5000/landing", form)
+      .then((response) => {
+        console.log("Landing data updated:", response.data);
+        setLandingData(response.data);
+        setSuccessMessage("Changes saved successfully!");
       })
-      .catch(error => {
-        console.error('Error saving data:', error);
-        setSuccessMessage('Failed to save changes.'); 
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        setSuccessMessage("Failed to save changes.");
       })
       .finally(() => {
-        setIsSaving(false);  
+        setIsSaving(false);
       });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-white p-6">
       <h1 className="text-[24px] font-bold text-[#132c91]">Landing</h1>
-     
-      {successMessage && <p className="text-center text-green-500">{successMessage}</p>}
 
-      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+      {successMessage && (
+        <p className="text-center text-green-500">{successMessage}</p>
+      )}
+
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg"
+      >
         <div className="mb-4">
-          <label htmlFor="home_title" className="block text-sm font-semibold text-gray-700">Home Title:</label>
+          <label
+            htmlFor="home_title"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            Home Title:
+          </label>
           <input
             type="text"
             name="home_title"
@@ -99,7 +111,12 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="home_description" className="block text-sm font-semibold text-gray-700">Home Description:</label>
+          <label
+            htmlFor="home_description"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            Home Description:
+          </label>
           <textarea
             name="home_description"
             value={formData.home_description}
@@ -111,7 +128,13 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="home_more" className="block text-sm font-semibold text-gray-700"> More:</label>
+          <label
+            htmlFor="home_more"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            {" "}
+            More:
+          </label>
           <input
             type="text"
             name="home_more"
@@ -124,7 +147,12 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="home_image" className="block text-sm font-semibold text-gray-700">Home Image Upload:</label>
+          <label
+            htmlFor="home_image"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            Home Image Upload:
+          </label>
           <input
             type="file"
             name="home_image"
@@ -136,7 +164,12 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="about_title" className="block text-sm font-semibold text-gray-700">About Title:</label>
+          <label
+            htmlFor="about_title"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            About Title:
+          </label>
           <input
             type="text"
             name="about_title"
@@ -149,7 +182,12 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="about_description" className="block text-sm font-semibold text-gray-700">About Description:</label>
+          <label
+            htmlFor="about_description"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            About Description:
+          </label>
           <textarea
             name="about_description"
             value={formData.about_description}
@@ -161,7 +199,12 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="about_link" className="block text-sm font-semibold text-gray-700">About Link:</label>
+          <label
+            htmlFor="about_link"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            About Link:
+          </label>
           <input
             type="url"
             name="about_link"
@@ -174,7 +217,12 @@ const Landing = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="about_image" className="block text-sm font-semibold text-gray-700">About Image Upload:</label>
+          <label
+            htmlFor="about_image"
+            className="block text-sm font-semibold text-gray-700"
+          >
+            About Image Upload:
+          </label>
           <input
             type="file"
             name="about_image"
@@ -190,7 +238,7 @@ const Landing = () => {
           disabled={isSaving}
           className="w-full p-3 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? "Saving..." : "Save Changes"}
         </button>
       </form>
     </div>
