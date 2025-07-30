@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="px-10 py-2 sticky top-0 z-50 flex justify-between items-stretch bg-white">
+      <div className="px-10 py-3 sticky top-0 z-50 flex justify-between items-stretch bg-white">
         <a
           className="text-black text-2xl font-bold"
           href="#"

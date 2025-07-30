@@ -9,6 +9,9 @@ const TuteeDashboard = () => {
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [unratedCount, setUnratedCount] = useState(0);
   const [announcement, setAnnouncement] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
 
   async function getName() {
     try {
@@ -25,6 +28,21 @@ const TuteeDashboard = () => {
       console.error(err.message);
     }
   }
+
+  const getAppointments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/appointment/tutee", {
+        headers: { token }
+      });
+      setAppointments(response.data);
+    } catch (err) {
+      console.error(err.message);
+      setMessage("Error loading appointments");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   async function fetchUnratedCount() {
     try {
@@ -55,6 +73,7 @@ const TuteeDashboard = () => {
     getName();
     fetchUnratedCount();
     fetchAnnouncement();
+    getAppointments();
   }, []);
 
   const dateToday = new Date().toLocaleDateString("en-US", {
@@ -62,6 +81,29 @@ const TuteeDashboard = () => {
     month: "long",
     day: "numeric",
   });
+
+  // Get next sessions for today (only confirmed appointments)
+  const nextSessions = appointments.filter(
+    (a) =>
+      new Date(a.date).toDateString() === new Date().toDateString() &&
+      a.status === "confirmed"
+  );
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (timeString) => {
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
 
   return (
     <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
@@ -88,9 +130,9 @@ const TuteeDashboard = () => {
           </CardsOne>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 grid-rows-2 gap-7 h-full">
+        <div className="mt-6 grid grid-cols-2  gap-7 h-full">
           {/* Announcements */}
-          <div className="row-span-2 h-full">
+          <div className="h-full">
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] h-full flex flex-col">
               <p className="text-[#132c91] font-semibold">Announcement</p>
               <div className="mt-2 flex-1">
@@ -110,11 +152,52 @@ const TuteeDashboard = () => {
               </div>
             </div>
           </div>
-          <div>
-            <CardsOne title="Book an Appointment" />
-          </div>
-          <div>
-            <CardsOne title="Next Sessions" />
+          <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+            <p className="text-[#132c91] font-semibold mb-4">Confirmed Sessions Today</p>
+            {nextSessions.length > 0 ? (
+                  <div className="overflow-x-auto overflow-y-auto h-[150px]">
+                    <table className="w-full text-[#1a1a1a]">
+                      <thead>
+                        <tr className="border-b border-[#EBEDEF]">
+                          <th className="text-left font-bold py-3 px-2">
+                            Time
+                          </th>
+                          <th className="text-left font-bold py-3 px-2">
+                            Tutor
+                          </th>
+                          <th className="text-left font-bold py-3 px-2">
+                            Date
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {nextSessions.map((session) => (
+                          <tr
+                            key={session.appointment_id}
+                            className="border-b border-[#EBEDEF]"
+                          >
+                            <td className="py-3 px-2">
+                              {formatTime(session.start_time)} -{" "}
+                              {formatTime(session.end_time)}
+                            </td>
+                            <td className="py-3 px-2">
+                              {session.tutor_name || "N/A"}
+                            </td>
+                            <td className="py-3 px-2">
+                              {formatDate(session.date)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-[180px]">
+                    <p className="text-gray-400 text-center">
+                      No confirmed sessions today
+                    </p>
+                  </div>
+                )}
           </div>
         </div>
 

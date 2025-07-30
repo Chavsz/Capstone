@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import LAVLogo from "../assets/LAV_image.png";
 
-const Login = ({setAuth}) => {
+const Login = ({ setAuth }) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -40,35 +40,37 @@ const Login = ({setAuth}) => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen p-3">
       {/* Left Panel - Blue Background with Logo (Less Wide) */}
-      <div className="w-1/3 bg-blue-600 flex flex-col items-center justify-center relative">
-        {/* Small Logo in Top Left */}
-        <Link to="/" className="absolute top-8 left-8 flex items-center hover:opacity-80 transition-opacity">
+      <div className="w-1/3 bg-blue-600 flex flex-col items-center justify-center relative rounded-md">
+        <Link to="/" className="absolute top-8 left-8 flex items-center ">
           <img src={LAVLogo} alt="LAV Logo" className="w-8 h-8" />
           <span className="ml-2 text-white font-semibold text-lg">LAV</span>
         </Link>
-        
+
         {/* Large Centered Logo */}
         <div className="flex flex-col items-center">
-          <img src={LAVLogo} alt="LAV Logo" className="w-32 h-32 mb-4" />
-          <h1 className="text-6xl font-bold text-white tracking-wider" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-            LAV
+          <img src={LAVLogo} alt="LAV Logo" className="w-50 h-50 mb-4" />
+          <h1
+            className="text-6xl font-bold text-white tracking-wider"
+          >
           </h1>
         </div>
       </div>
 
       {/* Right Panel - White Background with Form */}
-      <div className="flex-1 bg-white flex flex-col justify-center px-16">
+      <div className="flex-1 bg-white flex flex-col items-center justify-center px-16">
         <div className="max-w-md w-full">
-          <h2 className="text-3xl font-bold text-blue-600 mb-8 text-center">Welcome!</h2>
-          
+          <h2 className="text-3xl font-bold text-blue-600 mb-8 text-center">
+            Welcome!
+          </h2>
+
           {message && (
             <div className="mb-4 p-3 rounded-lg bg-red-100 border border-red-300">
               <p className="text-red-600 text-sm">{message}</p>
             </div>
           )}
-          
+
           <form onSubmit={onSubmitForm} className="space-y-6">
             {/* Email Field */}
             <div>
@@ -79,7 +81,7 @@ const Login = ({setAuth}) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 type="email"
                 name="email"
-                placeholder="Example@gmail.com"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => onChange(e)}
                 required
@@ -95,7 +97,7 @@ const Login = ({setAuth}) => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 type="password"
                 name="password"
-                placeholder="••••••••••"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => onChange(e)}
                 required
@@ -111,7 +113,10 @@ const Login = ({setAuth}) => {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-700">
+              <label
+                htmlFor="rememberMe"
+                className="ml-2 text-sm text-gray-700"
+              >
                 Remember me
               </label>
             </div>
@@ -128,7 +133,10 @@ const Login = ({setAuth}) => {
           {/* Sign Up Link */}
           <p className="mt-6 text-center text-gray-600">
             Don't have account?{" "}
-            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link
+              to="/register"
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
               Sign up
             </Link>
           </p>
