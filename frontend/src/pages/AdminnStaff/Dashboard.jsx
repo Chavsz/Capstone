@@ -26,6 +26,7 @@ function Dashboard() {
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [appointments, setAppointments] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
+  const [evaluatedAppointments, setEvaluatedAppointments] = useState([]);
   const [areaRange, setAreaRange] = useState('7d');
 
   async function getName() {
@@ -72,10 +73,25 @@ function Dashboard() {
     }
   }
 
+  async function getEvaluatedAppointments() {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/appointment/evaluated/admin",
+        {
+          headers: { token: localStorage.getItem("token") },
+        }
+      );
+      setEvaluatedAppointments(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   useEffect(() => {
     getName();
     getAppointments();
     getFeedbacks();
+    getEvaluatedAppointments();
   }, []);
 
   // Helper: Get weekday name from date string
@@ -171,6 +187,19 @@ function Dashboard() {
     day: 'numeric'
   })
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const completedSessionsToday = completedAppointments.filter(a => formatDate(a.date) === dateToday);
+  const evaluatedSessionsToday = evaluatedAppointments.filter(a => formatDate(a.date) === dateToday);
+  const bookedSessionsToday = appointments.filter(a => formatDate(a.date) === dateToday);
+  const cancelledSessionsToday = cancelledAppointments.filter(a => formatDate(a.date) === dateToday); 
+
   return (
     <div className="flex">
       <div className="min-h-screen flex-1 flex flex-col bg-[#ffffff] p-6">
@@ -193,25 +222,33 @@ function Dashboard() {
             <Cards
               title="Sessions"
               icon={<fiIcons.FiCalendar />}
-              count={completedCount}
+              total={completedCount}
+              newToday={completedSessionsToday.length}
+              latestText="Completed Sessions Today"
             />
 
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
-              count={feedbackCount}
+              total={feedbackCount}
+              newToday={evaluatedSessionsToday.length}
+              latestText="Evaluations Today"
             />
 
             <Cards
               title="Tutee Request"
               icon={<fiIcons.FiUser />}
-              count={appointments.length}
+              total={appointments.length}
+              newToday={bookedSessionsToday.length}
+              latestText="Bookings Today"
             />
 
             <Cards
               title="Cancellations"
               icon={<fiIcons.FiCalendar />}
-              count={cancelledCount}
+              total={cancelledCount}
+              newToday={cancelledSessionsToday.length}
+              latestText="Cancelled Sessions Today"
             />
           </div>
 

@@ -1,15 +1,15 @@
 import React from "react";
 
-export const Cards = ({ title, icon, count }) => {
+  export const Cards = ({ title, icon, total, latestText, newToday }) => {
   return (
     <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
       <div className="flex items-center justify-between">
         <p className="text-[#132c91] font-semibold">{title}</p>
         <p className="text-2xl">{icon}</p>
       </div>
-      <p className="text-[30px] font-bold pl-4 py-3">{count}</p>
+      <p className="text-[30px] font-bold pl-4 py-3">{total}</p>
       <div className="">
-        <p className="text-[13.5px]">Lorem ipsum dolor</p>
+        <p className="text-[13.5px] text-[#3a55c4]">{newToday} {latestText}</p>
       </div>
     </div>
   );

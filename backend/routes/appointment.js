@@ -316,6 +316,22 @@ router.get("/feedback/admin", authorization, async (req, res) => {
   }
 });
 
+// Get evaluated appointments for admin (appointments that have feedback)
+router.get("/evaluated/admin", authorization, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT a.*, f.rating, f.created_at as feedback_date
+      FROM appointment a
+      INNER JOIN feedback f ON a.appointment_id = f.appointment_id
+      ORDER BY f.created_at DESC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // get all feedbacks by tutor_id
 router.get("/feedback/tutor/:id", authorization, async (req, res) => {
   try {
