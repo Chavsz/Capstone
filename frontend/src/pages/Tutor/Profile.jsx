@@ -199,6 +199,7 @@ const Profile = () => {
         </div>
 
         <div className="grid grid-rows-1 md:grid-rows-2 gap-6">
+
           {/* Profile Image */}
           <div className="">
             {profile.profile_image ? (
@@ -331,7 +332,7 @@ const Profile = () => {
 
       {/* Edit Information Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-2xl w-full mx-4">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-900">

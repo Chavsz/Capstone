@@ -4,8 +4,8 @@ import axios from "axios";
 import { MdDelete } from "react-icons/md";
 
 const Users = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [allUsers, setAllUsers] = useState([]);
-  const [selectedType, setSelectedType] = useState("admin");
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -54,6 +54,16 @@ const Users = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentUsers = filteredUsers.slice(startIndex, endIndex);
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const searchfilteredUsers = filteredUsers.filter((user) =>
+    user.user_name.toLowerCase().includes(searchTerm.toLowerCase())
+    || user.user_email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-white p-6">
       <h1 className="text-[24px] font-bold text-[#132c91] mb-6">Users</h1>
@@ -85,6 +95,8 @@ const Users = () => {
             type="text"
             placeholder="Search by name or email"
             className="w-[300px] px-4 py-2 bg-gray-100 border-b-2 border-b-transparent outline-none focus:border-b-blue-600 focus:border-b-2"
+            value={searchTerm}
+            onChange={handleSearch}
           />
         </div>
       </div>
@@ -109,7 +121,7 @@ const Users = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {currentUsers.map((user) => (
+            {searchfilteredUsers.length > 0 ? searchfilteredUsers.map((user) => (
               <tr key={user.user_id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {user.user_email}
@@ -127,6 +139,12 @@ const Users = () => {
                   >
                     <MdDelete />
                   </button>
+                </td>
+              </tr>
+            )) : currentUsers.map((user) => (
+              <tr key={user.user_id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {user.user_email}
                 </td>
               </tr>
             ))}
