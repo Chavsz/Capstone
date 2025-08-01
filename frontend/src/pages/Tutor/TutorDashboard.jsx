@@ -269,22 +269,22 @@ const TutorDashboard = () => {
             <Cards
               title="Sessions"
               icon={<fiIcons.FiCalendar />}
-              count={completedAppointments.length}
+              total={completedAppointments.length}
             />
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
-              count={feedbacks.length}
+              total={feedbacks.length}
             />
             <Cards
               title="Tutee Request"
               icon={<fiIcons.FiUser />}
-              count={appointments.length}
+              total={appointments.length}
             />
             <Cards
               title="Cancellations"
               icon={<fiIcons.FiCalendar />}
-              count={cancelledAppointments.length}
+              total={cancelledAppointments.length}
             />
           </div>
 
