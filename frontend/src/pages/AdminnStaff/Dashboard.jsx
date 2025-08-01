@@ -27,7 +27,7 @@ function Dashboard() {
   const [appointments, setAppointments] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [evaluatedAppointments, setEvaluatedAppointments] = useState([]);
-  const [areaRange, setAreaRange] = useState('7d');
+  const [areaRange, setAreaRange] = useState("7d");
 
   async function getName() {
     try {
@@ -105,23 +105,25 @@ function Dashboard() {
   function filterByRange(appts, range) {
     const now = new Date();
     let startDate;
-    if (range === '7d') {
+    if (range === "7d") {
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 6);
-    } else if (range === '30d') {
+    } else if (range === "30d") {
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 29);
-    } else if (range === '3m') {
+    } else if (range === "3m") {
       startDate = new Date(now);
       startDate.setMonth(now.getMonth() - 3);
     }
-    return appts.filter(a => new Date(a.date) >= startDate && new Date(a.date) <= now);
+    return appts.filter(
+      (a) => new Date(a.date) >= startDate && new Date(a.date) <= now
+    );
   }
 
   // Helper: Format date as 'Mon DD'
   function formatShortDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   }
 
   // Prepare data for bar chart: confirmed appointments per weekday
@@ -161,13 +163,17 @@ function Dashboard() {
   // Prepare area chart data
   const filteredAppointments = filterByRange(appointments, areaRange);
   // Get all unique dates in range
-  const dateSet = new Set(filteredAppointments.map(a => a.date));
+  const dateSet = new Set(filteredAppointments.map((a) => a.date));
   const sortedDates = Array.from(dateSet).sort();
   // Build data for each date
-  const areaChartData = sortedDates.map(date => {
-    const booked = filteredAppointments.filter(a => a.date === date).length;
-    const completed = filteredAppointments.filter(a => a.date === date && a.status === 'completed').length;
-    const cancelled = filteredAppointments.filter(a => a.date === date && a.status === 'cancelled').length;
+  const areaChartData = sortedDates.map((date) => {
+    const booked = filteredAppointments.filter((a) => a.date === date).length;
+    const completed = filteredAppointments.filter(
+      (a) => a.date === date && a.status === "completed"
+    ).length;
+    const cancelled = filteredAppointments.filter(
+      (a) => a.date === date && a.status === "cancelled"
+    ).length;
     return { date, booked, completed, cancelled };
   });
 
@@ -181,11 +187,11 @@ function Dashboard() {
     "#ffa300", // Sun
   ];
 
-  const dateToday = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric'
-  })
+  const dateToday = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -195,10 +201,18 @@ function Dashboard() {
     });
   };
 
-  const completedSessionsToday = completedAppointments.filter(a => formatDate(a.date) === dateToday);
-  const evaluatedSessionsToday = evaluatedAppointments.filter(a => formatDate(a.date) === dateToday);
-  const bookedSessionsToday = appointments.filter(a => formatDate(a.date) === dateToday);
-  const cancelledSessionsToday = cancelledAppointments.filter(a => formatDate(a.date) === dateToday); 
+  const completedSessionsToday = completedAppointments.filter(
+    (a) => formatDate(a.date) === dateToday
+  );
+  const evaluatedSessionsToday = evaluatedAppointments.filter(
+    (a) => formatDate(a.date) === dateToday
+  );
+  const bookedSessionsToday = appointments.filter(
+    (a) => formatDate(a.date) === dateToday
+  );
+  const cancelledSessionsToday = cancelledAppointments.filter(
+    (a) => formatDate(a.date) === dateToday
+  );
 
   return (
     <div className="flex">
@@ -213,43 +227,90 @@ function Dashboard() {
 
             {/* Show date today */}
             <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
-            {dateToday}
-            </p> 
-
+              {dateToday}
+            </p>
           </div>
 
+          {/* Admin Dashboard Cards  */}
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-6">
+
+            {/* Sessions Card */}
             <Cards
               title="Sessions"
               icon={<fiIcons.FiCalendar />}
               total={completedCount}
-              newToday={completedSessionsToday.length}
-              latestText="Completed Sessions Today"
+              newToday={
+                completedSessionsToday.length === 0
+                  ? ""
+                  : completedSessionsToday.length
+              }
+              latestText={
+                completedSessionsToday.length === 0
+                  ? "No completed sessions today"
+                  : "Completed Sessions Today"
+              }
             />
 
+            {/* Evaluations Card */}
             <Cards
               title="Evaluations"
               icon={<fiIcons.FiCheckSquare />}
               total={feedbackCount}
-              newToday={evaluatedSessionsToday.length}
-              latestText="Evaluations Today"
+              newToday={
+                evaluatedSessionsToday.length === 0
+                  ? ""
+                  : evaluatedSessionsToday.length
+              }
+              latestText={
+                evaluatedSessionsToday.length === 0
+                  ? "No evaluations today"
+                  : "Evaluations Today"
+              }
             />
 
+            {/* Student Request Card */}
             <Cards
               title="Tutee Request"
               icon={<fiIcons.FiUser />}
               total={appointments.length}
-              newToday={bookedSessionsToday.length}
-              latestText="Bookings Today"
+              newToday={
+                bookedSessionsToday.length === 0
+                  ? ""
+                  : bookedSessionsToday.length
+              }
+              latestText={
+                bookedSessionsToday.length === 0
+                  ? "No bookings today"
+                  : "Bookings Today"
+              }
             />
 
-            <Cards
-              title="Cancellations"
-              icon={<fiIcons.FiCalendar />}
-              total={cancelledCount}
-              newToday={cancelledSessionsToday.length}
-              latestText="Cancelled Sessions Today"
-            />
+            {/* Cancellations Card */}
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+              <div className="flex items-center justify-between">
+                <p className="text-[#132c91] font-semibold">Cancellations</p>
+                <p className="text-2xl">
+                  <fiIcons.FiCalendar />
+                </p>
+              </div>
+              <p className="text-[30px] font-bold pl-4 py-4">
+                {cancelledCount}
+              </p>
+              <div className="flex gap-2">
+                <p className="text-[13.5px] text-[#ad0d0d] font-bold">
+                  {cancelledSessionsToday.length === 0
+                    ? ""
+                    : cancelledSessionsToday.length}
+                </p>
+                <p className="text-[13.5px] text-[#A0A0A0]">
+                  {" "}
+                  {cancelledSessionsToday.length === 0
+                    ? "No cancelled sessions today"
+                    : "Cancelled Sessions Today"}
+                </p>
+              </div>
+            </div>
+
           </div>
 
           {/* Line and bar chart cards */}
@@ -281,10 +342,12 @@ function Dashboard() {
             {/* Area Chart for Appointments */}
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
               <div className="flex justify-between items-center mb-2">
-                <p className="text-[#132c91] font-semibold">Appointments Overview</p>
+                <p className="text-[#132c91] font-semibold">
+                  Appointments Overview
+                </p>
                 <select
                   value={areaRange}
-                  onChange={e => setAreaRange(e.target.value)}
+                  onChange={(e) => setAreaRange(e.target.value)}
                   className="bg-white border-0 outline-0 text-[#132c91] text-sm rounded-md p-[2px]"
                 >
                   <option value="7d">Last 7 Days</option>
@@ -293,15 +356,36 @@ function Dashboard() {
                 </select>
               </div>
               <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={areaChartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <AreaChart
+                  data={areaChartData}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" tickFormatter={formatShortDate} />
                   <YAxis allowDecimals={false} />
                   <Tooltip labelFormatter={formatShortDate} />
                   <Legend />
-                  <Area type="monotone" dataKey="booked" stroke="#27aeef" fill="#27aeef33" name="Booked" />
-                  <Area type="monotone" dataKey="completed" stroke="#bdcf32" fill="#bdcf3233" name="Completed" />
-                  <Area type="monotone" dataKey="cancelled" stroke="#ea5545" fill="#ea554533" name="Cancelled" />
+                  <Area
+                    type="monotone"
+                    dataKey="booked"
+                    stroke="#27aeef"
+                    fill="#27aeef33"
+                    name="Booked"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="completed"
+                    stroke="#bdcf32"
+                    fill="#bdcf3233"
+                    name="Completed"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="cancelled"
+                    stroke="#ea5545"
+                    fill="#ea554533"
+                    name="Cancelled"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -335,7 +419,6 @@ function Dashboard() {
                 </select>
               </div>
             </div> */}
-            
           </div>
         </div>
       </div>

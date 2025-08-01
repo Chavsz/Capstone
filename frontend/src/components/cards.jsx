@@ -7,9 +7,10 @@ import React from "react";
         <p className="text-[#132c91] font-semibold">{title}</p>
         <p className="text-2xl">{icon}</p>
       </div>
-      <p className="text-[30px] font-bold pl-4 py-3">{total}</p>
-      <div className="">
-        <p className="text-[13.5px] text-[#3a55c4]">{newToday} {latestText}</p>
+      <p className="text-[30px] font-bold pl-4 py-4">{total}</p>
+      <div className="flex gap-2">
+        <p className="text-[13.5px] text-[#1fb82c] font-bold">{newToday}</p>
+        <p className="text-[13.5px] text-[#A0A0A0]"> {latestText}</p>
       </div>
     </div>
   );
