@@ -130,4 +130,19 @@ router.get("/appointment/admin", authorization, async (req, res) => {
   }
 });
 
+// Get tutor schedules by tutor_id
+router.get("/schedule/:tutorId", async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const schedules = await pool.query(
+      "SELECT * FROM schedule WHERE user_id = $1 ORDER BY day, start_time",
+      [tutorId]
+    );
+    res.json(schedules.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;
