@@ -110,6 +110,10 @@ const TuteeDashboard = () => {
     });
   };
 
+  const completedSessions = appointments.filter(
+    (a) => a.status === "completed"
+  );
+
   return (
     <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
       <div className="flex justify-between items-center">
@@ -206,7 +210,44 @@ const TuteeDashboard = () => {
 
       <div className="mt-6 grid grid-cols-3 grid-rows-3 gap-7">
         <div className="row-span-3 col-span-2">
-          <CardsOne title="Booking History" />
+          <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF] flex-1">
+            <p className="text-[#132c91] font-semibold">Session History</p>
+
+            {/*Completed Sessions */}
+            <div className="overflow-x-auto overflow-y-auto h-[280px]" >
+              <table className="w-full text-[#1a1a1a]">
+                <thead>
+                  <tr className=" border-b border-[#EBEDEF]">
+                    <th className="text-left font-bold py-3 px-2">Tutor</th>
+                    <th className="text-left font-bold py-3 px-2">Date</th>
+                    <th className="text-left font-bold py-3 px-2">Time</th>
+                    <th className="text-left font-bold py-3 px-2">Subject</th>
+                    <th className="text-left font-bold py-3 px-2">Toipc</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {completedSessions.map((session) => (
+                    <tr
+                      key={session.appointment_id}
+                      className="border-b border-[#EBEDEF]"
+                    >
+                      <td className="py-3 px-2">
+                        {session.tutor_name || "N/A"}
+                      </td>
+                      <td className="py-3 px-2">{formatDate(session.date)}</td>
+                      <td className="py-3 px-2">
+                        {formatTime(session.start_time)} -{" "}
+                        {formatTime(session.end_time)}
+                      </td>
+                      <td className="py-3 px-2">{session.subject || "N/A"}</td>
+                      <td className="py-3 px-2">{session.topic || "N/A"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
         <div>
           <CardsOne title="Top Tutors" />

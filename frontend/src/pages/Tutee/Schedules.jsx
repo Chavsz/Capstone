@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 // Simple Star Rating component
 const StarRating = ({ value, onChange, disabled }) => {
@@ -9,7 +9,9 @@ const StarRating = ({ value, onChange, disabled }) => {
         <button
           key={star}
           type="button"
-          className={`text-2xl ${star <= value ? 'text-yellow-400' : 'text-gray-300'}`}
+          className={`text-2xl ${
+            star <= value ? "text-yellow-400" : "text-gray-300"
+          }`}
           onClick={() => !disabled && onChange(star)}
           disabled={disabled}
         >
@@ -31,9 +33,12 @@ const Schedules = () => {
   const getAppointments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/appointment/tutee", {
-        headers: { token }
-      });
+      const response = await axios.get(
+        "http://localhost:5000/appointment/tutee",
+        {
+          headers: { token },
+        }
+      );
       setAppointments(response.data);
     } catch (err) {
       console.error(err.message);
@@ -47,12 +52,15 @@ const Schedules = () => {
   const getFeedbacks = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/appointment/feedback/tutee", {
-        headers: { token }
-      });
+      const response = await axios.get(
+        "http://localhost:5000/appointment/feedback/tutee",
+        {
+          headers: { token },
+        }
+      );
       // Build a map: { appointment_id: true }
       const feedbackMap = {};
-      response.data.forEach(fb => {
+      response.data.forEach((fb) => {
         if (fb.appointment_id) feedbackMap[fb.appointment_id] = true;
       });
       setFeedbacks(feedbackMap);
@@ -74,7 +82,7 @@ const Schedules = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:5000/appointment/${appointmentId}`, {
-        headers: { token }
+        headers: { token },
       });
       getAppointments(); // Refresh the list
       setMessage("Appointment deleted successfully");
@@ -109,33 +117,33 @@ const Schedules = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const formatTime = (timeString) => {
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'confirmed':
-        return 'bg-green-100 text-green-800';
-      case 'declined':
-        return 'bg-red-100 text-red-800';
-      case 'completed':
-        return 'bg-blue-100 text-blue-800';
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "confirmed":
+        return "bg-green-100 text-green-800";
+      case "declined":
+        return "bg-red-100 text-red-800";
+      case "completed":
+        return "bg-blue-100 text-blue-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -153,7 +161,13 @@ const Schedules = () => {
       <h1 className="text-[#132c91] font-bold text-2xl">Schedules</h1>
 
       {message && (
-        <div className={`mt-4 p-3 rounded-md ${message.includes("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+        <div
+          className={`mt-4 p-3 rounded-md ${
+            message.includes("Error")
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          }`}
+        >
           {message}
         </div>
       )}
@@ -165,64 +179,107 @@ const Schedules = () => {
       ) : (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* filter out declined appointments */}
-          {appointments.filter(appointment => appointment.status !== 'declined').map((appointment) => (
-            <div key={appointment.appointment_id} className="bg-[#fafafa] p-6 rounded-lg shadow-md">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-[#132c91]">
-                  {appointment.subject}
-                </h3>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(appointment.status)}`}>
-                  {appointment.status}
-                </span>
-              </div>
-              <div className="space-y-2 text-sm">
-                <p><strong>Topic:</strong> {appointment.topic}</p>
-                <p><strong>Mode:</strong> {appointment.mode_of_session}</p>
-                <p><strong>Date:</strong> {formatDate(appointment.date)}</p>
-                <p><strong>Time:</strong> {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</p>
-                <p><strong>Tutor:</strong> {appointment.tutor_name}</p>
-                {appointment.tutor_name && (
-                  <>
-                    <p><strong>Program:</strong> {appointment.program || "Not specified"}</p>
-                    <p><strong>College:</strong> {appointment.college || "Not specified"}</p>
-                    <p><strong>Specialization:</strong> {appointment.specialization || "Not specified"}</p>
-                  </>
-                )}
-              </div>
-              {/* Feedback UI for completed appointments */}
-              {appointment.status === 'completed' && !feedbacks[appointment.appointment_id] && (
-                <div className="mt-4">
-                  <div className="mb-2 font-medium">Rate your tutor:</div>
-                  <StarRating
-                    value={ratingState[appointment.appointment_id] || 0}
-                    onChange={(star) => handleRatingChange(appointment.appointment_id, star)}
-                    disabled={!!submitting[appointment.appointment_id]}
-                  />
-                  <button
-                    className="mt-2 bg-blue-600 text-white px-4 py-1 rounded disabled:opacity-50"
-                    disabled={
-                      !ratingState[appointment.appointment_id] || submitting[appointment.appointment_id]
-                    }
-                    onClick={() => handleSubmitRating(appointment.appointment_id, appointment.tutor_id)}
+          {appointments
+            .filter((appointment) => appointment.status !== "declined")
+            .map((appointment) => (
+              <div
+                key={appointment.appointment_id}
+                className="bg-[#fafafa] p-6 rounded-lg shadow-md"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-lg font-semibold text-[#132c91]">
+                    {appointment.subject}
+                  </h3>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      appointment.status
+                    )}`}
                   >
-                    {submitting[appointment.appointment_id] ? 'Submitting...' : 'Submit Rating'}
+                    {appointment.status}
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <strong>Topic:</strong> {appointment.topic}
+                  </p>
+                  <p>
+                    <strong>Mode:</strong> {appointment.mode_of_session}
+                  </p>
+                  <p>
+                    <strong>Date:</strong> {formatDate(appointment.date)}
+                  </p>
+                  <p>
+                    <strong>Time:</strong> {formatTime(appointment.start_time)}{" "}
+                    - {formatTime(appointment.end_time)}
+                  </p>
+                  <p>
+                    <strong>Tutor:</strong> {appointment.tutor_name}
+                  </p>
+                  {appointment.tutor_name && (
+                    <>
+                      <p>
+                        <strong>Program:</strong>{" "}
+                        {appointment.program || "Not specified"}
+                      </p>
+                      <p>
+                        <strong>College:</strong>{" "}
+                        {appointment.college || "Not specified"}
+                      </p>
+                      <p>
+                        <strong>Specialization:</strong>{" "}
+                        {appointment.specialization || "Not specified"}
+                      </p>
+                    </>
+                  )}
+                </div>
+                {/* Feedback UI for completed appointments */}
+                {appointment.status === "completed" &&
+                  !feedbacks[appointment.appointment_id] && (
+                    <div className="mt-4">
+                      <div className="mb-2 font-medium">Rate your tutor:</div>
+                      <StarRating
+                        value={ratingState[appointment.appointment_id] || 0}
+                        onChange={(star) =>
+                          handleRatingChange(appointment.appointment_id, star)
+                        }
+                        disabled={!!submitting[appointment.appointment_id]}
+                      />
+                      <button
+                        className="mt-2 bg-blue-600 text-white px-4 py-1 rounded disabled:opacity-50"
+                        disabled={
+                          !ratingState[appointment.appointment_id] ||
+                          submitting[appointment.appointment_id]
+                        }
+                        onClick={() =>
+                          handleSubmitRating(
+                            appointment.appointment_id,
+                            appointment.tutor_id
+                          )
+                        }
+                      >
+                        {submitting[appointment.appointment_id]
+                          ? "Submitting..."
+                          : "Submit Rating"}
+                      </button>
+                    </div>
+                  )}
+                {/* Show thank you if already rated, and hide star rating and button */}
+                {appointment.status === "completed" &&
+                  feedbacks[appointment.appointment_id] && (
+                    <div className="mt-4 text-green-700 font-medium">
+                      Thank you for your feedback!
+                    </div>
+                  )}
+                <div className="mt-4">
+                  <button
+                    onClick={() => handleDelete(appointment.appointment_id)}
+                    className="bg-gray-500 text-white rounded-md px-4 py-2 text-sm hover:bg-gray-600"
+                  >
+                    Delete
                   </button>
                 </div>
-              )}
-              {/* Show thank you if already rated, and hide star rating and button */}
-              {appointment.status === 'completed' && feedbacks[appointment.appointment_id] && (
-                <div className="mt-4 text-green-700 font-medium">Thank you for your feedback!</div>
-              )}
-              <div className="mt-4">
-                <button 
-                  onClick={() => handleDelete(appointment.appointment_id)}
-                  className="bg-gray-500 text-white rounded-md px-4 py-2 text-sm hover:bg-gray-600"
-                >
-                  Delete
-                </button>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>
