@@ -120,161 +120,163 @@ const Event = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100 font-sans">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white font-sans">
       {/* Event Section */}
       <main className="w-full p-6 flex flex-col">
-      <h1 className="text-[24px] font-bold text-[#132c91]">Events</h1>
+        <h1 className="text-[24px] font-bold text-blue-600 mb-4">Events</h1>
 
         {/* Event Form */}
-        <section className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-5">
-            {editingEvent ? "Edit Event" : "Add New Event"}
-          </h2>
-          <form
-            onSubmit={handleEventSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-5"
-          >
-            <div>
-              <label
-                htmlFor="event_title"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Event Title
-              </label>
-              <input
-                type="text"
-                name="event_title"
-                id="event_title"
-                placeholder="e.g., Crash Tutorial"
-                value={formData.event_title}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label
-                htmlFor="event_description"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Event Description
-              </label>
-              <textarea
-                name="event_description"
-                id="event_description"
-                placeholder="A brief description of the event..."
-                value={formData.event_description}
-                onChange={handleChange}
-                rows={3}
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="event_time"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Event Time
-              </label>
-              <input
-                type="time"
-                name="event_time"
-                id="event_time"
-                value={formData.event_time}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="event_date"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Event Date
-              </label>
-              <input
-                type="date"
-                name="event_date"
-                id="event_date"
-                value={formData.event_date}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label
-                htmlFor="event_location"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Event Location
-              </label>
-              <input
-                type="text"
-                name="event_location"
-                id="event_location"
-                placeholder="e.g., MSU-IIT Lawn"
-                value={formData.event_location}
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label
-                htmlFor="eventImageInput"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Event Image
-              </label>
-              <input
-                type="file"
-                name="event_image"
-                id="eventImageInput"
-                onChange={handleFileChange}
-                className="w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
-                accept="image/*"
-              />
-              {editingEvent &&
-                editingEvent.event_image &&
-                !formData.event_image && (
-                  <p className="text-sm text-gray-500 mt-1 italic">
-                    Current image will be used unless a new one is uploaded.
-                  </p>
-                )}
-            </div>
-            <div className="md:col-span-2 flex space-x-4 mt-4">
-              <button
-                type="submit"
-                className="flex-1 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                {editingEvent ? "Update Event" : "Add Event"}
-              </button>
-              {editingEvent && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingEvent(null);
-                    setFormData({
-                      event_title: "",
-                      event_description: "",
-                      event_time: "",
-                      event_date: "",
-                      event_location: "",
-                      event_image: null,
-                    });
-                    document.getElementById("eventImageInput").value = "";
-                  }}
-                  className="flex-1 py-3 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+        <div className="px-15">
+          <div className="bg-white p-6 rounded-lg border-1 border-[#EBEDEF] mb-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-5">
+              {editingEvent ? "Edit Event" : "Add New Event"}
+            </h2>
+            <form
+              onSubmit={handleEventSubmit}
+              className="grid grid-cols-1 md:grid-cols-2 gap-5"
+            >
+              <div>
+                <label
+                  htmlFor="event_title"
+                  className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Cancel Edit
+                  Event Title
+                </label>
+                <input
+                  type="text"
+                  name="event_title"
+                  id="event_title"
+                  placeholder="e.g., Crash Tutorial"
+                  value={formData.event_title}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="event_description"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Event Description
+                </label>
+                <textarea
+                  name="event_description"
+                  id="event_description"
+                  placeholder="A brief description of the event..."
+                  value={formData.event_description}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="event_time"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Event Time
+                </label>
+                <input
+                  type="time"
+                  name="event_time"
+                  id="event_time"
+                  value={formData.event_time}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="event_date"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Event Date
+                </label>
+                <input
+                  type="date"
+                  name="event_date"
+                  id="event_date"
+                  value={formData.event_date}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="event_location"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Event Location
+                </label>
+                <input
+                  type="text"
+                  name="event_location"
+                  id="event_location"
+                  placeholder="e.g., MSU-IIT Lawn"
+                  value={formData.event_location}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="eventImageInput"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Event Image
+                </label>
+                <input
+                  type="file"
+                  name="event_image"
+                  id="eventImageInput"
+                  onChange={handleFileChange}
+                  className="w-full text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                  accept="image/*"
+                />
+                {editingEvent &&
+                  editingEvent.event_image &&
+                  !formData.event_image && (
+                    <p className="text-sm text-gray-500 mt-1 italic">
+                      Current image will be used unless a new one is uploaded.
+                    </p>
+                  )}
+              </div>
+              <div className="md:col-span-2 flex space-x-4 mt-4">
+                <button
+                  type="submit"
+                  className="flex-1 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  {editingEvent ? "Update Event" : "Add Event"}
                 </button>
-              )}
-            </div>
-          </form>
-        </section>
+                {editingEvent && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingEvent(null);
+                      setFormData({
+                        event_title: "",
+                        event_description: "",
+                        event_time: "",
+                        event_date: "",
+                        event_location: "",
+                        event_image: null,
+                      });
+                      document.getElementById("eventImageInput").value = "";
+                    }}
+                    className="flex-1 py-3 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
 
         {/* Events Gallery */}
         <section id="events-list" className="flex-grow overflow-auto">
@@ -323,7 +325,7 @@ const Event = () => {
                     <div className="mt-auto flex space-x-3">
                       <button
                         onClick={() => handleEventEdit(event)}
-                        className="flex-1 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                        className="flex-1 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                       >
                         Edit
                       </button>

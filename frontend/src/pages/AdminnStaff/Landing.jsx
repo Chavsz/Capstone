@@ -82,7 +82,7 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-[24px] font-bold text-[#132c91]">Landing</h1>
+      <h1 className="text-[24px] font-bold text-blue-600">Landing</h1>
 
       {successMessage && (
         <p className="text-center text-green-500">{successMessage}</p>

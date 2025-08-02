@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
-// Components
+//component
+
 import { CardsOne } from "../../components/cards";
 
 const TuteeDashboard = () => {
@@ -32,9 +34,12 @@ const TuteeDashboard = () => {
   const getAppointments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/appointment/tutee", {
-        headers: { token }
-      });
+      const response = await axios.get(
+        "http://localhost:5000/appointment/tutee",
+        {
+          headers: { token },
+        }
+      );
       setAppointments(response.data);
     } catch (err) {
       console.error(err.message);
@@ -107,115 +112,111 @@ const TuteeDashboard = () => {
 
   return (
     <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
-      <div className="">
-        <div className="flex justify-between items-center">
-          {/* <h2 className="text-xl">Welcome, {name}!</h2> */}
-          <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+      <div className="flex justify-between items-center">
+        {/* <h2 className="text-xl">Welcome, {name}!</h2> */}
+        <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
 
-          {/* Show date today */}
-          <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
-            {dateToday}
-          </p>
+        {/* Show date today */}
+        <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
+          {dateToday}
+        </p>
+      </div>
+
+      {/* Notices */}
+
+      <div className="flex justify-between items-center">
+        {unratedCount > 0 && (
+          <div className="text-red-600 font-semibold mt-2">
+            Notices: You have {unratedCount} appointment
+            {unratedCount > 1 ? "s" : ""} to rate.
+          </div>
+        )}
+
+        <div className="bg-blue-600 cursor-pointer px-8 py-2 border-none rounded-3xl text-md text-white hover:bg-blue-700 transition-colors duration-300">
+          <Link to="/dashboard/appointment">
+            <p>Make an Appointment</p>
+          </Link>
         </div>
+      </div>
 
-        {/* Notices */}
-        <div>
-          <CardsOne title="Notifications">
-            {unratedCount > 0 && (
-              <div className="text-red-600 font-semibold mt-2">
-                You have {unratedCount} appointment{unratedCount > 1 ? "s" : ""}{" "}
-                to rate.
-              </div>
-            )}
-          </CardsOne>
-        </div>
-
-        <div className="mt-6 grid grid-cols-2  gap-7 h-full">
-          {/* Announcements */}
-          <div className="h-full">
-            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] h-full flex flex-col">
-              <p className="text-[#132c91] font-semibold">Announcement</p>
-              <div className="mt-2 flex-1">
-                {announcement ? (
-                  <div>
-                    {announcement.announcement_content ? (
-                      <p className="text-gray-700">
-                        {announcement.announcement_content}
-                      </p>
-                    ) : (
-                      <p className="text-gray-600">No content available</p>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-gray-600">No announcement found.</p>
-                )}
-              </div>
+      <div className="mt-4 grid grid-cols-2 gap-7 h-full">
+        {/* Announcements */}
+        <div className="h-full">
+          <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] h-full flex flex-col">
+            <p className="text-[#132c91] font-semibold">Announcement</p>
+            <div className="mt-2 flex-1">
+              {announcement ? (
+                <div>
+                  {announcement.announcement_content ? (
+                    <p className="text-gray-700">
+                      {announcement.announcement_content}
+                    </p>
+                  ) : (
+                    <p className="text-gray-600">No content available</p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-600">No announcement found.</p>
+              )}
             </div>
           </div>
-          <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF]">
-            <p className="text-[#132c91] font-semibold mb-4">Confirmed Sessions Today</p>
-            {nextSessions.length > 0 ? (
-                  <div className="overflow-x-auto overflow-y-auto h-[150px]">
-                    <table className="w-full text-[#1a1a1a]">
-                      <thead>
-                        <tr className="border-b border-[#EBEDEF]">
-                          <th className="text-left font-bold py-3 px-2">
-                            Time
-                          </th>
-                          <th className="text-left font-bold py-3 px-2">
-                            Tutor
-                          </th>
-                          <th className="text-left font-bold py-3 px-2">
-                            Date
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {nextSessions.map((session) => (
-                          <tr
-                            key={session.appointment_id}
-                            className="border-b border-[#EBEDEF]"
-                          >
-                            <td className="py-3 px-2">
-                              {formatTime(session.start_time)} -{" "}
-                              {formatTime(session.end_time)}
-                            </td>
-                            <td className="py-3 px-2">
-                              {session.tutor_name || "N/A"}
-                            </td>
-                            <td className="py-3 px-2">
-                              {formatDate(session.date)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center h-[180px]">
-                    <p className="text-gray-400 text-center">
-                      No confirmed sessions today
-                    </p>
-                  </div>
-                )}
-          </div>
         </div>
+        <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+          <p className="text-[#132c91] font-semibold mb-4">
+            Confirmed Sessions Today
+          </p>
+          {nextSessions.length > 0 ? (
+            <div className="overflow-x-auto overflow-y-auto h-[150px]">
+              <table className="w-full text-[#1a1a1a]">
+                <thead>
+                  <tr className="border-b border-[#EBEDEF]">
+                    <th className="text-left font-bold py-3 px-2">Time</th>
+                    <th className="text-left font-bold py-3 px-2">Tutor</th>
+                    <th className="text-left font-bold py-3 px-2">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nextSessions.map((session) => (
+                    <tr
+                      key={session.appointment_id}
+                      className="border-b border-[#EBEDEF]"
+                    >
+                      <td className="py-3 px-2">
+                        {formatTime(session.start_time)} -{" "}
+                        {formatTime(session.end_time)}
+                      </td>
+                      <td className="py-3 px-2">
+                        {session.tutor_name || "N/A"}
+                      </td>
+                      <td className="py-3 px-2">{formatDate(session.date)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-[180px]">
+              <p className="text-gray-400 text-center">
+                No confirmed sessions today
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
 
-        <div className="mt-6 grid grid-cols-3 grid-rows-3 gap-7">
-          <div className="row-span-3 col-span-2">
-            <CardsOne title="Booking History" />
-          </div>
-          <div>
-            <CardsOne title="Top Tutors" />
-          </div>
-          <div>
-            <CardsOne title="Top Colleges" />
-          </div>
-          <div>
-            <CardsOne title="Top Reasons" />
-          </div>
+      <div className="mt-6 grid grid-cols-3 grid-rows-3 gap-7">
+        <div className="row-span-3 col-span-2">
+          <CardsOne title="Booking History" />
         </div>
-        
+        <div>
+          <CardsOne title="Top Tutors" />
+        </div>
+        <div>
+          <CardsOne title="Top Colleges" />
+        </div>
+        <div>
+          <CardsOne title="Top Reasons" />
+        </div>
       </div>
     </div>
   );

@@ -179,7 +179,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-white p-6">
       {/* Page Header */}
       <h1 className="text-2xl font-bold text-blue-900 mb-6">My Profile</h1>
 
@@ -198,21 +198,20 @@ const Profile = () => {
           </button>
         </div>
 
-        <div className="grid grid-rows-1 md:grid-rows-2 gap-6">
-
+        <div className="">
           {/* Profile Image */}
-          <div className="">
-            {profile.profile_image ? (
-              <img
-                src={`http://localhost:5000${profile.profile_image}`}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-white text-4xl font-bold">
-                {name.charAt(0).toUpperCase()}
-              </span>
-            )}
+          <div className="w-32 h-32 bg-blue-500 rounded-full flex items-center justify-center mb-3">
+          {profile.profile_image ? (
+            <img
+              src={`http://localhost:5000${profile.profile_image}`}
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-white text-4xl font-bold">
+              {name.charAt(0).toUpperCase()}
+            </span>
+          )}
           </div>
 
           {/* Profile Information */}
@@ -258,7 +257,7 @@ const Profile = () => {
                   schedulesByDay[day].map((slot) => (
                     <div
                       key={slot.schedule_id}
-                      className="flex items-center bg-gray-100 rounded-md px-3 py-1 gap-2"
+                      className="flex items-center bg-white border-1 border-[#c2c2c2] rounded-md px-3 py-1 gap-2"
                     >
                       <span className="text-sm font-mono">
                         {slot.start_time.slice(0, 5)} -{" "}
@@ -266,7 +265,7 @@ const Profile = () => {
                       </span>
                       <button
                         onClick={() => handleDeleteTime(slot.schedule_id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-[#c2c2c2]"
                         title="Delete"
                       >
                         <FaTrash size={12} />
@@ -374,7 +373,9 @@ const Profile = () => {
                       onChange={handleImageUpload}
                       className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
-                    <p className="text-sm text-gray-500 mt-1">No file chosen</p>
+                    <p className="text-sm text-gray-500 mt-1 ml-2">
+                      Upload new a profile image
+                    </p>
                   </div>
                 </div>
               </div>
@@ -397,13 +398,17 @@ const Profile = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Year
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="year_level"
                     value={form.year_level || ""}
                     onChange={handleChange}
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
-                  />
+                  >
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

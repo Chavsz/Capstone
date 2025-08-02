@@ -11,8 +11,6 @@ const Register = ({ setAuth }) => {
     role: "student", // default role
   });
 
-  const [rememberMe, setRememberMe] = useState(true);
-
   const { name, email, password, role } = inputs;
 
   const onChange = (e) => {
@@ -114,24 +112,7 @@ const Register = ({ setAuth }) => {
                 required
               />
             </div>
-
-            {/* Remember Me Checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-              />
-              <label
-                htmlFor="rememberMe"
-                className="ml-2 text-sm text-gray-700"
-              >
-                Remember me
-              </label>
-            </div>
-
+            
             {/* Sign Up Button */}
             <button
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

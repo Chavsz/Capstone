@@ -59,7 +59,7 @@ const Switch = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-[24px] font-bold text-[#132c91] mb-10">Switch Roles</h1>
+      <h1 className="text-[24px] font-bold text-border-600 mb-10">Switch Roles</h1>
 
       {/* Summary Cards */}
       <div className="flex gap-6 mb-6">

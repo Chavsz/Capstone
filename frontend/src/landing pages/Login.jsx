@@ -8,9 +8,7 @@ const Login = ({ setAuth }) => {
     email: "",
     password: "",
   });
-  const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [message, setMessage] = useState("");
-  const [rememberMe, setRememberMe] = useState(true);
 
   const onChange = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -30,7 +28,6 @@ const Login = ({ setAuth }) => {
       localStorage.setItem("token", response.data.token);
       if (response.data.role) {
         localStorage.setItem("role", response.data.role);
-        setRole(response.data.role);
       }
       setAuth(true);
     } catch (err) {
@@ -102,23 +99,6 @@ const Login = ({ setAuth }) => {
                 onChange={(e) => onChange(e)}
                 required
               />
-            </div>
-
-            {/* Remember Me Checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-              />
-              <label
-                htmlFor="rememberMe"
-                className="ml-2 text-sm text-gray-700"
-              >
-                Remember me
-              </label>
             </div>
 
             {/* Log In Button */}

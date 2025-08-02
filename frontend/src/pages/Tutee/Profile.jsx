@@ -102,7 +102,7 @@ const Profile = () => {
       <h1 className="text-2xl font-bold text-blue-900 mb-6">My Profile</h1>
 
       {/* Student Information Card */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 max-w-4xl">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 max-w-full">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-900">
             Student Information
@@ -116,63 +116,48 @@ const Profile = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="">
           {/* Profile Image */}
-          <div className="flex justify-center">
-            <div className="w-32 h-32 bg-blue-500 rounded-full flex items-center justify-center">
-              {profile.profile_image ? (
-                <img
-                  src={`http://localhost:5000${profile.profile_image}`}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover"
-                />
-              ) : (
-                <span className="text-white text-4xl font-bold">
-                  {name.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
+          <div className="w-32 h-32 bg-blue-500 rounded-full flex items-center justify-center mb-3">
+            {profile.profile_image ? (
+              <img
+                src={`http://localhost:5000${profile.profile_image}`}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-white text-4xl font-bold">
+                {name.charAt(0).toUpperCase()}
+              </span>
+            )}
           </div>
 
           {/* Profile Information */}
-          <div className="md:col-span-2">
-            <div className="space-y-3">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">Name</p>
-                  <p className="font-semibold text-gray-900">{name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Year Level</p>
-                  <p className="font-semibold text-gray-900">
-                    {profile.year_level || "-"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Program/Course</p>
-                  <p className="font-semibold text-gray-900">
-                    {profile.program || "-"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">College</p>
-                  <p className="font-semibold text-gray-900">
-                    {profile.college || "-"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Specialization</p>
-                  <p className="font-semibold text-gray-900">
-                    {profile.specialization || "-"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Topics of Interest</p>
-                  <p className="font-semibold text-gray-900">
-                    {profile.topics || "-"}
-                  </p>
-                </div>
-              </div>
+          <div className="flex flex-col">
+            <div className="space-y-2 ">
+              <p>
+                <span className="font-semibold">Name:</span> {name}
+              </p>
+              <p>
+                <span className="font-semibold">Year:</span>{" "}
+                {profile.year_level || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Program Course:</span>{" "}
+                <span>{profile.program || "-"}</span>
+              </p>
+              <p>
+                <span className="font-semibold">College:</span>{" "}
+                {profile.college || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Specialization:</span>{" "}
+                {profile.specialization || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Topics:</span>{" "}
+                <span>{profile.topics || "-"}</span>
+              </p>
             </div>
           </div>
         </div>
@@ -222,7 +207,7 @@ const Profile = () => {
                       onChange={handleImageUpload}
                       className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-500 mt-1 ml-2">
                       Upload a new profile picture
                     </p>
                   </div>
@@ -258,7 +243,6 @@ const Profile = () => {
                     <option value="2nd Year">2nd Year</option>
                     <option value="3rd Year">3rd Year</option>
                     <option value="4th Year">4th Year</option>
-                    <option value="5th Year">5th Year</option>
                   </select>
                 </div>
                 <div>

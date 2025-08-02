@@ -16,7 +16,7 @@ const Sidebar = ({ setAuth }) => {
   return (
     <div className="p-4 text-white sticky top-0 ">
       <div className="top-4 h-[calc(100vh-32px-50px)]">
-        <h1 className="text-2xl font-bold text-center text-[#132c91] mb-9">LAV</h1>
+        <h1 className="text-2xl font-bold text-center text-blue-600 mb-9">LAV</h1>
 
         <RouteSelect />
       </div>

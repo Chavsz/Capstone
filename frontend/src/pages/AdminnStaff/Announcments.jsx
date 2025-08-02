@@ -86,7 +86,7 @@ const Announcments = () => {
     <div className="min-h-screen flex-col bg-white font-sans p-6">
       {/* Announcement Section */}
       <aside className=" flex-col">
-      <h1 className="text-[24px] font-bold text-[#132c91]">Announcements</h1>
+      <h1 className="text-[24px] font-bold text-blue-600">Announcements</h1>
 
         {announcement ? (
           <div className="bg-white p-4 rounded-lg shadow-md mb-6 mt-4">

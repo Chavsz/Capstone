@@ -223,7 +223,7 @@ function Dashboard() {
               Welcome, {name}!
             </h2> */}
 
-            <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+            <h1 className="text-[24px] font-bold text-blue-600">Dashboard</h1>
 
             {/* Show date today */}
             <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
