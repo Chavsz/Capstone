@@ -9,7 +9,7 @@ import ContactUs from "./landing pages/ContactUs";
 const LandingPage = () => {
   return (
     <>
-      <div className="min-h-screen flex-col">
+      <div className="overflow-hidden">
         <div id="home-section">
           <Home />
         </div>

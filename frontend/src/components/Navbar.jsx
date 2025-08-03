@@ -28,12 +28,12 @@ const Navbar = () => {
         </a>
 
         <ul className="flex gap-5.5">
-          <li className="hover:text-blue-500 p-1.5 text-black">
+          <li className="hover:text-blue-500 p-1.5 text-black font-semibold">
             <a href="#" onClick={(e) => handleSectionClick(e, "about-section")}>
               About
             </a>
           </li>
-          <li className="hover:text-blue-500 p-1.5 text-black">
+          <li className="hover:text-blue-500 p-1.5 text-black font-semibold">
             <a
               href="#"
               onClick={(e) => handleSectionClick(e, "events-section")}
@@ -41,7 +41,7 @@ const Navbar = () => {
               Events
             </a>
           </li>
-          <li className="hover:text-blue-500 p-1.5 text-black">
+          <li className="hover:text-blue-500 p-1.5 text-black font-semibold">
             <a
               href="#"
               onClick={(e) => handleSectionClick(e, "our-tutors-section")}
@@ -49,7 +49,7 @@ const Navbar = () => {
               Our Tutors
             </a>
           </li>
-          <li className="hover:text-blue-500 p-1.5 text-black">
+          <li className="hover:text-blue-500 p-1.5 text-black font-semibold">
             <a
               href="#"
               onClick={(e) => handleSectionClick(e, "contact-us-section")}
