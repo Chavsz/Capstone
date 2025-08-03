@@ -187,6 +187,7 @@ function Dashboard() {
     "#ffa300", // Sun
   ];
 
+  // Date today
   const dateToday = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
