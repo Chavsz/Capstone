@@ -5,6 +5,7 @@ import About from "./landing pages/About";
 import Events from "./landing pages/Events";
 import OurTutors from "./landing pages/OurTutors";
 import ContactUs from "./landing pages/ContactUs";
+import Footer from "./landing pages/footer";
 
 const LandingPage = () => {
   return (
@@ -24,6 +25,9 @@ const LandingPage = () => {
         </div>
         <div id="contact-us-section">
           <ContactUs />
+        </div>
+        <div id="footer-section">
+          <Footer />
         </div>
       </div>
     </>
