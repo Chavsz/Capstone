@@ -117,7 +117,7 @@ const Header = () => {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-in slide-in-from-top-2 duration-200">
               <div className="p-4">
-                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <h3 className="text-gray-800 mb-3 flex items-center gap-2 text-lg">
                   <IoIosNotifications className="text-gray-600" />
                   Notifications
                 </h3>
@@ -126,7 +126,7 @@ const Header = () => {
                   {/* Pending Appointments */}
                   {pendingCount > 0 && (
                     <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                      <p className="text-blue-800 font-medium">
+                      <p className="text-blue-800  text-[14px] font-semibold">
                         There {pendingCount === 1 ? 'is' : 'are'} {pendingCount} pending appointment{pendingCount > 1 ? 's' : ''}
                       </p>
                       <p className="text-blue-600 text-sm mt-1">

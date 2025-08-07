@@ -113,7 +113,8 @@ const Header = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const totalNotifications = unratedCount + unreadCount + confirmedCount;
+  // Calculate total notifications // confirmedCount
+  const totalNotifications = unratedCount + unreadCount;
 
   return (
     <div className="pt-3 px-3 bg-white">
@@ -136,14 +137,15 @@ const Header = () => {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 animate-in slide-in-from-top-2 duration-200">
               <div className="p-4">
-                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <h3 className="text-gray-800 mb-3 flex items-center gap-2 text-lg">
                   <IoIosNotifications className="text-gray-600" />
                   Notifications
                 </h3>
                 
                 <div className="space-y-3">
+
                   {/* Confirmed Appointments */}
-                  {confirmedCount > 0 && (
+                  {/* {confirmedCount > 0 && (
                     <div className="bg-green-50 border border-green-200 rounded-md p-3">
                       <p className="text-green-800 font-medium">
                         {confirmedCount} appointment{confirmedCount > 1 ? 's' : ''} recently confirmed
@@ -152,7 +154,7 @@ const Header = () => {
                         Your appointment requests have been approved
                       </p>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Unread Notifications */}
                   {unreadNotifications.map((notification) => (
@@ -161,7 +163,7 @@ const Header = () => {
                       className="bg-blue-50 border border-blue-200 rounded-md p-3 cursor-pointer hover:bg-blue-100 transition-colors"
                       onClick={() => markAsRead(notification.notification_id)}
                     >
-                      <p className="text-blue-800 text-sm">
+                      <p className="text-blue-800 text-sm font-semibold">
                         {notification.notification_content}
                       </p>
                       <p className="text-blue-600 text-xs mt-1">
@@ -173,7 +175,7 @@ const Header = () => {
                   {/* Unrated Appointments */}
                   {unratedCount > 0 && (
                     <div className="bg-orange-50 border border-orange-200 rounded-md p-3">
-                      <p className="text-orange-800 font-medium">
+                      <p className="text-orange-600 text-[14px] font-semibold">
                         {unratedCount} appointment{unratedCount > 1 ? 's' : ''} to rate
                       </p>
                       <p className="text-orange-600 text-sm mt-1">
