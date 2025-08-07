@@ -118,7 +118,7 @@ const Header = () => {
 
   return (
     <div className="pt-3 px-3 bg-white">
-      <div className="flex gap-3 justify-end text-black text-2xl">
+      <div className="flex gap-2 justify-end items-center text-gray-600 text-xl">
         {/* Notification Icon with Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -207,8 +207,10 @@ const Header = () => {
           )}
         </div>
         
+        <span className="font-extralight text-[#696969]">|</span>
+        
         {/* Profile Icon */}
-        <Link to="/dashboard/profile"><IoPersonCircleOutline /></Link>
+        <Link className="p-1 text-3xl" to="/dashboard/profile"><IoPersonCircleOutline /></Link>
       </div>
     </div>
   );

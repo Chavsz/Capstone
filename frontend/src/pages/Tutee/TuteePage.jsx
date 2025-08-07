@@ -9,7 +9,6 @@ import Header from "./Header";
 import TuteeDashboard from "./TuteeDashboard";
 import Profile from "./Profile";
 import Schedules from "./Schedules";
-import Switch from "./Switch";
 import Appointment from "./Appointment";
 
 function TuteePage({ setAuth }) {
@@ -29,7 +28,6 @@ function TuteePage({ setAuth }) {
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/appointment" element={<Appointment />} />
           <Route exact path="/schedules" element={<Schedules />} />
-          <Route exact path="/switch" element={<Switch />} />
         </Routes>
       </div>
     </div>

@@ -9,7 +9,6 @@ import Sidebar from "./Sidebar";
 import TutorDashboard from "./TutorDashboard";
 import Profile from "./Profile";
 import Schedules from "./Schedule";
-import Switch from "./Switch";
 import Header from "./Header"
 
 function TutorPage({ setAuth }) {
@@ -28,7 +27,6 @@ function TutorPage({ setAuth }) {
           />
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/schedules" element={<Schedules />} />
-          <Route exact path="/switch" element={<Switch />} />
         </Routes>
       </div>
     </div>

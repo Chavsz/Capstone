@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 
 //icons
 import * as mdIcons from "react-icons/md";
-import * as piIcons from "react-icons/pi";
-import * as cgIcons from "react-icons/cg";
 
 const RouteSelect = () => {
   const [selected, setSelected] = useState(window.location.pathname);
@@ -14,7 +12,7 @@ const RouteSelect = () => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-1">
       <p className="text-[13px] font-extralight text-[#696969]">MENU</p>
 
       <Route
@@ -25,24 +23,10 @@ const RouteSelect = () => {
         handleSelect={handleSelect}
       />
       <Route
-        to="/dashboard/profile"
-        selected={selected === "/dashboard/profile"}
-        Icon={cgIcons.CgProfile}
-        title="Profile"
-        handleSelect={handleSelect}
-      />
-      <Route
         to="/dashboard/schedules"
         selected={selected === "/dashboard/schedules"}
         Icon={mdIcons.MdCalendarMonth}
         title="Schedules"
-        handleSelect={handleSelect}
-      />
-      <Route
-        to="/dashboard/switch"
-        selected={selected === "/dashboard/switch"}
-        Icon={piIcons.PiUserSwitchBold}
-        title="Switch"
         handleSelect={handleSelect}
       />
     </div>
