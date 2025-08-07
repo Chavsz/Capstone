@@ -88,11 +88,22 @@ CREATE TABLE event (
 
 --Announcement Page Table
 CREATE TABLE announcement ( 
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    announcement_content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  announcement_content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--Notification Table
+CREATE TABLE notification (
+  notification_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
+  notification_content VARCHAR(255) NOT NULL,
+  status VARCHAR(255) NOT NULL DEFAULT 'unread',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Auto-incrementing primary key
 -- Auto-incrementing primary key
 -- Event title

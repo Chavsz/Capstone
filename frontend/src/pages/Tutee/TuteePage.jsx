@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 
 // components
 import Sidebar from "./Sidebar";
+import Header from "./Header";
 
 // Tutee Pages
 import TuteeDashboard from "./TuteeDashboard";
@@ -18,6 +19,7 @@ function TuteePage({ setAuth }) {
         <Sidebar setAuth={setAuth} />
       </div>
       <div className="">
+        <Header />
         <Routes>
           <Route
             exact

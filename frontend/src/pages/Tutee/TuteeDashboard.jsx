@@ -128,13 +128,7 @@ const TuteeDashboard = () => {
 
       {/* Notices */}
 
-      <div className="flex justify-between items-center">
-        {unratedCount > 0 && (
-          <div className="text-red-600 font-semibold mt-2">
-            Notices: You have {unratedCount} appointment
-            {unratedCount > 1 ? "s" : ""} to rate.
-          </div>
-        )}
+      <div className="flex justify-end items-center">
 
         <div className="bg-blue-600 cursor-pointer px-8 py-2 border-none rounded-3xl text-md text-white hover:bg-blue-700 transition-colors duration-300">
           <Link to="/dashboard/appointment">

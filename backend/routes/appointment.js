@@ -131,6 +131,22 @@ router.put("/:id/status", authorization, async (req, res) => {
       [status, id]
     );
 
+    // If appointment is confirmed, create a notification for the student
+    if (status === 'confirmed') {
+      const student_id = appointment.rows[0].user_id;
+      const tutor_name = await pool.query(
+        "SELECT user_name FROM users WHERE user_id = $1",
+        [user_id]
+      );
+      
+      const notificationContent = `Your appointment has been confirmed by ${tutor_name.rows[0]?.user_name || 'your tutor'}`;
+      
+      await pool.query(
+        "INSERT INTO notification (user_id, notification_content, status) VALUES ($1, $2, 'unread')",
+        [student_id, notificationContent]
+      );
+    }
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -305,6 +321,25 @@ router.get("/tutee/unrated-count", authorization, async (req, res) => {
   }
 });
 
+// Get count of confirmed appointments for tutee (recently confirmed)
+router.get("/tutee/confirmed-count", authorization, async (req, res) => {
+  try {
+    const user_id = req.user;
+    const result = await pool.query(
+      `SELECT COUNT(*) AS confirmed_count
+       FROM appointment a
+       WHERE a.user_id = $1
+         AND a.status = 'confirmed'
+         AND a.updated_at >= NOW() - INTERVAL '24 hours'`,
+      [user_id]
+    );
+    res.json({ confirmed_count: parseInt(result.rows[0].confirmed_count, 10) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // Get all feedbacks for admin
 router.get("/feedback/admin", authorization, async (req, res) => {
   try {
@@ -336,8 +371,84 @@ router.get("/evaluated/admin", authorization, async (req, res) => {
 router.get("/feedback/tutor/:id", authorization, async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query("SELECT * FROM feedback WHERE tutor_id = $1", [id]);
+    const result = await pool.query(
+      "SELECT * FROM feedback WHERE tutor_id = $1",
+      [id]
+    );
     res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Get count of pending appointments for tutor
+router.get("/tutor/pending-count", authorization, async (req, res) => {
+  try {
+    const tutor_id = req.user;
+    const result = await pool.query(
+      `SELECT COUNT(*) AS pending_count
+        FROM appointment a
+        WHERE a.tutor_id = $1
+        AND a.status = 'pending'`,
+      [tutor_id]
+    );
+    res.json({ pending_count: parseInt(result.rows[0].pending_count, 10) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Get notifications for user
+router.get("/notifications", authorization, async (req, res) => {
+  try {
+    const user_id = req.user;
+    const result = await pool.query(
+      `SELECT * FROM notification 
+       WHERE user_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT 10`,
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Mark notification as read
+router.put("/notifications/:id/read", authorization, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user_id = req.user;
+    
+    const result = await pool.query(
+      "UPDATE notification SET status = 'read' WHERE notification_id = $1 AND user_id = $2 RETURNING *",
+      [id, user_id]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Get unread notifications count
+router.get("/notifications/unread-count", authorization, async (req, res) => {
+  try {
+    const user_id = req.user;
+    const result = await pool.query(
+      "SELECT COUNT(*) AS unread_count FROM notification WHERE user_id = $1 AND status = 'unread'",
+      [user_id]
+    );
+    res.json({ unread_count: parseInt(result.rows[0].unread_count, 10) });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: "Server error" });

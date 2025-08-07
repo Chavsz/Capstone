@@ -10,6 +10,7 @@ import TutorDashboard from "./TutorDashboard";
 import Profile from "./Profile";
 import Schedules from "./Schedule";
 import Switch from "./Switch";
+import Header from "./Header"
 
 function TutorPage({ setAuth }) {
   return (
@@ -18,6 +19,7 @@ function TutorPage({ setAuth }) {
         <Sidebar setAuth={setAuth} />
       </div>
       <div className="">
+        <Header />
         <Routes>
           <Route
             exact
