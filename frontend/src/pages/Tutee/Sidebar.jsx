@@ -14,7 +14,7 @@ const Sidebar = ({ setAuth }) => {
   };
 
   return (
-    <div className="p-4 sticky top-0">
+    <div className="p-4 sticky top-0 bg-[#f0f5fa]">
       <div className="top-4 h-[calc(100vh-32px-50px)]">
         <h1 className="text-2xl font-bold text-center text-blue-600 mb-9">LAV</h1>
 

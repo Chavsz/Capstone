@@ -13,7 +13,7 @@ function AdminPage({ setAuth }) {
   // #f0f3f7
 
   return (
-    <div className="grid grid-cols-[240px_1fr] bg-[#f0f5fa]">
+    <div className="grid grid-cols-[240px_1fr]">
       <div>
         <Sidebar setAuth={setAuth} />
       </div>

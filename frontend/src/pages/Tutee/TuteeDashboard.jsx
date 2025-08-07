@@ -115,7 +115,7 @@ const TuteeDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen flex-1 flex flex-col bg-white p-6">
+    <div className="flex-1 flex flex-col bg-white p-6">
       <div className="flex justify-between items-center">
         {/* <h2 className="text-xl">Welcome, {name}!</h2> */}
         <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>

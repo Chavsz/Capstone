@@ -13,12 +13,13 @@ import Appointment from "./Appointment";
 
 function TuteePage({ setAuth }) {
   return (
-    <div className="grid grid-cols-[240px_1fr] bg-[#f0f5fa]">
+    <div className="grid grid-cols-[240px_1fr] bg-white min-h-screen">
       <div>
         <Sidebar setAuth={setAuth} />
       </div>
-      <div className="">
+      <div className="flex flex-col">
         <Header />
+        <div className="flex-1">
         <Routes>
           <Route
             exact
@@ -27,8 +28,9 @@ function TuteePage({ setAuth }) {
           />
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/appointment" element={<Appointment />} />
-          <Route exact path="/schedules" element={<Schedules />} />
-        </Routes>
+            <Route exact path="/schedules" element={<Schedules />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );

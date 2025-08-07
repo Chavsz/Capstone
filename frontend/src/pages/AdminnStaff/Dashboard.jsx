@@ -287,7 +287,7 @@ function Dashboard() {
             />
 
             {/* Cancellations Card */}
-            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
               <div className="flex items-center justify-between">
                 <p className="text-[#132c91] font-semibold">Cancellations</p>
                 <p className="text-2xl">
@@ -315,9 +315,9 @@ function Dashboard() {
           </div>
 
           {/* Line and bar chart cards */}
-          <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4">
+          <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4 ">
             {/* confirmed Appointments bar chart */}
-            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
               <p className="text-[#132c91] font-semibold">Booked Sessions</p>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart
@@ -341,7 +341,7 @@ function Dashboard() {
             </div>
 
             {/* Area Chart for Appointments */}
-            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF]">
+            <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
               <div className="flex justify-between items-center mb-2">
                 <p className="text-[#132c91] font-semibold">
                   Appointments Overview

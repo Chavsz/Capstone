@@ -13,21 +13,23 @@ import Header from "./Header"
 
 function TutorPage({ setAuth }) {
   return (
-    <div className="grid grid-cols-[240px_1fr] bg-[#f0f5fa]">
+    <div className="grid grid-cols-[240px_1fr] bg-white min-h-screen">
       <div>
         <Sidebar setAuth={setAuth} />
       </div>
-      <div className="">
+      <div className="flex flex-col">
         <Header />
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={<TutorDashboard setAuth={setAuth} />}
-          />
-          <Route exact path="/profile" element={<Profile />} />
-          <Route exact path="/schedules" element={<Schedules />} />
-        </Routes>
+        <div className="flex-1">
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={<TutorDashboard setAuth={setAuth} />}
+            />
+            <Route exact path="/profile" element={<Profile />} />
+            <Route exact path="/schedules" element={<Schedules />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );

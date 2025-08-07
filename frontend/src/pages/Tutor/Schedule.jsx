@@ -24,7 +24,13 @@ const StarDisplay = ({ value }) => {
 };
 
 // Modal component for appointment details
-const AppointmentModal = ({ appointment, isOpen, onClose, onStatusUpdate, feedbacks }) => {
+const AppointmentModal = ({
+  appointment,
+  isOpen,
+  onClose,
+  onStatusUpdate,
+  feedbacks,
+}) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -62,7 +68,9 @@ const AppointmentModal = ({ appointment, isOpen, onClose, onStatusUpdate, feedba
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold text-[#132c91]">Appointment Details</h2>
+          <h2 className="text-xl font-bold text-[#132c91]">
+            Appointment Details
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -86,12 +94,15 @@ const AppointmentModal = ({ appointment, isOpen, onClose, onStatusUpdate, feedba
           </div>
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Date:</span>
-            <span className="text-gray-900">{formatDate(appointment.date)}</span>
+            <span className="text-gray-900">
+              {formatDate(appointment.date)}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Time:</span>
             <span className="text-gray-900">
-              {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
+              {formatTime(appointment.start_time)} -{" "}
+              {formatTime(appointment.end_time)}
             </span>
           </div>
           <div className="flex justify-between items-center">
@@ -100,16 +111,21 @@ const AppointmentModal = ({ appointment, isOpen, onClose, onStatusUpdate, feedba
           </div>
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Status:</span>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(appointment.status)}`}>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                appointment.status
+              )}`}
+            >
               {appointment.status}
             </span>
           </div>
-          {appointment.status === "completed" && feedbacks[appointment.appointment_id] && (
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-gray-700">Rating:</span>
-              <StarDisplay value={feedbacks[appointment.appointment_id]} />
-            </div>
-          )}
+          {appointment.status === "completed" &&
+            feedbacks[appointment.appointment_id] && (
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-700">Rating:</span>
+                <StarDisplay value={feedbacks[appointment.appointment_id]} />
+              </div>
+            )}
         </div>
 
         {/* Action Buttons */}
@@ -386,7 +402,7 @@ const Schedule = () => {
       }
       grouped[dateKey].push(appointment);
     });
-    
+
     // Sort the grouped appointments by date priority
     const sortedKeys = Object.keys(grouped).sort((a, b) => {
       // Priority order: Today, Tomorrow, then chronological
@@ -394,27 +410,34 @@ const Schedule = () => {
       if (b === "Today") return 1;
       if (a === "Tomorrow") return -1;
       if (b === "Tomorrow") return 1;
-      
+
       // For other dates, sort chronologically
-      const dateA = new Date(appointmentsList.find(apt => getDateLabel(apt.date) === a)?.date);
-      const dateB = new Date(appointmentsList.find(apt => getDateLabel(apt.date) === b)?.date);
+      const dateA = new Date(
+        appointmentsList.find((apt) => getDateLabel(apt.date) === a)?.date
+      );
+      const dateB = new Date(
+        appointmentsList.find((apt) => getDateLabel(apt.date) === b)?.date
+      );
       return dateA - dateB;
     });
-    
+
     // Create new sorted object
     const sortedGrouped = {};
-    sortedKeys.forEach(key => {
+    sortedKeys.forEach((key) => {
       sortedGrouped[key] = grouped[key];
     });
-    
+
     return sortedGrouped;
   };
 
-  const groupedConfirmedAppointments = groupAppointmentsByDate(confirmedAndPendingAppointmets);
-  const groupedHistoryAppointments = groupAppointmentsByDate(historyAppointments);
+  const groupedConfirmedAppointments = groupAppointmentsByDate(
+    confirmedAndPendingAppointmets
+  );
+  const groupedHistoryAppointments =
+    groupAppointmentsByDate(historyAppointments);
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="p-6">
       <h1 className="text-[#132c91] font-bold text-2xl mb-6">Appointments</h1>
 
       {/* Filter Buttons */}
@@ -459,40 +482,47 @@ const Schedule = () => {
           {Object.keys(groupedConfirmedAppointments).length === 0 ? (
             <div className="text-center text-gray-500 py-8">
               <p>
-                No appointments found. Students will appear here when they
-                book sessions with you.
+                No appointments found. Students will appear here when they book
+                sessions with you.
               </p>
             </div>
           ) : (
-                         Object.entries(groupedConfirmedAppointments).map(([date, appointments]) => (
-               <div key={date}>
-                 <div className="mb-3">
-                   <h3 className="text-lg font-semibold text-gray-700">{date}</h3>
-                   {getDateSubtitle(appointments[0]?.date) && (
-                     <p className="text-sm text-gray-500">{getDateSubtitle(appointments[0]?.date)}</p>
-                   )}
-                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {appointments.map((appointment) => (
-                    <div
-                      key={appointment.appointment_id}
-                      className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => openModal(appointment)}
-                    >
-                      <div className="font-medium text-gray-900 mb-1">
-                        {appointment.student_name}
+            Object.entries(groupedConfirmedAppointments).map(
+              ([date, appointments]) => (
+                <div key={date}>
+                  <div className="mb-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                      {date}
+                    </h3>
+                    {getDateSubtitle(appointments[0]?.date) && (
+                      <p className="text-sm text-gray-500">
+                        {getDateSubtitle(appointments[0]?.date)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {appointments.map((appointment) => (
+                      <div
+                        key={appointment.appointment_id}
+                        className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => openModal(appointment)}
+                      >
+                        <div className="font-medium text-gray-900 mb-1">
+                          {appointment.student_name}
+                        </div>
+                        <div className="text-sm text-gray-600 mb-1">
+                          {formatTime(appointment.start_time)} -{" "}
+                          {formatTime(appointment.end_time)}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {appointment.mode_of_session}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 mb-1">
-                        {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {appointment.mode_of_session}
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))
+              )
+            )
           )}
         </div>
       )}
@@ -505,35 +535,42 @@ const Schedule = () => {
               <p>No appointment history found.</p>
             </div>
           ) : (
-                         Object.entries(groupedHistoryAppointments).map(([date, appointments]) => (
-               <div key={date}>
-                 <div className="mb-3">
-                   <h3 className="text-lg font-semibold text-gray-700">{date}</h3>
-                   {getDateSubtitle(appointments[0]?.date) && (
-                     <p className="text-sm text-gray-500">{getDateSubtitle(appointments[0]?.date)}</p>
-                   )}
-                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {appointments.map((appointment) => (
-                    <div
-                      key={appointment.appointment_id}
-                      className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => openModal(appointment)}
-                    >
-                      <div className="font-medium text-gray-900 mb-1">
-                        {appointment.student_name}
+            Object.entries(groupedHistoryAppointments).map(
+              ([date, appointments]) => (
+                <div key={date}>
+                  <div className="mb-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                      {date}
+                    </h3>
+                    {getDateSubtitle(appointments[0]?.date) && (
+                      <p className="text-sm text-gray-500">
+                        {getDateSubtitle(appointments[0]?.date)}
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {appointments.map((appointment) => (
+                      <div
+                        key={appointment.appointment_id}
+                        className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => openModal(appointment)}
+                      >
+                        <div className="font-medium text-gray-900 mb-1">
+                          {appointment.student_name}
+                        </div>
+                        <div className="text-sm text-gray-600 mb-1">
+                          {formatTime(appointment.start_time)} -{" "}
+                          {formatTime(appointment.end_time)}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {appointment.mode_of_session}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 mb-1">
-                        {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {appointment.mode_of_session}
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))
+              )
+            )
           )}
         </div>
       )}
