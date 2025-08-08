@@ -115,13 +115,13 @@ const TuteeDashboard = () => {
   );
 
   return (
-    <div className="flex-1 flex flex-col bg-white p-6">
+    <div className="flex-1 flex flex-col bg-white px-6 py-3">
       <div className="flex justify-between items-center">
         {/* <h2 className="text-xl">Welcome, {name}!</h2> */}
         <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
 
         {/* Show date today */}
-        <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
+        <p className="text-[13px] font-extralight text-[#696969] gap-2 flex items-center">
           {dateToday}
         </p>
       </div>
@@ -130,7 +130,7 @@ const TuteeDashboard = () => {
 
       <div className="flex justify-end items-center">
 
-        <div className="bg-blue-600 cursor-pointer px-8 py-2 border-none rounded-3xl text-md text-white hover:bg-blue-700 transition-colors duration-300">
+        <div className="bg-blue-600 cursor-pointer  md:px-8 md:py-2 border-none rounded-3xl  md:text-md text-white hover:bg-blue-700 transition-colors duration-300">
           <Link to="/dashboard/appointment">
             <p>Make an Appointment</p>
           </Link>
