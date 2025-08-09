@@ -157,7 +157,7 @@ const Schedules = () => {
   }
 
   return (
-    <div className=" bg-white p-6">
+    <div className=" bg-white py-3 px-6">
       <h1 className="text-[#132c91] font-bold text-2xl">Schedules</h1>
 
       {message && (
@@ -179,9 +179,7 @@ const Schedules = () => {
       ) : (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* filter out declined appointments */}
-          {appointments
-            .filter((appointment) => appointment.status !== "declined")
-            .map((appointment) => (
+          {appointments.map((appointment) => (
               <div
                 key={appointment.appointment_id}
                 className="bg-[#fafafa] p-6 rounded-lg shadow-md"

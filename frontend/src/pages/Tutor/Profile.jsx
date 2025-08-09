@@ -179,7 +179,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen bg-white py-3 px-6">
       {/* Page Header */}
       <h1 className="text-2xl font-bold text-blue-900 mb-6">My Profile</h1>
 

@@ -437,7 +437,7 @@ const Schedule = () => {
     groupAppointmentsByDate(historyAppointments);
 
   return (
-    <div className="p-6">
+    <div className="py-3 px-6">
       <h1 className="text-[#132c91] font-bold text-2xl mb-6">Appointments</h1>
 
       {/* Filter Buttons */}
@@ -504,18 +504,20 @@ const Schedule = () => {
                     {appointments.map((appointment) => (
                       <div
                         key={appointment.appointment_id}
-                        className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
+                        className="bg-blue-50 border border-blue-300 rounded-lg p-4 cursor-pointer hover:shadow-md hover:shadow-blue-100 transition-shadow"
                         onClick={() => openModal(appointment)}
                       >
-                        <div className="font-medium text-gray-900 mb-1">
-                          {appointment.student_name}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-1">
-                          {formatTime(appointment.start_time)} -{" "}
-                          {formatTime(appointment.end_time)}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {appointment.mode_of_session}
+                        <div className="pl-3 border-l-3 border-blue-300">
+                          <div className="font-medium text-gray-900 mb-1">
+                            {appointment.student_name}
+                          </div>
+                          <div className="text-sm text-gray-600 mb-1">
+                            {formatTime(appointment.start_time)} -{" "}
+                            {formatTime(appointment.end_time)}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {appointment.mode_of_session}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -552,18 +554,20 @@ const Schedule = () => {
                     {appointments.map((appointment) => (
                       <div
                         key={appointment.appointment_id}
-                        className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
+                        className="bg-blue-50 border border-blue-300 rounded-lg p-4 cursor-pointer hover:shadow-md hover:shadow-blue-100 transition-shadow"
                         onClick={() => openModal(appointment)}
                       >
-                        <div className="font-medium text-gray-900 mb-1">
-                          {appointment.student_name}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-1">
-                          {formatTime(appointment.start_time)} -{" "}
-                          {formatTime(appointment.end_time)}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {appointment.mode_of_session}
+                        <div className="pl-3 border-l-3 border-blue-300">
+                          <div className="font-medium text-gray-900 mb-1">
+                            {appointment.student_name}
+                          </div>
+                          <div className="text-sm text-gray-600 mb-1">
+                            {formatTime(appointment.start_time)} -{" "}
+                            {formatTime(appointment.end_time)}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {appointment.mode_of_session}
+                          </div>
                         </div>
                       </div>
                     ))}

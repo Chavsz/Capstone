@@ -191,7 +191,7 @@ const Appointment = () => {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
   return (
-    <div className="p-6 bg-white">
+    <div className="py-3 px-6 bg-white">
       <h1 className="text-[#132c91] font-bold text-2xl mb-6">Make Appointment</h1>
 
       {message && (

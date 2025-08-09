@@ -97,7 +97,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="py-3 px-6 bg-white">
       {/* Page Header */}
       <h1 className="text-2xl font-bold text-blue-900 mb-6">My Profile</h1>
 
