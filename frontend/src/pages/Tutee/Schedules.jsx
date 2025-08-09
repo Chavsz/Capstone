@@ -177,7 +177,7 @@ const Schedules = () => {
           <p>No appointments found. Book your first appointment!</p>
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* filter out declined appointments */}
           {appointments.map((appointment) => (
               <div
