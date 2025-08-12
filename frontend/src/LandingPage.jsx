@@ -1,4 +1,5 @@
 import React from "react";
+import Navbar from "./components/Navbar";
 
 import Home from "./landing pages/Home";
 import About from "./landing pages/About";
@@ -9,7 +10,8 @@ import Footer from "./landing pages/footer";
 
 const LandingPage = () => {
   return (
-    <>
+    <div className="min-h-screen">
+      <Navbar />
       <div className="overflow-hidden">
         <div id="home-section">
           <Home />
@@ -30,7 +32,7 @@ const LandingPage = () => {
           <Footer />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

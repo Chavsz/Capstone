@@ -18,16 +18,16 @@ function Events() {
   return (
     <div
       id="events"
-      className="min-h-screen flex items-center justify-center bg-blue-600 py-10 px-5"
+      className="h-[calc(100vh-32px)] flex items-center overflow-hidden bg-blue-600"
     >
       <motion.div
         initial={{ opacity: 0, y: 200 }}
         transition={{ duration: 1 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="container mx-auto"
+        className="mx-auto px-6 md:px-20 lg:px-32"
       >
-        <h1 className="text-3xl font-bold text-center text-white mb-8">
+        <h1 className="text-2xl font-bold text-center text-white mb-8">
           Upcoming Events
         </h1>
 

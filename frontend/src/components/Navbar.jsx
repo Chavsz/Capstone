@@ -1,24 +1,26 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   const handleSectionClick = (e, sectionId) => {
     e.preventDefault();
-    navigate("/");
-    // Scroll to section after navigation
-    setTimeout(() => {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 100);
+    const section = document.getElementById(sectionId);
+    if (section) {
+      // Get navbar height for offset
+      const navbar = document.querySelector('.sticky');
+      const navbarHeight = navbar ? navbar.offsetHeight : 0;
+      
+      const sectionTop = section.offsetTop - navbarHeight;
+      window.scrollTo({
+        top: sectionTop,
+        behavior: "smooth"
+      });
+    }
   };
 
   return (
     <>
-      <div className="px-10 py-3 sticky top-0 z-50 flex justify-between items-stretch bg-white">
+      <div className="px-10 py-1.5 sticky top-0 z-50 flex justify-between items-stretch bg-white">
         <a
           className="text-black text-2xl font-bold"
           href="#"

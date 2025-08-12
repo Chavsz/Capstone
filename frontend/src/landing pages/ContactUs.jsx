@@ -9,7 +9,7 @@ function ContactUs() {
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
-      className="mx-auto py-20  lg:px-32 w-full p-6 overflow-hidden"
+      className="min-h-screen mx-auto py-20 lg:px-32 w-full p-6 overflow-hidden"
     >
       <h1 className="text-2xl sm:text-4xl mb-7 font-bold text-center">
         Contact With Us

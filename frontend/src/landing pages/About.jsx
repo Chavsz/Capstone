@@ -36,7 +36,7 @@ function About() {
               landingData.about_image || "/uploads/landing/placeholder.png"
             }`}
             alt="Home"
-            className="w-full sm:w-1/2 max-w-lg rounded-md"
+            className="w-full sm:w-1/2 max-w-[800px] rounded-md"
           />
 
           <div className="flex flex-col items-center md:items-start mt-10 text-gray-600 gap-6">

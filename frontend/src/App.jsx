@@ -8,8 +8,6 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-
 // Landing Pages
 import LandingPage from "./LandingPage";
 import Login from "./landing pages/Login";
@@ -38,7 +36,7 @@ function RoleBasedDashboard({ setAuth }) {
 }
 
 // Component to conditionally render Navbar
-function AppContent() {
+function App() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -63,12 +61,8 @@ function AppContent() {
     isAuth();
   }, [isAuth]);
 
-  // Don't render Navbar on dashboard routes
-  const shouldShowNavbar = !location.pathname.startsWith("/dashboard") && !location.pathname.startsWith("/login") && !location.pathname.startsWith("/register");
-
   return (
     <div>
-      {shouldShowNavbar && <Navbar />}
       <Routes>
         <Route exact path="/" element={<LandingPage />} />
         <Route
@@ -107,10 +101,6 @@ function AppContent() {
       </Routes>
     </div>
   );
-}
-
-function App() {
-  return <AppContent />;
 }
 
 export default App;

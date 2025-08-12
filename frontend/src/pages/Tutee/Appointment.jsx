@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
 
 const Appointment = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -97,6 +102,20 @@ const Appointment = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleTimeChange = (field, value) => {
+    if (value && value.isValid()) {
+      setFormData({
+        ...formData,
+        [field]: value.format("HH:mm"),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [field]: "",
+      });
+    }
   };
 
   const handleSubjectSelect = (subject) => {
@@ -281,22 +300,42 @@ const Appointment = () => {
                   className="border border-gray-300 rounded-md p-3 w-full"
                   required
                 />
-                <input
-                  type="time"
-                  name="start_time"
-                  value={formData.start_time}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-3 w-full"
-                  required
-                />
-                <input
-                  type="time"
-                  name="end_time"
-                  value={formData.end_time}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-3 w-full"
-                  required
-                />
+                {/* time picker */}
+                <div className="flex gap-3">
+                  {/* start time */}
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["TimePicker"]}>
+                      <TimePicker
+                        value={
+                          formData.start_time
+                            ? dayjs(`2000-01-01T${formData.start_time}`)
+                            : null
+                        }
+                        onChange={(value) =>
+                          handleTimeChange("start_time", value)
+                        }
+                        label="Start Time"
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+
+                  {/* end time */}
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["TimePicker"]}>
+                      <TimePicker
+                        value={
+                          formData.end_time
+                            ? dayjs(`2000-01-01T${formData.end_time}`)
+                            : null
+                        }
+                        onChange={(value) =>
+                          handleTimeChange("end_time", value)
+                        }
+                        label="End Time"
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                </div>
               </div>
             </div>
 
