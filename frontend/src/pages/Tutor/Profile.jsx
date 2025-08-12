@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaEdit, FaPlus, FaTrash, FaTimes } from "react-icons/fa";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -20,6 +25,20 @@ const Profile = () => {
   const [scheduleEditDay, setScheduleEditDay] = useState(null);
   const [newTime, setNewTime] = useState({ start: "", end: "" });
   const [loadingSchedules, setLoadingSchedules] = useState(false);
+
+  const handleTimeChange = (field, value) => {
+    if (value && value.isValid()) {
+      setNewTime({
+        ...newTime,
+        [field]: value.format("HH:mm"),
+      });
+    } else {
+      setNewTime({
+        ...newTime,
+        [field]: "",
+      });
+    }
+  };
 
   async function getName() {
     try {
@@ -277,23 +296,51 @@ const Profile = () => {
                 )}
                 {scheduleEditDay === day ? (
                   <div className="flex items-center gap-2">
-                    <input
-                      type="time"
-                      value={newTime.start}
-                      onChange={(e) =>
-                        setNewTime({ ...newTime, start: e.target.value })
-                      }
-                      className="border rounded px-2 py-1 text-sm"
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["TimePicker"]}>
+                        <TimePicker
+                          value={newTime.start ? dayjs(`2000-01-01T${newTime.start}`) : null}
+                          onChange={(value) => handleTimeChange("start", value)}
+                          label="Start Time"
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor: "red",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "red",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "red",
+                              },
+                            },
+                          }}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                     <span>-</span>
-                    <input
-                      type="time"
-                      value={newTime.end}
-                      onChange={(e) =>
-                        setNewTime({ ...newTime, end: e.target.value })
-                      }
-                      className="border rounded px-2 py-1 text-sm"
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["TimePicker"]}>
+                        <TimePicker
+                          value={newTime.end ? dayjs(`2000-01-01T${newTime.end}`) : null}
+                          onChange={(value) => handleTimeChange("end", value)}
+                          label="End Time"
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "& fieldset": {
+                                borderColor: "red",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "red",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "red",
+                              },
+                            },
+                          }}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
                     <button
                       onClick={() => handleAddTime(day)}
                       className="text-green-600 hover:text-green-700"
