@@ -34,11 +34,10 @@ function Dashboard() {
       const response = await axios.get("http://localhost:5000/dashboard", {
         headers: { token: localStorage.getItem("token") },
       });
-
-      setName(response.data.user_name);
-      if (response.data.user_role) {
-        setRole(response.data.user_role);
-        localStorage.setItem("role", response.data.user_role);
+      setName(response.data.name);
+      if (response.data.role) {
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
       }
     } catch (err) {
       console.error(err.message);
@@ -318,7 +317,7 @@ function Dashboard() {
           <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4 ">
             {/* confirmed Appointments bar chart */}
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
-              <p className="text-[#132c91] font-semibold">Booked Sessions</p>
+              <p className="text-[#132c91] font-semibold">Confirmed Sessions</p>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                   data={barChartData}

@@ -59,10 +59,10 @@ const TutorDashboard = () => {
       const response = await axios.get("http://localhost:5000/dashboard", {
         headers: { token: localStorage.getItem("token") },
       });
-      setName(response.data.user_name);
-      if (response.data.user_role) {
-        setRole(response.data.user_role);
-        localStorage.setItem("role", response.data.user_role);
+      setName(response.data.name);
+      if (response.data.role) {
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
       }
       // Assume user_id is available in the token or fetch separately
       if (response.data.user_id) {
@@ -121,7 +121,12 @@ const TutorDashboard = () => {
   async function getAnnouncement() {
     try {
       const response = await axios.get("http://localhost:5000/announcement");
-      setAnnouncement(response.data);
+      // Handle array response - get the first announcement
+      if (response.data && response.data.length > 0) {
+        setAnnouncement(response.data[0]);
+      } else {
+        setAnnouncement(null);
+      }
     } catch (err) {
       console.error(err.message);
     }

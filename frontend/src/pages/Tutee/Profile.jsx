@@ -8,8 +8,6 @@ const Profile = () => {
     program: "",
     college: "",
     year_level: "",
-    specialization: "",
-    topics: "",
     profile_image: "",
   });
   const [showEditModal, setShowEditModal] = useState(false);
@@ -20,7 +18,7 @@ const Profile = () => {
       const response = await axios.get("http://localhost:5000/dashboard", {
         headers: { token: localStorage.getItem("token") },
       });
-      setName(response.data.user_name);
+      setName(response.data.name);
     } catch (err) {
       console.error(err.message);
     }
@@ -56,7 +54,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put("http://localhost:5000/dashboard/profile", form, {
+      await axios.put("http://localhost:5000/dashboard/profile/student", form, {
         headers: { token: localStorage.getItem("token") },
       });
       setProfile(form);
@@ -149,14 +147,6 @@ const Profile = () => {
               <p>
                 <span className="font-semibold">College:</span>{" "}
                 {profile.college || "-"}
-              </p>
-              <p>
-                <span className="font-semibold">Specialization:</span>{" "}
-                {profile.specialization || "-"}
-              </p>
-              <p>
-                <span className="font-semibold">Topics:</span>{" "}
-                <span>{profile.topics || "-"}</span>
               </p>
             </div>
           </div>
@@ -268,32 +258,6 @@ const Profile = () => {
                     value={form.college || ""}
                     onChange={handleChange}
                     placeholder="e.g., College of Engineering"
-                    className="block w-full border border-gray-300 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Specialization
-                  </label>
-                  <input
-                    type="text"
-                    name="specialization"
-                    value={form.specialization || ""}
-                    onChange={handleChange}
-                    placeholder="e.g., Software Engineering"
-                    className="block w-full border border-gray-300 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Topics of Interest
-                  </label>
-                  <input
-                    type="text"
-                    name="topics"
-                    value={form.topics || ""}
-                    onChange={handleChange}
-                    placeholder="e.g., Programming, Mathematics, Physics"
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>

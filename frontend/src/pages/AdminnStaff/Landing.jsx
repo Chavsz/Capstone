@@ -22,17 +22,30 @@ const Landing = () => {
       .then((response) => {
         setLandingData(response.data);
         setFormData({
-          home_image: response.data.home_image,
-          home_title: response.data.home_title,
-          home_description: response.data.home_description,
-          home_more: response.data.home_more,
-          about_image: response.data.about_image,
-          about_title: response.data.about_title,
-          about_description: response.data.about_description,
-          about_link: response.data.about_link,
+          home_image: response.data.home_image || "",
+          home_title: response.data.home_title || "",
+          home_description: response.data.home_description || "",
+          home_more: response.data.home_more || "",
+          about_image: response.data.about_image || "",
+          about_title: response.data.about_title || "",
+          about_description: response.data.about_description || "",
+          about_link: response.data.about_link || "",
         });
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        // Set default empty values if there's an error
+        setFormData({
+          home_image: "",
+          home_title: "",
+          home_description: "",
+          home_more: "",
+          about_image: "",
+          about_title: "",
+          about_description: "",
+          about_link: "",
+        });
+      });
   }, []);
 
   const handleChange = (e) => {

@@ -45,7 +45,7 @@ const Profile = () => {
       const response = await axios.get("http://localhost:5000/dashboard", {
         headers: { token: localStorage.getItem("token") },
       });
-      setName(response.data.user_name);
+      setName(response.data.name);
     } catch (err) {
       console.error(err.message);
     }

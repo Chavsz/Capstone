@@ -140,7 +140,7 @@ router.post("/event-image/:event_id", authorization, upload.single('event_image'
 
     // Check if the event already exists
     const existing = await pool.query(
-      "SELECT * FROM event WHERE id = $1",
+      "SELECT * FROM event WHERE event_id = $1",
       [eventId]  // Use the event ID passed in the URL
     );
 
@@ -155,13 +155,13 @@ router.post("/event-image/:event_id", authorization, upload.single('event_image'
       }
 
       await pool.query(
-        "UPDATE event SET event_image = $1 WHERE id = $2",
+        "UPDATE event SET event_image = $1 WHERE event_id = $2",
         [eventImageUrl, eventId]  
       );
     } else {
       // Insert new event image if the event doesn't exist
       await pool.query(
-        "INSERT INTO event (id, event_image) VALUES ($1, $2)",
+        "INSERT INTO event (event_id, event_image) VALUES ($1, $2)",
         [eventId, eventImageUrl]
       );
     }

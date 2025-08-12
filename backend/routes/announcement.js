@@ -1,16 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db"); // Make sure this path is correct to your database pool connection
+const authorization = require("../middleware/authorization");
 
-// GET: Retrieve the existing announcement (if any)
+// GET: Retrieve all announcements
 router.get("/", async (req, res) => {
   try {
-    // Check if there's an existing announcement
-    const result = await pool.query("SELECT * FROM announcement LIMIT 1");
+    const result = await pool.query("SELECT * FROM announcement ORDER BY created_at DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// GET: Retrieve a specific announcement by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query("SELECT * FROM announcement WHERE announcement_id = $1", [id]);
+    
     if (result.rows.length > 0) {
-      return res.json(result.rows[0]); // Return the first (and only) announcement
+      return res.json(result.rows[0]);
     } else {
-      return res.status(404).json({ message: "No announcement found." });
+      return res.status(404).json({ message: "Announcement not found." });
     }
   } catch (err) {
     console.error(err.message);
@@ -18,21 +31,16 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST: Create a new announcement (only if there isn't an existing one)
-router.post("/", async (req, res) => {
+// POST: Create a new announcement
+router.post("/", authorization, async (req, res) => {
   try {
     const { announcement_content } = req.body;
-
-    // Check if an announcement already exists
-    const existingAnnouncement = await pool.query("SELECT * FROM announcement LIMIT 1");
-    if (existingAnnouncement.rows.length > 0) {
-      return res.status(400).json({ message: "Only one announcement can exist." });
-    }
+    const user_id = req.user;
 
     // Insert new announcement into the database
     const result = await pool.query(
-      "INSERT INTO announcement (announcement_content) VALUES ($1) RETURNING *",
-      [announcement_content]
+      "INSERT INTO announcement (user_id, announcement_content) VALUES ($1, $2) RETURNING *",
+      [user_id, announcement_content]
     );
     res.json({
       message: "Announcement created successfully.",
@@ -44,24 +52,25 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT: Edit the existing announcement (if any)
-router.put("/:id", async (req, res) => {
+// PUT: Edit an existing announcement
+router.put("/:id", authorization, async (req, res) => {
   try {
     const { announcement_content } = req.body;
     const { id } = req.params;
+    const user_id = req.user;
 
-    // Check if an announcement exists with the provided ID
+    // Check if an announcement exists with the provided ID and belongs to the user
     const existingAnnouncement = await pool.query(
-      "SELECT * FROM announcement WHERE id = $1",
-      [id]
+      "SELECT * FROM announcement WHERE announcement_id = $1 AND user_id = $2",
+      [id, user_id]
     );
     if (existingAnnouncement.rows.length === 0) {
-      return res.status(404).json({ message: "Announcement not found." });
+      return res.status(404).json({ message: "Announcement not found or not authorized." });
     }
 
     // Update the announcement content
     const result = await pool.query(
-      "UPDATE announcement SET announcement_content = $1 WHERE id = $2 RETURNING *",
+      "UPDATE announcement SET announcement_content = $1, updated_at = NOW() WHERE announcement_id = $2 RETURNING *",
       [announcement_content, id]
     );
     res.json({
@@ -74,22 +83,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE: Delete the existing announcement (if any)
-router.delete("/:id", async (req, res) => {
+// DELETE: Delete an existing announcement
+router.delete("/:id", authorization, async (req, res) => {
   try {
     const { id } = req.params;
+    const user_id = req.user;
 
-    // Check if an announcement exists with the provided ID
+    // Check if an announcement exists with the provided ID and belongs to the user
     const existingAnnouncement = await pool.query(
-      "SELECT * FROM announcement WHERE id = $1",
-      [id]
+      "SELECT * FROM announcement WHERE announcement_id = $1 AND user_id = $2",
+      [id, user_id]
     );
     if (existingAnnouncement.rows.length === 0) {
-      return res.status(404).json({ message: "Announcement not found." });
+      return res.status(404).json({ message: "Announcement not found or not authorized." });
     }
 
     // Delete the announcement
-    await pool.query("DELETE FROM announcement WHERE id = $1", [id]);
+    await pool.query("DELETE FROM announcement WHERE announcement_id = $1", [id]);
     res.json({ message: "Announcement deleted successfully." });
   } catch (err) {
     console.error(err.message);

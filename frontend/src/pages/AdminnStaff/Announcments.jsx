@@ -22,9 +22,11 @@ const Announcments = () => {
     const fetchAnnouncement = async () => {
       try {
         const response = await axios.get("http://localhost:5000/announcement");
-        if (response.data) {
-          setAnnouncement(response.data);
-          setAnnouncementContent(response.data.announcement_content);
+        if (response.data && response.data.length > 0) {
+          // Get the first announcement (assuming single announcement system)
+          const firstAnnouncement = response.data[0];
+          setAnnouncement(firstAnnouncement);
+          setAnnouncementContent(firstAnnouncement.announcement_content);
         }
       } catch (error) {
         console.error("Error fetching announcement:", error);
@@ -39,9 +41,12 @@ const Announcments = () => {
     try {
       if (announcement && isEditingAnnouncement) {
         const response = await axios.put(
-          `http://localhost:5000/announcement/${announcement.id}`,
+          `http://localhost:5000/announcement/${announcement.announcement_id}`,
           {
             announcement_content: announcementContent,
+          },
+          {
+            headers: { token: localStorage.getItem("token") }
           }
         );
         setAnnouncement(response.data.announcement);
@@ -51,6 +56,9 @@ const Announcments = () => {
           "http://localhost:5000/announcement",
           {
             announcement_content: announcementContent,
+          },
+          {
+            headers: { token: localStorage.getItem("token") }
           }
         );
         setAnnouncement(response.data.announcement);
@@ -69,7 +77,10 @@ const Announcments = () => {
     if (window.confirm("Are you sure you want to delete this announcement?")) {
       try {
         await axios.delete(
-          `http://localhost:5000/announcement/${announcement.id}`
+          `http://localhost:5000/announcement/${announcement.announcement_id}`,
+          {
+            headers: { token: localStorage.getItem("token") }
+          }
         );
         setAnnouncement(null);
         setAnnouncementContent("");

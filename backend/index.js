@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
+const authorization = require("./middleware/authorization");
 
 //middleware
 
@@ -28,50 +29,70 @@ app.use("/upload", require("./routes/upload"));
 
 //get all users route
 
-app.get("/users", async (req, res) => {
+app.get("/users", authorization, async (req, res) => {
   try {
     const users = await pool.query("SELECT * FROM users");
     res.json(users.rows);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+//get tutors with profile information (must come before /users/:role)
+app.get("/users/tutor", async (req, res) => {
+  try {
+    const users = await pool.query(`
+      SELECT u.user_id, u.name, u.email, u.role, p.program, p.college, p.year_level, p.specialization, p.topics, p.profile_image
+      FROM users u
+      LEFT JOIN profile p ON u.user_id = p.user_id
+      WHERE u.role = 'tutor'
+    `);
+    res.json(users.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 
 //get users by role route
 
-app.get("/users/:role", async (req, res) => {
+app.get("/users/:role", authorization, async (req, res) => {
   try {
     const { role } = req.params;
-    const users = await pool.query("SELECT * FROM users WHERE user_role = $1", [
+    const users = await pool.query("SELECT * FROM users WHERE role = $1", [
       role,
     ]);
     res.json(users.rows);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 
 //delete user 
 
-app.delete("/users/:id", async (req, res) => {
+app.delete("/users/:id", authorization, async (req, res) => {
   try {
     const { id } = req.params;
     const deleteUser = await pool.query("DELETE FROM users WHERE user_id = $1", [id]);
     res.json("User was deleted");
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 
 //switch user role 
-app.put("/users/:id", async (req, res) => {
+app.put("/users/:id", authorization, async (req, res) => {
   try {
     const { id } = req.params;
     const { role } = req.body;
-    const updateUser = await pool.query("UPDATE users SET user_role = $1 WHERE user_id = $2", [role, id]);
+    const updateUser = await pool.query("UPDATE users SET role = $1 WHERE user_id = $2", [role, id]);
     res.json("User role was updated");
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 
@@ -84,6 +105,7 @@ app.get("/profile/:id", async (req, res) => {
     res.json(tutor.rows);
   } catch (err) { 
     console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 

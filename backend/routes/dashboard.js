@@ -8,7 +8,7 @@ router.get("/", authorization, async (req, res) => {
     //res.json(req.user);
     // res.json(req.user);
 
-    const user = await pool.query("SELECT user_name, user_role FROM users WHERE user_id = $1", [req.user]);
+    const user = await pool.query("SELECT name, role FROM users WHERE user_id = $1", [req.user]);
     res.json(user.rows[0]);
 
   } catch (err) {
@@ -20,10 +20,35 @@ router.get("/", authorization, async (req, res) => {
 // Profile routes
 router.get("/profile", authorization, async (req, res) => {
   try {
-    const profile = await pool.query(
-      "SELECT * FROM profile WHERE user_id = $1",
+    // First get the user's role
+    const user = await pool.query(
+      "SELECT role FROM users WHERE user_id = $1",
       [req.user]
     );
+    
+    if (user.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    const userRole = user.rows[0].role;
+    
+    let profile;
+    if (userRole === 'tutor') {
+      // Query the profile table for tutors
+      profile = await pool.query(
+        "SELECT * FROM profile WHERE user_id = $1",
+        [req.user]
+      );
+    } else if (userRole === 'student') {
+      // Query the student_profile table for students
+      profile = await pool.query(
+        "SELECT * FROM student_profile WHERE user_id = $1",
+        [req.user]
+      );
+    } else {
+      return res.status(400).json({ error: "Invalid user role" });
+    }
+    
     res.json(profile.rows[0] || {});
   } catch (err) {
     console.error(err.message);
@@ -31,6 +56,7 @@ router.get("/profile", authorization, async (req, res) => {
   }
 });
 
+// Update tutor profile
 router.put("/profile", authorization, async (req, res) => {
   const { program, college, year_level, specialization, topics, profile_image } = req.body;
   try {
@@ -58,12 +84,50 @@ router.put("/profile", authorization, async (req, res) => {
   }
 });
 
-// Schedule routes
+// Update student profile
+router.put("/profile/student", authorization, async (req, res) => {
+  const { program, college, year_level, profile_image } = req.body;
+  try {
+    // Upsert profile: update if exists, else insert
+    const existing = await pool.query(
+      "SELECT * FROM student_profile WHERE user_id = $1",
+      [req.user]
+    );
+    let result;
+    if (existing.rows.length > 0) {
+      result = await pool.query(
+        `UPDATE student_profile SET program = $1, college = $2, year_level = $3, profile_image = $4 WHERE user_id = $5 RETURNING *`,
+        [program, college, year_level, profile_image, req.user]
+      );
+    } else {
+      result = await pool.query(
+        `INSERT INTO student_profile (user_id, program, college, year_level, profile_image) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [req.user, program, college, year_level, profile_image]
+      );
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Schedule routes - Updated to work with profile_id instead of user_id
 router.get("/schedule", authorization, async (req, res) => {
   try {
-    const schedules = await pool.query(
-      "SELECT * FROM schedule WHERE user_id = $1 ORDER BY day, start_time",
+    // First get the profile_id for the current user
+    const profile = await pool.query(
+      "SELECT profile_id FROM profile WHERE user_id = $1",
       [req.user]
+    );
+    
+    if (profile.rows.length === 0) {
+      return res.json([]);
+    }
+    
+    const schedules = await pool.query(
+      "SELECT * FROM schedule WHERE profile_id = $1 ORDER BY day, start_time",
+      [profile.rows[0].profile_id]
     );
     res.json(schedules.rows);
   } catch (err) {
@@ -76,9 +140,19 @@ router.get("/schedule", authorization, async (req, res) => {
 router.post("/schedule", authorization, async (req, res) => {
   const { day, start_time, end_time } = req.body;
   try {
+    // First get the profile_id for the current user
+    const profile = await pool.query(
+      "SELECT profile_id FROM profile WHERE user_id = $1",
+      [req.user]
+    );
+    
+    if (profile.rows.length === 0) {
+      return res.status(400).json({ error: "Profile not found. Please create a profile first." });
+    }
+    
     const result = await pool.query(
-      `INSERT INTO schedule (user_id, day, start_time, end_time) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [req.user, day, start_time, end_time]
+      `INSERT INTO schedule (profile_id, day, start_time, end_time) VALUES ($1, $2, $3, $4) RETURNING *`,
+      [profile.rows[0].profile_id, day, start_time, end_time]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -92,9 +166,19 @@ router.put("/schedule/:id", authorization, async (req, res) => {
   const { id } = req.params;
   const { day, start_time, end_time } = req.body;
   try {
+    // First get the profile_id for the current user
+    const profile = await pool.query(
+      "SELECT profile_id FROM profile WHERE user_id = $1",
+      [req.user]
+    );
+    
+    if (profile.rows.length === 0) {
+      return res.status(400).json({ error: "Profile not found" });
+    }
+    
     const result = await pool.query(
-      `UPDATE schedule SET day = $1, start_time = $2, end_time = $3 WHERE schedule_id = $4 AND user_id = $5 RETURNING *`,
-      [day, start_time, end_time, id, req.user]
+      `UPDATE schedule SET day = $1, start_time = $2, end_time = $3 WHERE schedule_id = $4 AND profile_id = $5 RETURNING *`,
+      [day, start_time, end_time, id, profile.rows[0].profile_id]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -107,9 +191,19 @@ router.put("/schedule/:id", authorization, async (req, res) => {
 router.delete("/schedule/:id", authorization, async (req, res) => {
   const { id } = req.params;
   try {
+    // First get the profile_id for the current user
+    const profile = await pool.query(
+      "SELECT profile_id FROM profile WHERE user_id = $1",
+      [req.user]
+    );
+    
+    if (profile.rows.length === 0) {
+      return res.status(400).json({ error: "Profile not found" });
+    }
+    
     await pool.query(
-      `DELETE FROM schedule WHERE schedule_id = $1 AND user_id = $2`,
-      [id, req.user]
+      `DELETE FROM schedule WHERE schedule_id = $1 AND profile_id = $2`,
+      [id, profile.rows[0].profile_id]
     );
     res.json({ success: true });
   } catch (err) {
@@ -130,15 +224,37 @@ router.get("/appointment/admin", authorization, async (req, res) => {
   }
 });
 
-// Get tutor schedules by tutor_id
+// Get tutor schedules by tutor_id - Updated to work with profile_id
 router.get("/schedule/:tutorId", async (req, res) => {
   try {
     const { tutorId } = req.params;
-    const schedules = await pool.query(
-      "SELECT * FROM schedule WHERE user_id = $1 ORDER BY day, start_time",
+    
+    // First get the profile_id for the tutor
+    const profile = await pool.query(
+      "SELECT profile_id FROM profile WHERE user_id = $1",
       [tutorId]
     );
+    
+    if (profile.rows.length === 0) {
+      return res.json([]);
+    }
+    
+    const schedules = await pool.query(
+      "SELECT * FROM schedule WHERE profile_id = $1 ORDER BY day, start_time",
+      [profile.rows[0].profile_id]
+    );
     res.json(schedules.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Get all users for admin
+router.get("/users", authorization, async (req, res) => {
+  try {
+    const users = await pool.query("SELECT * FROM users");
+    res.json(users.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

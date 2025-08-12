@@ -44,7 +44,7 @@ router.get("/tutee", authorization, async (req, res) => {
   try {
     const user_id = req.user;
     const result = await pool.query(
-      `SELECT a.*, u.user_name as tutor_name, p.program, p.college, p.year_level, p.specialization 
+      `SELECT a.*, u.name as tutor_name, p.program, p.college, p.year_level, p.specialization 
         FROM appointment a 
         JOIN users u ON a.tutor_id = u.user_id 
         LEFT JOIN profile p ON a.tutor_id = p.user_id 
@@ -64,7 +64,7 @@ router.get("/tutor", authorization, async (req, res) => {
   try {
     const tutor_id = req.user;
     const result = await pool.query(
-      `SELECT a.*, u.user_name as student_name 
+      `SELECT a.*, u.name as student_name 
         FROM appointment a 
         JOIN users u ON a.user_id = u.user_id 
         WHERE a.tutor_id = $1 
@@ -91,8 +91,8 @@ router.get("/admin", authorization, async (req, res) => {
         a.topic,
         a.mode_of_session,
         a.status,
-        t.user_name AS tutor_name,
-        s.user_name AS student_name,
+        t.name AS tutor_name,
+        s.name AS student_name,
         f.rating
       FROM appointment a
       JOIN users t ON a.tutor_id = t.user_id
@@ -135,11 +135,11 @@ router.put("/:id/status", authorization, async (req, res) => {
     if (status === 'confirmed') {
       const student_id = appointment.rows[0].user_id;
       const tutor_name = await pool.query(
-        "SELECT user_name FROM users WHERE user_id = $1",
+        "SELECT name FROM users WHERE user_id = $1",
         [user_id]
       );
       
-      const notificationContent = `Your appointment has been confirmed by ${tutor_name.rows[0]?.user_name || 'your tutor'}`;
+      const notificationContent = `Your appointment has been confirmed by ${tutor_name.rows[0]?.name || 'your tutor'}`;
       
       await pool.query(
         "INSERT INTO notification (user_id, notification_content, status) VALUES ($1, $2, 'unread')",
@@ -223,12 +223,11 @@ router.post("/:id/feedback", authorization, async (req, res) => {
         .status(403)
         .json({ error: "You can only rate your own completed appointments." });
     }
-    const appointment = appointmentResult.rows[0];
 
     // Check if feedback already exists for this appointment
     const feedbackResult = await pool.query(
-      `SELECT * FROM feedback WHERE user_id = $1 AND tutor_id = $2 AND appointment_id = $3`,
-      [user_id, appointment.tutor_id, id]
+      `SELECT * FROM feedback WHERE appointment_id = $1`,
+      [id]
     );
     if (feedbackResult.rows.length > 0) {
       return res
@@ -238,8 +237,8 @@ router.post("/:id/feedback", authorization, async (req, res) => {
 
     // Insert feedback (no comment)
     const insertResult = await pool.query(
-      `INSERT INTO feedback (user_id, tutor_id, rating, appointment_id) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [user_id, appointment.tutor_id, rating, id]
+      `INSERT INTO feedback (appointment_id, rating) VALUES ($1, $2) RETURNING *`,
+      [id, rating]
     );
 
     res.json({
@@ -257,7 +256,10 @@ router.get("/tutor/:id/feedback", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      `SELECT feedback_id, user_id, tutor_id, appointment_id, rating, created_at FROM feedback WHERE tutor_id = $1`,
+      `SELECT f.feedback_id, f.appointment_id, f.rating, f.created_at 
+       FROM feedback f
+       JOIN appointment a ON f.appointment_id = a.appointment_id
+       WHERE a.tutor_id = $1`,
       [id]
     );
     res.json(result.rows);
@@ -272,7 +274,10 @@ router.get("/tutor/:id/appointment-feedback", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      `SELECT appointment_id, rating FROM feedback WHERE tutor_id = $1`,
+      `SELECT a.appointment_id, f.rating 
+       FROM appointment a
+       LEFT JOIN feedback f ON f.appointment_id = a.appointment_id
+       WHERE a.tutor_id = $1`,
       [id]
     );
     res.json(result.rows);
@@ -287,7 +292,10 @@ router.get("/feedback/tutee", authorization, async (req, res) => {
   try {
     const user_id = req.user;
     const result = await pool.query(
-      `SELECT * FROM feedback WHERE user_id = $1`,
+      `SELECT f.* 
+       FROM feedback f
+       JOIN appointment a ON f.appointment_id = a.appointment_id
+       WHERE a.user_id = $1`,
       [user_id]
     );
     res.json(result.rows);
@@ -308,9 +316,7 @@ router.get("/tutee/unrated-count", authorization, async (req, res) => {
          AND a.status = 'completed'
          AND NOT EXISTS (
            SELECT 1 FROM feedback f
-           WHERE f.user_id = a.user_id
-             AND f.tutor_id = a.tutor_id
-             AND f.appointment_id = a.appointment_id
+           WHERE f.appointment_id = a.appointment_id
          )`,
       [user_id]
     );
@@ -372,7 +378,10 @@ router.get("/feedback/tutor/:id", authorization, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      "SELECT * FROM feedback WHERE tutor_id = $1",
+      `SELECT f.* 
+       FROM feedback f
+       JOIN appointment a ON f.appointment_id = a.appointment_id
+       WHERE a.tutor_id = $1`,
       [id]
     );
     res.json(result.rows);

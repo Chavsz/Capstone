@@ -10,14 +10,14 @@ const Switch = () => {
   const itemsPerPage = 10;
 
   // Get all users
-  const getAllUsers = async () => {
+  const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/users");
+      const response = await axios.get("http://localhost:5000/dashboard/users", {
+        headers: { token: localStorage.getItem("token") },
+      });
+      const tutors = response.data.filter(user => user.role === "tutor");
+      const tutees = response.data.filter(user => user.role === "student");
       setAllUsers(response.data);
-      
-      // Count tutors and tutees
-      const tutors = response.data.filter(user => user.user_role === "tutor");
-      const tutees = response.data.filter(user => user.user_role === "student");
       setTotalTutors(tutors.length);
       setTotalTutees(tutees.length);
     } catch (err) {
@@ -29,33 +29,31 @@ const Switch = () => {
   const updateUserRole = async (id, role) => {
     try {
       await axios.put(`http://localhost:5000/users/${id}`, { role });
-      getAllUsers(); // Refresh the data
+      fetchUsers(); // Refresh the data
     } catch (err) {
       console.error(err.message); 
     }
   };
 
   useEffect(() => {
-    getAllUsers();
+    fetchUsers();
   }, []);
 
   // Filter users based on selected filter
-  const getFilteredUsers = () => {
-    switch (selectedFilter) {
-      case "Tutor":
-        return allUsers.filter(user => user.user_role === "tutor");
-      case "Tutee":
-        return allUsers.filter(user => user.user_role === "student");
-      default:
-        return allUsers;
+  const filteredUsers = () => {
+    if (selectedFilter === "Tutor") {
+      return allUsers.filter(user => user.role === "tutor");
+    } else if (selectedFilter === "Student") {
+      return allUsers.filter(user => user.role === "student");
     }
+    return allUsers;
   };
 
-  const filteredUsers = getFilteredUsers();
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredUsers().length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+  const currentUsers = filteredUsers().slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -116,22 +114,20 @@ const Switch = () => {
             {currentUsers.map((user) => (
               <tr key={user.user_id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_email}
+                  {user.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_name}
+                  {user.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_role === "tutor" ? "Tutor" : "Tutee"}
+                  {user.role === "tutor" ? "Tutor" : "Tutee"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <button
-                    className="text-blue-600 hover:text-blue-800"
-                    onClick={() => updateUserRole(user.user_id, user.user_role === "tutor" ? "student" : "tutor")}
+                    onClick={() => updateUserRole(user.user_id, user.role === "tutor" ? "student" : "tutor")}
+                    className="text-blue-600 hover:text-blue-900"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
+                    Switch to {user.role === "tutor" ? "Student" : "Tutor"}
                   </button>
                 </td>
               </tr>
@@ -143,7 +139,7 @@ const Switch = () => {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
         <div className="text-sm text-gray-700">
-          Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)} of {filteredUsers.length} entries
+          Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers().length)} of {filteredUsers().length} entries
         </div>
         <div className="flex gap-2">
           <button

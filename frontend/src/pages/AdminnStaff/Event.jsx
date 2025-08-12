@@ -50,22 +50,28 @@ const Event = () => {
     try {
       if (editingEvent) {
         const response = await axios.put(
-          `http://localhost:5000/event/${editingEvent.id}`,
+          `http://localhost:5000/event/${editingEvent.event_id}`,
           form,
           {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { 
+              "Content-Type": "multipart/form-data",
+              token: localStorage.getItem("token")
+            },
           }
         );
         setEvents(
           events.map((event) =>
-            event.id === editingEvent.id ? response.data.event : event
+            event.event_id === editingEvent.event_id ? response.data.event : event
           )
         );
         setEditingEvent(null);
         alert("Event updated successfully.");
       } else {
         const response = await axios.post("http://localhost:5000/event", form, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { 
+            "Content-Type": "multipart/form-data",
+            token: localStorage.getItem("token")
+          },
         });
         setEvents([...events, response.data.event]);
         alert("Event added successfully.");
@@ -109,8 +115,10 @@ const Event = () => {
   const handleEventDelete = async (eventId) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       try {
-        await axios.delete(`http://localhost:5000/event/${eventId}`);
-        setEvents(events.filter((event) => event.id !== eventId));
+        await axios.delete(`http://localhost:5000/event/${eventId}`, {
+          headers: { token: localStorage.getItem("token") }
+        });
+        setEvents(events.filter((event) => event.event_id !== eventId));
         alert("Event deleted successfully.");
       } catch (error) {
         console.error("Error deleting event:", error);
@@ -287,7 +295,7 @@ const Event = () => {
             {events.length > 0 ? (
               events.map((event) => (
                 <article
-                  key={event.id}
+                  key={event.event_id}
                   className="bg-white border border-gray-200 rounded-lg shadow-md flex flex-col hover:shadow-lg transition-shadow duration-200"
                 >
                   {event.event_image ? (
@@ -330,7 +338,7 @@ const Event = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleEventDelete(event.id)}
+                        onClick={() => handleEventDelete(event.event_id)}
                         className="flex-1 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                       >
                         Delete

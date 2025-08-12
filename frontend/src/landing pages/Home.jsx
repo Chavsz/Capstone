@@ -17,6 +17,13 @@ function Home() {
       setLandingData(response.data);
     } catch (error) {
       console.error("Error fetching landing data:", error);
+      // Set default values if there's an error
+      setLandingData({
+        home_image: "",
+        home_title: "Welcome to LAV",
+        home_description: "Your learning journey starts here",
+        home_more: "Discover more about our services",
+      });
     }
   };
 

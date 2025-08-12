@@ -20,11 +20,10 @@ const TuteeDashboard = () => {
       const response = await axios.get("http://localhost:5000/dashboard", {
         headers: { token: localStorage.getItem("token") },
       });
-
-      setName(response.data.user_name);
-      if (response.data.user_role) {
-        setRole(response.data.user_role);
-        localStorage.setItem("role", response.data.user_role);
+      setName(response.data.name);
+      if (response.data.role) {
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
       }
     } catch (err) {
       console.error(err.message);
@@ -67,7 +66,12 @@ const TuteeDashboard = () => {
     axios
       .get("http://localhost:5000/announcement")
       .then((response) => {
-        setAnnouncement(response.data);
+        // Handle array response - get the first announcement
+        if (response.data && response.data.length > 0) {
+          setAnnouncement(response.data[0]);
+        } else {
+          setAnnouncement(null);
+        }
       })
       .catch((error) => {
         console.error("Error fetching announcement:", error);

@@ -204,7 +204,7 @@ const Appointment = () => {
     const matchesSubject =
       !selectedSubject ||
       tutorSpecialization.toLowerCase().includes(selectedSubject.toLowerCase());
-    const matchesSearch = tutor.user_name
+    const matchesSearch = tutor.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     return matchesSubject && matchesSearch;
@@ -389,7 +389,7 @@ const Appointment = () => {
                         <div className="w-12 h-12 bg-gray-300 rounded-full mb-2 flex items-center justify-center">
                           <span className="text-gray-600 text-sm">👤</span>
                         </div>
-                        <p className="font-medium text-sm">{tutor.user_name}</p>
+                        <p className="font-medium text-sm">{tutor.name}</p>
                         <p className="text-xs text-gray-600">
                           {tutorDetails[tutor.user_id]?.specialization ||
                             "No specialization"}
@@ -428,7 +428,7 @@ const Appointment = () => {
                   <span className="text-gray-600 text-2xl">👤</span>
                 </div>
                 <p className="font-semibold text-lg">
-                  {selectedTutor.user_name}
+                  {selectedTutor.name}
                 </p>
                 <p className="text-gray-600">
                   {tutorDetails[selectedTutor.user_id]?.college ||

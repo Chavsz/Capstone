@@ -39,7 +39,17 @@ router.get("/", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM landing ORDER BY updated_at DESC LIMIT 1");
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Landing page data not found" });
+      // Return empty data instead of 404
+      return res.json({
+        home_image: "",
+        home_title: "",
+        home_description: "",
+        home_more: "",
+        about_image: "",
+        about_title: "",
+        about_description: "",
+        about_link: ""
+      });
     }
     res.json(result.rows[0]);
   } catch (err) {

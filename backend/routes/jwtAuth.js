@@ -13,7 +13,7 @@ router.post("/register", validInfo, async (req, res) => {
     const { name, email, password, role } = req.body;
 
     //2. check if user exists (if user exists, throw error)
-    const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
+    const user = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
 
@@ -33,14 +33,14 @@ router.post("/register", validInfo, async (req, res) => {
 
     //5. enter the user into the database
     const newUser = await pool.query(
-      "INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ($1, $2, $3, $4) RETURNING *",
+      "INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *",
       [name, email, bcryptPassword, role]
     );
 
     //6. generate jwt token (include role)
-    const token = jwtGenerator(newUser.rows[0].user_id, newUser.rows[0].user_role);
+    const token = jwtGenerator(newUser.rows[0].user_id, newUser.rows[0].role);
 
-    res.json({ token, role: newUser.rows[0].user_role });
+    res.json({ token, role: newUser.rows[0].role });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -54,7 +54,7 @@ router.post("/login", validInfo, async (req, res) => {
     const { email, password } = req.body;
 
     //2. check if user doesn't exist (if not, throw error)
-    const user = await pool.query("SELECT * FROM users WHERE user_email = $1", [
+    const user = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
 
@@ -65,7 +65,7 @@ router.post("/login", validInfo, async (req, res) => {
     //3. check if incoming password is the same as the database password
     const validPassword = await bcrypt.compare(
       password,
-      user.rows[0].user_password
+      user.rows[0].password
     );
 
     if (!validPassword) {
@@ -73,14 +73,14 @@ router.post("/login", validInfo, async (req, res) => {
     }
 
     //4. Only allow login for tutor or student
-    if (!['tutor', 'student','admin'].includes(user.rows[0].user_role)) {
+    if (!['tutor', 'student','admin'].includes(user.rows[0].role)) {
       return res.status(403).json("Login not allowed for this role");
     }
 
     //5. give the user the jwt token (include role)
-    const token = jwtGenerator(user.rows[0].user_id, user.rows[0].user_role);
+    const token = jwtGenerator(user.rows[0].user_id, user.rows[0].role);
 
-    res.json({ token, role: user.rows[0].user_role });
+    res.json({ token, role: user.rows[0].role });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

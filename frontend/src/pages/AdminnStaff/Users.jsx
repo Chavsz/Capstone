@@ -13,7 +13,9 @@ const Users = () => {
   // Get all users
   const getAllUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/users");
+      const response = await axios.get("http://localhost:5000/users", {
+        headers: { token: localStorage.getItem("token") },
+      });
       setAllUsers(response.data);
     } catch (err) {
       console.error(err.message);
@@ -24,7 +26,9 @@ const Users = () => {
   const deleteUser = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:5000/users/${id}`);
+        await axios.delete(`http://localhost:5000/users/${id}`, {
+          headers: { token: localStorage.getItem("token") },
+        });
         getAllUsers();
       } catch (err) {
         console.error(err.message);
@@ -40,29 +44,32 @@ const Users = () => {
   const getFilteredUsers = () => {
     switch (selectedFilter) {
       case "Tutor":
-        return allUsers.filter((user) => user.user_role === "tutor");
+        return allUsers.filter((user) => user.role === "tutor");
       case "Student":
-        return allUsers.filter((user) => user.user_role === "student");
+        return allUsers.filter((user) => user.role === "student");
       default:
-        return allUsers.filter((user) => user.user_role !== "admin");
+        return allUsers.filter((user) => user.role !== "admin");
     }
   };
 
   const filteredUsers = getFilteredUsers();
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  
+  // Apply search filter
+  const searchfilteredUsers = filteredUsers.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    || user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Pagination calculations
+  const totalPages = Math.ceil(searchfilteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+  const currentUsers = searchfilteredUsers.slice(startIndex, endIndex);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
   };
-
-  const searchfilteredUsers = filteredUsers.filter((user) =>
-    user.user_name.toLowerCase().includes(searchTerm.toLowerCase())
-    || user.user_email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -121,16 +128,16 @@ const Users = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {searchfilteredUsers.length > 0 ? searchfilteredUsers.map((user) => (
+            {currentUsers.length > 0 ? currentUsers.map((user) => (
               <tr key={user.user_id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_email}
+                  {user.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_name}
+                  {user.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_role === "tutor" ? "Tutor" : "Student"}
+                  {user.role === "tutor" ? "Tutor" : "Student"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <button
@@ -141,13 +148,13 @@ const Users = () => {
                   </button>
                 </td>
               </tr>
-            )) : currentUsers.map((user) => (
-              <tr key={user.user_id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {user.user_email}
+            )) : (
+              <tr>
+                <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                  No users found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -155,8 +162,8 @@ const Users = () => {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
         <div className="text-sm text-gray-700">
-          Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)} of{" "}
-          {filteredUsers.length} entries
+          Showing {searchfilteredUsers.length > 0 ? startIndex + 1 : 0}-{Math.min(endIndex, searchfilteredUsers.length)} of{" "}
+          {searchfilteredUsers.length} entries
         </div>
         <div className="flex gap-2">
           <button
@@ -172,12 +179,12 @@ const Users = () => {
           </button>
           <button
             className={`px-3 py-1 rounded border ${
-              currentPage === totalPages
+              currentPage === totalPages || totalPages === 0
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || totalPages === 0}
           >
             Next →
           </button>
