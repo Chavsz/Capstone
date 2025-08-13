@@ -261,4 +261,26 @@ router.get("/users", authorization, async (req, res) => {
   }
 });
 
+// Get all students from each college who have booked an appointment
+router.get("/students", authorization, async (req, res) => {
+  try {
+    const students = await pool.query(`
+      SELECT 
+        sp.college,
+        COUNT(DISTINCT a.user_id) as student_count
+      FROM appointment a
+      JOIN student_profile sp ON a.user_id = sp.user_id
+      WHERE sp.college IS NOT NULL
+      GROUP BY sp.college
+      ORDER BY student_count DESC
+    `); 
+    
+    console.log("Query result:", students.rows);
+    res.json(students.rows);
+  } catch (err) {
+    console.error("Error in /students route:", err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 module.exports = router;

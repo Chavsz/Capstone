@@ -244,7 +244,7 @@ const Profile = () => {
                     name="program"
                     value={form.program || ""}
                     onChange={handleChange}
-                    placeholder="e.g., Bachelor of Science in Computer Science"
+                    placeholder="BSIT"
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
@@ -252,14 +252,35 @@ const Profile = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     College
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="college"
                     value={form.college || ""}
                     onChange={handleChange}
-                    placeholder="e.g., College of Engineering"
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
-                  />
+                  >
+                    <option value="">Select College</option>
+                    <option value="College of Engineering">
+                      College of Engineering
+                    </option>
+                    <option value="College of Arts and Social Sciences">
+                      College of Arts and Social Sciences
+                    </option>
+                    <option value="College of Computer Studies">
+                      College of Computer Studies
+                    </option>
+                    <option value="College of Education">
+                      College of Education
+                    </option>
+                    <option value="College of Health and Sciences">
+                      College of Health and Sciences
+                    </option>
+                    <option value="College of Economics, Business, and Accountancy">
+                      College of Economics, Business, and Accountancy
+                    </option>
+                    <option value="College of Science and Mathematics">
+                      College of Science and Mathematics
+                    </option>
+                  </select>
                 </div>
               </div>
 

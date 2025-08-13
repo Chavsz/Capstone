@@ -15,11 +15,13 @@ import {
   AreaChart,
   Area,
   Legend,
+  PieChart,
+  Pie,
 } from "recharts";
 import * as fiIcons from "react-icons/fi";
 
 // Components
-import { Cards, CardsOne } from "../../components/cards";
+import { Cards } from "../../components/cards";
 
 function Dashboard() {
   const [name, setName] = useState("");
@@ -28,61 +30,77 @@ function Dashboard() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [evaluatedAppointments, setEvaluatedAppointments] = useState([]);
   const [areaRange, setAreaRange] = useState("7d");
+  const [collegeData, setCollegeData] = useState([]);
 
-  async function getName() {
+  const responses = (response) => {
     try {
-      const response = await axios.get("http://localhost:5000/dashboard", {
-        headers: { token: localStorage.getItem("token") },
-      });
-      setName(response.data.name);
-      if (response.data.role) {
-        setRole(response.data.role);
-        localStorage.setItem("role", response.data.role);
-      }
+      response;
     } catch (err) {
       console.error(err.message);
     }
+  };
+
+  async function getName() {
+    const response = await axios.get("http://localhost:5000/dashboard", {
+      headers: { token: localStorage.getItem("token") },
+    });
+    setName(response.data.name);
+    if (response.data.role) {
+      setRole(response.data.role);
+      localStorage.setItem("role", response.data.role);
+    }
+
+    return responses(response);
   }
 
   async function getAppointments() {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/dashboard/appointment/admin",
-        {
-          headers: { token: localStorage.getItem("token") },
-        }
-      );
-      setAppointments(response.data);
-    } catch (err) {
-      console.error(err.message);
-    }
+    const response = await axios.get(
+      "http://localhost:5000/dashboard/appointment/admin",
+      {
+        headers: { token: localStorage.getItem("token") },
+      }
+    );
+    setAppointments(response.data);
+
+    return responses(response);
   }
 
   async function getFeedbacks() {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/appointment/feedback/admin",
-        {
-          headers: { token: localStorage.getItem("token") },
-        }
-      );
-      setFeedbacks(response.data);
-    } catch (err) {
-      console.error(err.message);
-    }
+    const response = await axios.get(
+      "http://localhost:5000/appointment/feedback/admin",
+      {
+        headers: { token: localStorage.getItem("token") },
+      }
+    );
+    setFeedbacks(response.data);
+
+    return responses(response);
   }
 
   async function getEvaluatedAppointments() {
+    const response = await axios.get(
+      "http://localhost:5000/appointment/evaluated/admin",
+      {
+        headers: { token: localStorage.getItem("token") },
+      }
+    );
+    setEvaluatedAppointments(response.data);
+    return responses(response);
+  }
+
+  async function getCollegeData() {
     try {
       const response = await axios.get(
-        "http://localhost:5000/appointment/evaluated/admin",
+        "http://localhost:5000/dashboard/students",
         {
           headers: { token: localStorage.getItem("token") },
         }
       );
-      setEvaluatedAppointments(response.data);
-    } catch (err) {
-      console.error(err.message);
+      setCollegeData(response.data);
+      return responses(response);
+    } catch (error) {
+      console.error("Error fetching college data:", error);
+      setCollegeData([]);
     }
   }
 
@@ -91,6 +109,7 @@ function Dashboard() {
     getAppointments();
     getFeedbacks();
     getEvaluatedAppointments();
+    getCollegeData();
   }, []);
 
   // Helper: Get weekday name from date string
@@ -214,6 +233,39 @@ function Dashboard() {
     (a) => formatDate(a.date) === dateToday
   );
 
+  // Prepare data for pie chart: students by college
+  const collegeMapping = {
+    "College of Engineering": "COE",
+    "College of Arts and Social Sciences": "CASS",
+    "College of Computer Studies": "CCS",
+    "College of Education": "CED",
+    "College of Health and Sciences": "CHS",
+    "College of Economics, Business, and Accountancy": "CEBA",
+    "College of Science and Mathematics": "CSM",
+  };
+
+  const collegeColors = [
+    "#FF6B6B", // COE - Red
+    "#4ECDC4", // CASS - Teal
+    "#45B7D1", // CCS - Blue
+    "#96CEB4", // COED - Green
+    "#FFEAA7", // CHS - Yellow
+    "#DDA0DD", // CEBA - Plum
+    "#98D8C8", // CSM - Mint
+  ];
+
+  // Process college data for pie chart
+  let pieChartData = [];
+
+  pieChartData = collegeData.map((item, index) => {
+    const shortName = collegeMapping[item.college] || item.college;
+    return {
+      name: shortName,
+      value: parseInt(item.student_count) || 0,
+      color: collegeColors[index % collegeColors.length],
+    };
+  });
+
   return (
     <div className="flex">
       <div className="min-h-screen flex-1 flex flex-col bg-[#ffffff] p-6">
@@ -233,7 +285,6 @@ function Dashboard() {
 
           {/* Admin Dashboard Cards  */}
           <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-6">
-
             {/* Sessions Card */}
             <Cards
               title="Sessions"
@@ -288,7 +339,7 @@ function Dashboard() {
             {/* Cancellations Card */}
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
               <div className="flex items-center justify-between">
-                <p className="text-[#132c91] font-semibold">Cancellations</p>
+                <p className="text-blue-600 font-semibold">Cancellations</p>
                 <p className="text-2xl">
                   <fiIcons.FiCalendar />
                 </p>
@@ -310,14 +361,13 @@ function Dashboard() {
                 </p>
               </div>
             </div>
-
           </div>
 
           {/* Line and bar chart cards */}
           <div className="mt-6 grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4 ">
             {/* confirmed Appointments bar chart */}
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
-              <p className="text-[#132c91] font-semibold">Confirmed Sessions</p>
+              <p className="text-blue-600 font-semibold">Confirmed Sessions</p>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                   data={barChartData}
@@ -342,7 +392,7 @@ function Dashboard() {
             {/* Area Chart for Appointments */}
             <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
               <div className="flex justify-between items-center mb-2">
-                <p className="text-[#132c91] font-semibold">
+                <p className="text-blue-600 font-semibold">
                   Appointments Overview
                 </p>
                 <select
@@ -389,36 +439,42 @@ function Dashboard() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+          </div>
 
-            {/* <div className="bg-[#f4ece6] p-3.5 rounded-lg shadow-md">
-              <div className="flex justify-between items-center">
-                <p className="text-[#132c91] font-semibold">Sessions</p>
-                <select
-                  name=""
-                  id=""
-                  className="bg-white border-0 outline-0 text-[#132c91] text-sm rounded-md p-[2px]"
-                >
-                  <option value="" className="text-sm">
-                    This Week
-                  </option>
-                  <option value="" className="text-sm">
-                    Last Week
-                  </option>
-                  <option value="" className="text-sm">
-                    This Month
-                  </option>
-                  <option value="" className="text-sm">
-                    Last Month
-                  </option>
-                  <option value="" className="text-sm">
-                    This Semester
-                  </option>
-                  <option value="" className="text-sm">
-                    Last Semester
-                  </option>
-                </select>
-              </div>
-            </div> */}
+          {/* Pie Chart for student from each college */}
+          <div className="mt-6 w-full">
+            <div className="bg-[#ffffff] w-1/2 p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
+              <p className="text-blue-600 font-semibold mb-4">
+                Students by College
+              </p>
+              {pieChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={pieChartData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) =>
+                        `${name} ${(percent * 100).toFixed(0)}%`
+                      }
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {pieChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value, name) => [value, name]} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-gray-500">
+                  <p>No college data available</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

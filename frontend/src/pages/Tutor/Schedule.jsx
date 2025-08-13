@@ -438,7 +438,7 @@ const Schedule = () => {
 
   return (
     <div className="py-3 px-6">
-      <h1 className="text-[#132c91] font-bold text-2xl mb-6">Appointments</h1>
+      <h1 className="text-blue-600 font-bold text-2xl mb-6">Schedules</h1>
 
       {/* Filter Buttons */}
       <div className="flex gap-3 mb-6">
