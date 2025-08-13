@@ -231,7 +231,7 @@ const Appointment = () => {
 
   return (
     <div className="py-3 px-6 bg-white">
-      <h1 className="text-[#132c91] font-bold text-2xl mb-6">
+      <h1 className="text-blue-600 font-bold text-2xl mb-6">
         Make Appointment
       </h1>
 

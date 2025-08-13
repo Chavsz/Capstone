@@ -332,6 +332,16 @@ const Schedule = () => {
     }
   };
 
+  // Always return a consistent formatted date string for display (no Today/Tomorrow)
+  const getFormattedDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
   const getDateSubtitle = (dateString) => {
     const date = new Date(dateString);
     const today = new Date();
@@ -430,11 +440,35 @@ const Schedule = () => {
     return sortedGrouped;
   };
 
+  // Group appointments for history: use pure date keys and uniform display labels
+  const groupHistoryAppointmentsByDate = (appointmentsList) => {
+    const grouped = {};
+    appointmentsList.forEach((appointment) => {
+      const d = new Date(appointment.date);
+      const isoKey = new Date(
+        Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())
+      )
+        .toISOString()
+        .slice(0, 10); // YYYY-MM-DD
+      if (!grouped[isoKey]) grouped[isoKey] = [];
+      grouped[isoKey].push(appointment);
+    });
+
+    const sortedKeys = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
+
+    const sortedGrouped = {};
+    sortedKeys.forEach((key) => {
+      sortedGrouped[key] = grouped[key];
+    });
+    return sortedGrouped;
+  };
+
   const groupedConfirmedAppointments = groupAppointmentsByDate(
     confirmedAndPendingAppointmets
   );
-  const groupedHistoryAppointments =
-    groupAppointmentsByDate(historyAppointments);
+  const groupedHistoryAppointments = groupHistoryAppointmentsByDate(
+    historyAppointments
+  );
 
   return (
     <div className="py-3 px-6">
@@ -538,17 +572,12 @@ const Schedule = () => {
             </div>
           ) : (
             Object.entries(groupedHistoryAppointments).map(
-              ([date, appointments]) => (
-                <div key={date}>
+              ([isoDate, appointments]) => (
+                <div key={isoDate}>
                   <div className="mb-3">
                     <h3 className="text-lg font-semibold text-gray-700">
-                      {date}
+                      {getFormattedDate(appointments[0]?.date)}
                     </h3>
-                    {getDateSubtitle(appointments[0]?.date) && (
-                      <p className="text-sm text-gray-500">
-                        {getDateSubtitle(appointments[0]?.date)}
-                      </p>
-                    )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {appointments.map((appointment) => (

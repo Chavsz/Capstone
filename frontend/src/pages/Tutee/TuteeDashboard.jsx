@@ -122,7 +122,7 @@ const TuteeDashboard = () => {
     <div className="flex-1 flex flex-col bg-white px-6 py-3">
       <div className="flex justify-between items-center">
         {/* <h2 className="text-xl">Welcome, {name}!</h2> */}
-        <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-blue-600">Dashboard</h1>
 
         {/* Show date today */}
         <p className="text-[13px] font-extralight text-[#696969] gap-2 flex items-center">
@@ -145,7 +145,7 @@ const TuteeDashboard = () => {
         {/* Announcements */}
         <div className="h-full">
           <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] h-full flex flex-col">
-            <p className="text-[#132c91] font-semibold">Announcement</p>
+            <p className="text-blue-600 font-semibold">Announcement</p>
             <div className="mt-2 flex-1">
               {announcement ? (
                 <div>
@@ -164,7 +164,7 @@ const TuteeDashboard = () => {
           </div>
         </div>
         <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF]">
-          <p className="text-[#132c91] font-semibold mb-4">
+          <p className="text-blue-600 font-semibold mb-4">
             Confirmed Sessions Today
           </p>
           {nextSessions.length > 0 ? (
@@ -209,7 +209,7 @@ const TuteeDashboard = () => {
       <div className="mt-6 grid grid-cols-3 grid-rows-3 gap-7">
         <div className="row-span-3 col-span-2">
           <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF] flex-1">
-            <p className="text-[#132c91] font-semibold">Session History</p>
+            <p className="text-blue-600 font-semibold">Session History</p>
 
             {/*Completed Sessions */}
             <div className="overflow-x-auto overflow-y-auto h-[280px]" >

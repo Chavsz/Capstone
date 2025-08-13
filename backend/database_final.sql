@@ -124,3 +124,26 @@ INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Cha
 --queries
 SELECT * FROM users;
 UPDATE users SET user_role = 'admin' WHERE user_name = 'Chavy';
+
+--tutor datas
+
+--programming
+josh@gmail.com
+max@gmail.com
+chris@gmail.com
+may@gmail.com
+--chemistry
+curie@gmail.com
+martin@gmail.com
+jes@gmail.com
+--physics
+tel@gmail.com
+robert@gmail.com
+--calculus
+justine@gmail.com
+diane@gmail.com
+john@gmail.com
+ghost@gmail.com
+
+
+

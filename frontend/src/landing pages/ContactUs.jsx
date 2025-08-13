@@ -1,57 +1,155 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 function ContactUs() {
-  return (
-    <motion.div
-      id="contactus"
-      initial={{ opacity: 0, x: 200 }}
-      transition={{ duration: 1 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      className="min-h-screen mx-auto py-20 lg:px-32 w-full p-6 overflow-hidden"
-    >
-      <h1 className="text-2xl sm:text-4xl mb-7 font-bold text-center">
-        Contact With Us
-      </h1>
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
-      <form action="" className="max-w-2xl mx-auto text-gray-600 pt-8">
-        <div className="flex flex-wrap">
-          <div className="w-full md:w-1/2 text-left">
-            Your Name
-            <input
-              className="w-full border border-gray-300 rounded py-3 px-4 mt-2"
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              required
-            />
-          </div>
-          <div className="w-full md:w-1/2 text-left md:pl-4">
-            Your Email
-            <input
-              className="w-full border border-gray-300 rounded py-3 px-4 mt-2"
-              type="text"
-              name="email"
-              placeholder="Your Email"
-              required
-            />
-          </div>
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission here
+    console.log("Form submitted:", formData);
+  };
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Get in Touch
+          </h2>
+          <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full mb-6"></div>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Have questions? We'd love to hear from you. Send us a message and
+            we'll respond as soon as possible.
+          </p>
+        </motion.div>
+
+        <div className="max-w-2xl mx-auto">
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Enter your name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Your Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="subject"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  placeholder="What's this about?"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
+                  placeholder="Tell us more about your inquiry..."
+                  required
+                ></textarea>
+              </div>
+              <div className="flex justify-center w-full">
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-[200px] bg-blue-600  hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-xl transition-all duration-300 transform hover:shadow-md"
+                >
+                  Send Message
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
         </div>
-        <div className="my-6 text-left">
-          Message
-          <textarea
-            className="w-full border border-gray-300 rounded py-3 px-4 mt-2 h-48 resize-none"
-            name="message"
-            placeholder="Message"
-            required
-          ></textarea>
-        </div>
-        <button className="bg-blue-600 text-white px-12 py-2 rounded-sm mb-10 ">
-          Send Message
-        </button>
-      </form>
-    </motion.div>
+      </div>
+    </section>
   );
 }
 

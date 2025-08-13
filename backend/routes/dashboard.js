@@ -274,11 +274,8 @@ router.get("/students", authorization, async (req, res) => {
       GROUP BY sp.college
       ORDER BY student_count DESC
     `); 
-    
-    console.log("Query result:", students.rows);
     res.json(students.rows);
   } catch (err) {
-    console.error("Error in /students route:", err.message);
     res.status(500).send("Server error");
   }
 });

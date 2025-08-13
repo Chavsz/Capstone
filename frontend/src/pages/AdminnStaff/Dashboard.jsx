@@ -344,7 +344,7 @@ function Dashboard() {
                   <fiIcons.FiCalendar />
                 </p>
               </div>
-              <p className="text-[30px] font-bold pl-4 py-4">
+              <p className="text-[30px] font-bold pl-4 py-4 text-gray-600">
                 {cancelledCount}
               </p>
               <div className="flex gap-2">

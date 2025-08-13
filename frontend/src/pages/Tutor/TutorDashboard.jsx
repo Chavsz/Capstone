@@ -242,10 +242,14 @@ const TutorDashboard = () => {
     return "bg-blue-500 text-white shadow-md shadow-blue-500/50 border-none";
   }
 
+  const cardText = () => {
+    return "text-white";
+  }
+
   return (
     <div className="flex-1 flex flex-col bg-white px-6 py-3">
       <div className="flex justify-between items-center">
-        <h1 className="text-[24px] font-bold text-[#132c91]">Dashboard</h1>
+        <h1 className="text-1xl font-bold text-blue-600">Dashboard</h1>
 
         {/* Show date today */}
         <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">
@@ -253,7 +257,7 @@ const TutorDashboard = () => {
         </p>
       </div>
 
-      <h2 className="ttext-[24px] font-bold text-[#132c91]">
+      <h2 className="ttext-[24px] font-bold text-blue-600">
         Welcome, {name}!
       </h2>
       {/* Show average rating if available */}
@@ -274,6 +278,7 @@ const TutorDashboard = () => {
           icon={<fiIcons.FiCalendar />}
           total={completedAppointments.length}
           style={cardStyle()}
+          text={cardText()}
         />
         <Cards
           title="Evaluations"
@@ -297,13 +302,13 @@ const TutorDashboard = () => {
           {/* Area Chart for Appointments */}
           <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
             <div className="flex justify-between items-center mb-2">
-              <p className="text-[#132c91] font-semibold">
+              <p className="text-blue-600 font-semibold">
                 Appointments Overview
               </p>
               <select
                 value={areaRange}
                 onChange={(e) => setAreaRange(e.target.value)}
-                className="bg-white border-0 outline-0 text-[#132c91] text-sm rounded-md p-[2px]"
+                className="bg-white border-0 outline-0 text-blue-600 text-sm rounded-md p-[2px]"
               >
                 <option value="7d">Last 7 Days</option>
                 <option value="30d">Last 30 Days</option>
@@ -349,7 +354,7 @@ const TutorDashboard = () => {
         <div className="lg:row-span-2 flex flex-col gap-7">
           {/* Announcements */}
           <div className="bg-[#ffffff] p-3.5 rounded-lg border-2 border-[#EBEDEF] hover:translate-y-[-5px] transition-all duration-300">
-            <p className="text-[#132c91] font-semibold">Announcement</p>
+            <p className="text-blue-600 font-semibold">Announcement</p>
             <div className="mt-2 ">
               {announcement ? (
                 <div>
@@ -369,7 +374,7 @@ const TutorDashboard = () => {
 
           {/* Next Sessions Table */}
           <div className="bg-white p-3.5 rounded-lg border-2 border-[#EBEDEF] flex-1 hover:translate-y-[-5px] transition-all duration-300">
-            <p className="text-[#132c91] font-semibold mb-4">
+            <p className="text-blue-600 font-semibold mb-4">
               Confirmed Sessions Today
             </p>
             {nextSessions.length > 0 ? (

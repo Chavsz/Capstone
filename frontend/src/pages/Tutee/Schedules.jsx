@@ -150,7 +150,7 @@ const Schedules = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-white p-6">
-        <h1 className="text-[#132c91] font-bold text-2xl">Schedules</h1>
+        <h1 className="text-blue-600 font-bold text-2xl">Schedules</h1>
         <div className="mt-6 text-center">Loading appointments...</div>
       </div>
     );
@@ -158,7 +158,7 @@ const Schedules = () => {
 
   return (
     <div className=" bg-white py-3 px-6">
-      <h1 className="text-[#132c91] font-bold text-2xl">Schedules</h1>
+      <h1 className="text-blue-600 font-bold text-2xl">Schedules</h1>
 
       {message && (
         <div
@@ -185,7 +185,7 @@ const Schedules = () => {
                 className="bg-[#fafafa] p-6 rounded-lg shadow-md"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg font-semibold text-[#132c91]">
+                  <h3 className="text-lg font-semibold text-blue-600">
                     {appointment.subject}
                   </h3>
                   <span

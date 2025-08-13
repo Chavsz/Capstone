@@ -6,7 +6,7 @@ import About from "./landing pages/About";
 import Events from "./landing pages/Events";
 import OurTutors from "./landing pages/OurTutors";
 import ContactUs from "./landing pages/ContactUs";
-import Footer from "./landing pages/footer";
+import Footer from "./landing pages/Footer";
 
 const LandingPage = () => {
   return (
