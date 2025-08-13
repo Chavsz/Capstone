@@ -15,14 +15,7 @@ function Events() {
   }, []);
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-0 right-0 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
-
+    <section className="py-20 bg-white relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -35,7 +28,7 @@ function Events() {
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Upcoming Events
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full mb-6"></div>
+          <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full mb-6"></div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Join our exciting events and workshops to enhance your learning experience
           </p>
@@ -137,7 +130,7 @@ function Events() {
                 <p className="text-gray-600 mb-6">
                   Check back soon for exciting upcoming events and workshops!
                 </p>
-                <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300">
                   Stay Updated
                 </button>
               </div>

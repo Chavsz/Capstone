@@ -45,9 +45,6 @@ function OurTutors() {
 
   return (
     <section className="py-20 bg-white relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-blue-50 opacity-50"></div>
-      
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -60,7 +57,7 @@ function OurTutors() {
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Meet Our Expert Tutors
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full mb-6"></div>
+          <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full mb-6"></div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Learn from qualified and experienced educators who are passionate about teaching
           </p>
@@ -83,10 +80,9 @@ function OurTutors() {
               >
                 {/* Specialization Header */}
                 <div className="text-center">
-                    <h3 className="text-2xl font-bold bg-black bg-clip-text text-transparent">
-                      {spec.name}
-                    </h3>
-                  
+                  <h3 className="text-2xl font-bold bg-black bg-clip-text text-transparent">
+                    {spec.name}
+                  </h3>
                 </div>
 
                 {/* Tutors Grid */}
@@ -146,7 +142,7 @@ function OurTutors() {
                     className="text-center py-12"
                   >
                     <div className="bg-white rounded-3xl shadow-lg p-8 max-w-md mx-auto border border-gray-100">
-                      <div className="text-4xl mb-4">{spec.icon}</div>
+                      <div className="text-4xl mb-4">👨‍🏫</div>
                       <h3 className="text-xl font-bold text-gray-900 mb-4">
                         No {spec.name} Tutors Available
                       </h3>

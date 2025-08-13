@@ -31,14 +31,7 @@ function Home() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
-
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
@@ -55,7 +48,7 @@ function Home() {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight"
               >
-                <span className="bg-blue-600  bg-clip-text text-transparent">
+                <span className="bg-blue-600 bg-clip-text text-transparent">
                   {landingData.home_title || "Welcome to LAV"}
                 </span>
               </motion.h1>
@@ -91,7 +84,7 @@ function Home() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                  className="inline-flex items-center justify-center px-6 py-3  bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-md transition-all duration-300 transform hover:scale-90 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full text-md transition-all duration-300 transform hover:scale-90 shadow-lg hover:shadow-xl"
                   to="/register"
                 >
                   Get Started Today
@@ -101,7 +94,6 @@ function Home() {
                 </Link>
               </div>
             </motion.div>
-
           </motion.div>
 
           {/* Image */}
@@ -112,7 +104,6 @@ function Home() {
             className="relative"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-3xl transform rotate-6 scale-105 opacity-20"></div>
               <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
                 <img
                   src={`http://localhost:5000${

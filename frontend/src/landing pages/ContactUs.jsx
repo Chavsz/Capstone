@@ -23,13 +23,7 @@ function ContactUs() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-      </div>
-
+    <section className="py-20 bg-white relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -135,12 +129,13 @@ function ContactUs() {
                   required
                 ></textarea>
               </div>
+
               <div className="flex justify-center w-full">
                 <motion.button
                   type="submit"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-[200px] bg-blue-600  hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-xl transition-all duration-300 transform hover:shadow-md"
+                  className="w-[200px] bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-xl transition-all duration-300 transform hover:shadow-md"
                 >
                   Send Message
                 </motion.button>
