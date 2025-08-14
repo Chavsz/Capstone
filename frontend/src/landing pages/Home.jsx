@@ -17,12 +17,6 @@ function Home() {
       setLandingData(response.data);
     } catch (error) {
       console.error("Error fetching landing data:", error);
-      setLandingData({
-        home_image: "",
-        home_title: "Welcome to LAV",
-        home_description: "Your learning journey starts here",
-        home_more: "Discover more about our services",
-      });
     }
   };
 
@@ -111,9 +105,6 @@ function Home() {
                   }`}
                   alt="Learning"
                   className="w-full h-auto object-cover rounded-3xl"
-                  onError={(e) => {
-                    e.target.src = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80";
-                  }}
                 />
               </div>
             </div>

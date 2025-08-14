@@ -21,26 +21,26 @@ function OurTutors() {
   }, []);
 
   const specializations = [
-    { 
-      name: "Programming", 
+    {
+      name: "Programming",
       color: "from-blue-500 to-cyan-500",
-      bgColor: "bg-blue-50"
+      bgColor: "bg-blue-50",
     },
-    { 
-      name: "Chemistry", 
+    {
+      name: "Chemistry",
       color: "from-green-500 to-emerald-500",
-      bgColor: "bg-green-50"
+      bgColor: "bg-green-50",
     },
-    { 
-      name: "Physics", 
+    {
+      name: "Physics",
       color: "from-purple-500 to-pink-500",
-      bgColor: "bg-purple-50"
+      bgColor: "bg-purple-50",
     },
-    { 
-      name: "Calculus", 
+    {
+      name: "Calculus",
       color: "from-orange-500 to-red-500",
-      bgColor: "bg-orange-50"
-    }
+      bgColor: "bg-orange-50",
+    },
   ];
 
   return (
@@ -59,7 +59,8 @@ function OurTutors() {
           </h2>
           <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full mb-6"></div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Learn from qualified and experienced educators who are passionate about teaching
+            Learn from qualified and experienced educators who are passionate
+            about teaching
           </p>
         </motion.div>
 
@@ -68,7 +69,7 @@ function OurTutors() {
             const filteredTutors = tutors.filter(
               (tutor) => tutor.specialization === spec.name
             );
-            
+
             return (
               <motion.div
                 key={spec.name}
@@ -86,7 +87,7 @@ function OurTutors() {
                 </div>
 
                 {/* Tutors Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                   {filteredTutors.map((tutor, index) => (
                     <motion.div
                       key={tutor.user_id}
@@ -94,64 +95,35 @@ function OurTutors() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
                       viewport={{ once: true }}
-                      className="group"
                     >
                       <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
                         {/* Tutor Image */}
-                        <div className="relative">
-                          <div className="w-full h-[150px] bg-blue-300 flex items-center justify-center">
-                            {tutor.profile_image ? (
-                              <img 
-                                src={`http://localhost:5000${tutor.profile_image}`} 
-                                alt={tutor.name}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                  e.target.nextSibling.style.display = 'flex';
-                                }}
-                              />
-                            ) : null}
-                            <div 
-                              className={`w-full h-full flex items-center justify-center text-white text-6xl font-bold ${
-                                tutor.profile_image ? 'hidden' : 'flex'
-                              }`}
-                            >
-                              {tutor.name.charAt(0).toUpperCase()}
-                            </div>
+                        <div className="w-full h-[150px] bg-blue-300 flex items-center justify-center">
+                          {tutor.profile_image ? (
+                            <img
+                              src={`http://localhost:5000${tutor.profile_image}`}
+                              alt={tutor.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                                e.target.nextSibling.style.display = "flex";
+                              }}
+                            />
+                          ) : null}
+                          <div
+                            className={`w-full h-full flex items-center justify-center text-white text-6xl font-bold ${
+                              tutor.profile_image ? "hidden" : "flex"
+                            }`}
+                          >
+                            {tutor.name.charAt(0).toUpperCase()}
                           </div>
                         </div>
-
-                        {/* Tutor Info */}
-                        <div className="p-2 text-center">
-                          <h4 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
-                            {tutor.name}
-                          </h4>
-                        </div>
                       </div>
+
+                      <div className="text-center mt-2">{tutor.name}</div>
                     </motion.div>
                   ))}
                 </div>
-
-                {/* Empty State */}
-                {filteredTutors.length === 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    viewport={{ once: true }}
-                    className="text-center py-12"
-                  >
-                    <div className="bg-white rounded-3xl shadow-lg p-8 max-w-md mx-auto border border-gray-100">
-                      <div className="text-4xl mb-4">👨‍🏫</div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">
-                        No {spec.name} Tutors Available
-                      </h3>
-                      <p className="text-gray-600 mb-6">
-                        Check back soon for {spec.name} tutors!
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
               </motion.div>
             );
           })}

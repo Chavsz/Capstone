@@ -38,7 +38,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-none ${
         isScrolled 
           ? 'bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-100' 
           : 'bg-transparent'
@@ -132,7 +132,7 @@ const Navbar = () => {
                 Login
               </Link>
               <Link 
-                className="bg-blue-600 hover:bg-blue-700 text-white block px-3 py-2 text-base font-medium rounded-lg mt-2 transition-all duration-300"
+                className="bg-blue-600 hover:bg-blue-700 inline-block text-white px-3 py-2 text-base font-medium rounded-lg mt-2 transition-all duration-300"
                 to="/register"
               >
                 Get Started
