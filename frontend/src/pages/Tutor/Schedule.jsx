@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 // Star display component
 const StarDisplay = ({ value }) => {
@@ -194,7 +195,6 @@ const AppointmentModal = ({
 const Schedule = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
   const [feedbacks, setFeedbacks] = useState({}); // { appointment_id: rating }
   const [userId, setUserId] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("confirmed");
@@ -213,7 +213,7 @@ const Schedule = () => {
       setAppointments(response.data);
     } catch (err) {
       console.error(err.message);
-      setMessage("Error loading appointments");
+      toast.error("Error loading appointments");
     } finally {
       setLoading(false);
     }
@@ -279,10 +279,10 @@ const Schedule = () => {
         { headers: { token } }
       );
       getAppointments(); // Refresh the list
-      setMessage(`Appointment ${status} successfully`);
+      toast.success(`Appointment ${status} successfully`);
     } catch (err) {
       console.error(err.message);
-      setMessage("Error updating appointment status");
+      toast.error("Error updating appointment status");
     }
   };
 
@@ -454,7 +454,9 @@ const Schedule = () => {
       grouped[isoKey].push(appointment);
     });
 
-    const sortedKeys = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
+    const sortedKeys = Object.keys(grouped).sort(
+      (a, b) => new Date(a) - new Date(b)
+    );
 
     const sortedGrouped = {};
     sortedKeys.forEach((key) => {
@@ -466,9 +468,8 @@ const Schedule = () => {
   const groupedConfirmedAppointments = groupAppointmentsByDate(
     confirmedAndPendingAppointmets
   );
-  const groupedHistoryAppointments = groupHistoryAppointmentsByDate(
-    historyAppointments
-  );
+  const groupedHistoryAppointments =
+    groupHistoryAppointmentsByDate(historyAppointments);
 
   return (
     <div className="py-3 px-6">
@@ -497,18 +498,6 @@ const Schedule = () => {
           History
         </button>
       </div>
-
-      {message && (
-        <div
-          className={`mb-4 p-3 rounded-md ${
-            message.includes("Error")
-              ? "bg-red-100 text-red-700"
-              : "bg-green-100 text-green-700"
-          }`}
-        >
-          {message}
-        </div>
-      )}
 
       {/* Appointments View */}
       {selectedFilter === "confirmed" && (

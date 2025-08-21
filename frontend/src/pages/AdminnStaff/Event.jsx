@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Event = () => {
   const [formData, setFormData] = useState({
@@ -53,28 +54,30 @@ const Event = () => {
           `http://localhost:5000/event/${editingEvent.event_id}`,
           form,
           {
-            headers: { 
+            headers: {
               "Content-Type": "multipart/form-data",
-              token: localStorage.getItem("token")
+              token: localStorage.getItem("token"),
             },
           }
         );
         setEvents(
           events.map((event) =>
-            event.event_id === editingEvent.event_id ? response.data.event : event
+            event.event_id === editingEvent.event_id
+              ? response.data.event
+              : event
           )
         );
         setEditingEvent(null);
-        alert("Event updated successfully.");
+        toast.success("Event updated successfully.");
       } else {
         const response = await axios.post("http://localhost:5000/event", form, {
-          headers: { 
+          headers: {
             "Content-Type": "multipart/form-data",
-            token: localStorage.getItem("token")
+            token: localStorage.getItem("token"),
           },
         });
         setEvents([...events, response.data.event]);
-        alert("Event added successfully.");
+        toast.success("Event added successfully.");
       }
       setFormData({
         event_title: "",
@@ -90,7 +93,7 @@ const Event = () => {
         "Error submitting event:",
         error.response ? error.response.data : error.message
       );
-      alert(
+      toast.error(
         `Failed to submit event: ${
           error.response ? error.response.data.message : error.message
         }`
@@ -116,13 +119,13 @@ const Event = () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       try {
         await axios.delete(`http://localhost:5000/event/${eventId}`, {
-          headers: { token: localStorage.getItem("token") }
+          headers: { token: localStorage.getItem("token") },
         });
         setEvents(events.filter((event) => event.event_id !== eventId));
-        alert("Event deleted successfully.");
+        toast.success("Event deleted successfully.");
       } catch (error) {
         console.error("Error deleting event:", error);
-        alert("Failed to delete event.");
+        toast.error("Failed to delete event.");
       }
     }
   };

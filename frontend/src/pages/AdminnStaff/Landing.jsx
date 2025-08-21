@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Landing = () => {
   const [landingData, setLandingData] = useState(null);
@@ -14,7 +15,6 @@ const Landing = () => {
     about_link: "",
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     axios
@@ -82,11 +82,11 @@ const Landing = () => {
       .then((response) => {
         console.log("Landing data updated:", response.data);
         setLandingData(response.data);
-        setSuccessMessage("Changes saved successfully!");
+        toast.success("Changes saved successfully!");
       })
       .catch((error) => {
         console.error("Error saving data:", error);
-        setSuccessMessage("Failed to save changes.");
+        toast.error("Failed to save changes.");
       })
       .finally(() => {
         setIsSaving(false);
@@ -96,10 +96,6 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-white p-6">
       <h1 className="text-[24px] font-bold text-blue-600">Landing</h1>
-
-      {successMessage && (
-        <p className="text-center text-green-500">{successMessage}</p>
-      )}
 
       <form
         onSubmit={handleSubmit}

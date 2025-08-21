@@ -5,6 +5,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from "dayjs";
+import { toast } from "react-hot-toast";
 
 const Appointment = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +24,6 @@ const Appointment = () => {
   });
   const [loading, setLoading] = useState(false);
   const [loadingProfiles, setLoadingProfiles] = useState(true);
-  const [message, setMessage] = useState("");
 
   const subjects = ["Programming", "Calculus", "Chemistry", "Physics"];
 
@@ -139,7 +139,7 @@ const Appointment = () => {
     e.preventDefault();
 
     if (!selectedTutor) {
-      setMessage("Please select a tutor first");
+      toast.error("Please select a tutor first");
       return;
     }
 
@@ -150,12 +150,11 @@ const Appointment = () => {
       !formData.start_time ||
       !formData.end_time
     ) {
-      setMessage("Please fill in all required fields");
+      toast.error("Please fill in all required fields");
       return;
     }
 
     setLoading(true);
-    setMessage("");
 
     try {
       const token = localStorage.getItem("token");
@@ -170,7 +169,7 @@ const Appointment = () => {
         }
       );
 
-      setMessage("Appointment created successfully!");
+      toast.success("Appointment created successfully!");
       setFormData({
         subject: "",
         topic: "",
@@ -183,7 +182,7 @@ const Appointment = () => {
       setSelectedSubject("");
     } catch (err) {
       console.error(err.message);
-      setMessage("Error creating appointment. Please try again.");
+      toast.success("Error creating appointment. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -234,19 +233,7 @@ const Appointment = () => {
       <h1 className="text-blue-600 font-bold text-2xl mb-6">
         Make Appointment
       </h1>
-
-      {message && (
-        <div
-          className={`mb-4 p-3 rounded-md ${
-            message.includes("Error")
-              ? "bg-red-100 text-red-700"
-              : "bg-green-100 text-green-700"
-          }`}
-        >
-          {message}
-        </div>
-      )}
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-9">
         {/* Left Panel - Appointment Form */}
         <div className="bg-[#fafafa] p-8 rounded-lg shadow-md">
@@ -427,9 +414,7 @@ const Appointment = () => {
                 <div className="w-24 h-24 bg-gray-300 rounded-full mb-4 flex items-center justify-center">
                   <span className="text-gray-600 text-2xl">👤</span>
                 </div>
-                <p className="font-semibold text-lg">
-                  {selectedTutor.name}
-                </p>
+                <p className="font-semibold text-lg">{selectedTutor.name}</p>
                 <p className="text-gray-600">
                   {tutorDetails[selectedTutor.user_id]?.college ||
                     "College not specified"}

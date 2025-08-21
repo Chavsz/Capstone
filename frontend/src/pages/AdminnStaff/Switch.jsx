@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
+import { AiOutlineUserSwitch } from "react-icons/ai";
 
 const Switch = () => {
   const [allUsers, setAllUsers] = useState([]);
@@ -8,7 +10,6 @@ const Switch = () => {
   const [totalTutors, setTotalTutors] = useState(0);
   const [totalTutees, setTotalTutees] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [updatingUser, setUpdatingUser] = useState(null);
   const itemsPerPage = 10;
 
   // Get all users
@@ -36,20 +37,19 @@ const Switch = () => {
 
   // Update user role
   const updateUserRole = async (id, role) => {
-    setUpdatingUser(id);
     try {
-      await axios.put(`http://localhost:5000/users/${id}`, 
+      await axios.put(
+        `http://localhost:5000/users/${id}`,
         { role },
         {
           headers: { token: localStorage.getItem("token") },
         }
       );
       await fetchUsers(); // Refresh the data
+      toast.success("User role updated successfully");
     } catch (err) {
       console.error("Error updating user role:", err.message);
-      alert("Failed to update user role. Please try again.");
-    } finally {
-      setUpdatingUser(null);
+      toast.error("Failed to update user role. Please try again.");
     }
   };
 
@@ -75,7 +75,7 @@ const Switch = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-[24px] font-bold text-border-600 mb-10">
+      <h1 className="text-[24px] font-bold text-blue-600 mb-10">
         Switch Roles
       </h1>
 
@@ -155,17 +155,9 @@ const Switch = () => {
                           user.role === "tutor" ? "student" : "tutor"
                         )
                       }
-                      disabled={updatingUser === user.user_id}
-                      className={`${
-                        updatingUser === user.user_id
-                          ? "text-gray-400 cursor-not-allowed"
-                          : "text-blue-600 hover:text-blue-900"
-                      }`}
+                      className="text-blue-600 hover:text-blue-900 pl-4"
                     >
-                      {updatingUser === user.user_id 
-                        ? "Updating..." 
-                        : `Switch to ${user.role === "tutor" ? "Student" : "Tutor"}`
-                      }
+                      <AiOutlineUserSwitch />
                     </button>
                   </td>
                 </tr>

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Lavroom = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
 
   const getAppointments = async () => {
     try {
@@ -67,10 +67,10 @@ const Lavroom = () => {
         headers: { token }
       });
       getAppointments(); // Refresh the list
-      setMessage("Appointment deleted successfully");
+      toast.success("Appointment deleted successfully");
     } catch (err) {
       console.error(err.message);
-      setMessage("Error deleting appointment");
+      toast.error("Error deleting appointment");
     }
   };
 
@@ -147,11 +147,6 @@ const Lavroom = () => {
           ))}
         </div>
       </div>
-      {message && (
-        <div className={`mt-4 p-3 rounded-md ${message.includes("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
-          {message}
-        </div>
-      )}
     </div>
   );
 };
