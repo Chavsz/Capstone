@@ -93,8 +93,6 @@ export const SessionBarChart = ({ appointmentsData }) => {
     "#edbf33", // Wed
     "#bdcf32", // Thu
     "#27aeef", // Fri
-    "#b33dc6", // Sat
-    "#ffa300", // Sun
   ];
 
   // Helper: Get weekday name from date string
@@ -116,7 +114,7 @@ export const SessionBarChart = ({ appointmentsData }) => {
     acc[weekday] = (acc[weekday] || 0) + 1;
     return acc;
   }, {});
-  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
   const barChartData = weekdays.map((day) => ({
     weekday: day,
     count: weekdayCounts[day] || 0,
@@ -148,6 +146,7 @@ export const SessionBarChart = ({ appointmentsData }) => {
   );
 };
 
+//Appointments Area Chart
 export const AppointmentsAreaChart = ({appointmentsData}) => {
   const [areaRange, setAreaRange] = useState("7d");
 

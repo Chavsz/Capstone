@@ -133,7 +133,6 @@ const TuteeDashboard = () => {
       {/* Notices */}
 
       <div className="flex justify-end items-center">
-
         <div className="bg-blue-600 cursor-pointer  md:px-8 md:py-2 border-none rounded-3xl  md:text-md text-white hover:bg-blue-700 transition-colors duration-300">
           <Link to="/dashboard/appointment">
             <p>Make an Appointment</p>
@@ -212,7 +211,7 @@ const TuteeDashboard = () => {
             <p className="text-blue-600 font-semibold">Session History</p>
 
             {/*Completed Sessions */}
-            <div className="overflow-x-auto overflow-y-auto h-[280px]" >
+            <div className="overflow-x-auto overflow-y-auto h-[280px]">
               <table className="w-full text-[#1a1a1a]">
                 <thead>
                   <tr className=" border-b border-[#EBEDEF]">
@@ -247,14 +246,18 @@ const TuteeDashboard = () => {
             </div>
           </div>
         </div>
-        <div>
-          <CardsOne title="Top Tutors" />
-        </div>
-        <div>
-          <CardsOne title="Top Colleges" />
-        </div>
-        <div>
-          <CardsOne title="Top Reasons" />
+
+        {/* Top Tutors, Top Colleges, Top Reasons */}
+        <div className="">
+          <div>
+            <CardsOne title="Top Tutors" />
+          </div>
+          <div>
+            <CardsOne title="Top Colleges" />
+          </div>
+          <div>
+            <CardsOne title="Top Reasons" />
+          </div>
         </div>
       </div>
     </div>
