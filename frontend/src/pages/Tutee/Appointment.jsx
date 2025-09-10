@@ -104,6 +104,24 @@ const Appointment = () => {
     });
   };
 
+  // Prevent selecting Saturdays (6) and Sundays (0)
+  const handleDateChange = (e) => {
+    const value = e.target.value;
+    if (!value) {
+      setFormData({ ...formData, date: "" });
+      return;
+    }
+    const selected = new Date(`${value}T00:00:00`);
+    const day = selected.getDay();
+    if (day === 0 || day === 6) {
+      toast.error("Weekends are not available.");
+      setFormData({ ...formData, date: "" });
+      e.target.value = "";
+      return;
+    }
+    setFormData({ ...formData, date: value });
+  };
+
   const handleTimeChange = (field, value) => {
     if (value && value.isValid()) {
       setFormData({
@@ -151,6 +169,14 @@ const Appointment = () => {
       !formData.end_time
     ) {
       toast.error("Please fill in all required fields");
+      return;
+    }
+
+    // Extra guard: prevent booking on weekends
+    const selected = new Date(`${formData.date}T00:00:00`);
+    const day = selected.getDay();
+    if (day === 0 || day === 6) {
+      toast.error("Selected date falls on a weekend. Please choose a weekday.");
       return;
     }
 
@@ -283,7 +309,7 @@ const Appointment = () => {
                   type="date"
                   name="date"
                   value={formData.date}
-                  onChange={handleInputChange}
+                  onChange={handleDateChange}
                   className="border border-gray-300 rounded-md p-3 w-full"
                   required
                 />

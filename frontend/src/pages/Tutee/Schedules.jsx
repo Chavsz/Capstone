@@ -467,7 +467,7 @@ const Schedules = () => {
     });
 
     const sortedKeys = Object.keys(grouped).sort(
-      (a, b) => new Date(a) - new Date(b)
+      (a, b) => new Date(b) - new Date(a)
     );
 
     const sortedGrouped = {};
