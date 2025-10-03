@@ -36,28 +36,28 @@ function Dashboard() {
     return responses(response);
   }
 
-  async function getFeedbacks() {
-    const response = await axios.get(
-      "http://localhost:5000/appointment/feedback/admin",
-      {
-        headers: { token: localStorage.getItem("token") },
-      }
-    );
-    setFeedbacks(response.data);
+  // async function getFeedbacks() {
+  //   const response = await axios.get(
+  //     "http://localhost:5000/appointment/feedback/admin",
+  //     {
+  //       headers: { token: localStorage.getItem("token") },
+  //     }
+  //   );
+  //   setFeedbacks(response.data);
 
-    return responses(response);
-  }
+  //   return responses(response);
+  // }
 
-  async function getEvaluatedAppointments() {
-    const response = await axios.get(
-      "http://localhost:5000/appointment/evaluated/admin",
-      {
-        headers: { token: localStorage.getItem("token") },
-      }
-    );
-    setEvaluatedAppointments(response.data);
-    return responses(response);
-  }
+  // async function getEvaluatedAppointments() {
+  //   const response = await axios.get(
+  //     "http://localhost:5000/appointment/evaluated/admin",
+  //     {
+  //       headers: { token: localStorage.getItem("token") },
+  //     }
+  //   );
+  //   setEvaluatedAppointments(response.data);
+  //   return responses(response);
+  // }
 
   async function getCollegeData() {
     try {
@@ -77,8 +77,8 @@ function Dashboard() {
 
   useEffect(() => {
     getAppointments();
-    getFeedbacks();
-    getEvaluatedAppointments();
+    // getFeedbacks();
+    // getEvaluatedAppointments();
     getCollegeData();
   }, []);
 

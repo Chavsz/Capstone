@@ -114,7 +114,7 @@ const Lavroom = () => {
                   <p className="text-gray-600">
                     Student: {appointment.student_name}
                   </p>
-                  <p className="text-gray-600">Topic: {appointment.topic}</p>
+                  <p className="text-gray-600">Specialization: {appointment.topic}</p>
                   <p className="text-gray-600">
                     Mode: {appointment.mode_of_session}
                   </p>

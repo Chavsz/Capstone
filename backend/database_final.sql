@@ -19,9 +19,10 @@ CREATE TABLE profile (
   program VARCHAR(100),
   college VARCHAR(100),
   year_level VARCHAR(20),
-  specialization VARCHAR(100),
-  topics TEXT,
-  profile_image VARCHAR(255)
+  specialization VARCHAR(100), --change name to subject
+  topics TEXT, --change name to specialization
+  profile_image VARCHAR(255),
+  nickname VARCHAR(100)
 );
 
 --Schedule table
@@ -49,7 +50,7 @@ CREATE TABLE appointment (
   user_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
   tutor_id uuid REFERENCES users(user_id) ON DELETE CASCADE,
   subject VARCHAR(255) NOT NULL,
-  topic VARCHAR(255) NOT NULL,
+  topic VARCHAR(255) NOT NULL, --specialization
   mode_of_session VARCHAR(255) NOT NULL,
   date DATE NOT NULL,
   start_time TIME NOT NULL,

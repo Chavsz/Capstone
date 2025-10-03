@@ -92,7 +92,7 @@ router.get("/admin", authorization, async (req, res) => {
         a.mode_of_session,
         a.status,
         t.name AS tutor_name,
-        s.name AS student_name,
+        s.name AS student_name
       FROM appointment a
       JOIN users t ON a.tutor_id = t.user_id
       JOIN users s ON a.user_id = s.user_id

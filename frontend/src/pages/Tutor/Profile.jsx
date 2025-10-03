@@ -12,11 +12,12 @@ const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const Profile = () => {
   const [name, setName] = useState("");
   const [profile, setProfile] = useState({
+    nickname: "",
     program: "",
     college: "",
     year_level: "",
+    subject: "",
     specialization: "",
-    topics: "",
     profile_image: "",
   });
   const [showEditModal, setShowEditModal] = useState(false);
@@ -240,24 +241,28 @@ const Profile = () => {
                 <span className="font-semibold">Name:</span> {name}
               </p>
               <p>
-                <span className="font-semibold">Year:</span>{" "}
-                {profile.year_level || "-"}
+                <span className="font-semibold">Nickname:</span>{" "}
+                {profile.nickname || ""}
               </p>
               <p>
-                <span className="font-semibold">Specialization:</span>{" "}
-                <span>{profile.specialization || "-"}</span>
+                <span className="font-semibold">Year:</span>{" "}
+                {profile.year_level || ""}
+              </p>
+              <p>
+                <span className="font-semibold">Subject:</span>{" "}
+                <span>{profile.specialization || ""}</span>
               </p>
               <p>
                 <span className="font-semibold">Program Course:</span>{" "}
-                {profile.program || "-"}
+                {profile.program || ""}
               </p>
               <p>
                 <span className="font-semibold">College:</span>{" "}
-                {profile.college || "-"}
+                {profile.college || ""}
               </p>
               <p>
-                <span className="font-semibold">Topics:</span>{" "}
-                <span>{profile.topics || "-"}</span>
+                <span className="font-semibold">Specialization:</span>{" "}
+                <span>{profile.topics || ""}</span>
               </p>
             </div>
           </div>
@@ -443,6 +448,18 @@ const Profile = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nickname
+                  </label>
+                  <input
+                    type="text"
+                    name="nickname"
+                    value={form.nickname || ""}
+                    onChange={handleChange}
+                    className="block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Year
                   </label>
                   <select
@@ -459,12 +476,12 @@ const Profile = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Specialization
+                    Subject
                   </label>
                   <input
                     type="text"
-                    name="specialization"
-                    value={form.specialization || ""}
+                    name="subject"
+                    value={form.subject || ""}
                     onChange={handleChange}
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
@@ -495,12 +512,12 @@ const Profile = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Topics
+                    Specialization
                   </label>
                   <input
                     type="text"
-                    name="topics"
-                    value={form.topics || ""}
+                    name="specialization"
+                    value={form.specialization || ""}
                     onChange={handleChange}
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
