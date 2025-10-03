@@ -88,16 +88,14 @@ router.get("/admin", authorization, async (req, res) => {
         a.start_time,
         a.end_time,
         a.subject,
-        a.topic,
+        a.topic,  
         a.mode_of_session,
         a.status,
         t.name AS tutor_name,
         s.name AS student_name,
-        f.rating
       FROM appointment a
       JOIN users t ON a.tutor_id = t.user_id
       JOIN users s ON a.user_id = s.user_id
-      LEFT JOIN feedback f ON f.appointment_id = a.appointment_id
       ORDER BY a.date DESC, a.start_time DESC`
     );
     res.json(result.rows);
@@ -284,24 +282,6 @@ router.get("/tutor/:id/appointment-feedback", async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
-  }
-});
-
-// Get all feedbacks for the logged-in tutee
-router.get("/feedback/tutee", authorization, async (req, res) => {
-  try {
-    const user_id = req.user;
-    const result = await pool.query(
-      `SELECT f.* 
-       FROM feedback f
-       JOIN appointment a ON f.appointment_id = a.appointment_id
-       WHERE a.user_id = $1`,
-      [user_id]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error" });
   }
 });
 

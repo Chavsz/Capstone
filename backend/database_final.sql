@@ -59,15 +59,6 @@ CREATE TABLE appointment (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
---feedback table
-CREATE TABLE feedback (
-  feedback_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  appointment_id uuid REFERENCES appointment(appointment_id) ON DELETE CASCADE,
-  rating INT NOT NULL, -- 1-5 stars
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-
 --notifcation table
 CREATE TABLE notification (
   notification_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),

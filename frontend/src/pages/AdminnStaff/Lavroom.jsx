@@ -123,17 +123,6 @@ const Lavroom = () => {
                     Start Time: {formatTime(appointment.start_time)} -{" "}
                     End Time: {formatTime(appointment.end_time)}
                   </p>
-                  <p className="text-gray-600">
-                    Rating: {appointment.rating !== null && appointment.rating !== undefined
-                      ? (
-                          <span className="text-yellow-400">
-                            {Array.from({ length: 5 }, (_, i) =>
-                              i < appointment.rating ? '★' : '☆'
-                            ).join('')}
-                          </span>
-                        )
-                      : 'No rating'}
-                  </p>
 
                   <button 
                   onClick={() => handleDelete(appointment.appointment_id)}

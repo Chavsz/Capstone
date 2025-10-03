@@ -2,38 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-// Star Rating component for feedback
-const StarRating = ({ value, onChange, disabled }) => {
-  return (
-    <div className="flex items-center space-x-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          type="button"
-          className={`text-2xl ${
-            star <= value ? "text-yellow-400" : "text-gray-300"
-          }`}
-          onClick={() => !disabled && onChange(star)}
-          disabled={disabled}
-        >
-          ★
-        </button>
-      ))}
-    </div>
-  );
-};
-
 // Modal component for appointment details
 const AppointmentModal = ({
   appointment,
   isOpen,
   onClose,
   onDelete,
-  onRatingSubmit,
-  feedbacks,
-  ratingState,
-  onRatingChange,
-  submitting,
 }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -147,44 +121,6 @@ const AppointmentModal = ({
           </div>
         </div>
 
-        {/* Feedback UI for completed appointments */}
-        {appointment.status === "completed" &&
-          !feedbacks[appointment.appointment_id] && (
-            <div className="mb-4">
-              <div className="mb-2 font-medium text-gray-700">Rate your tutor:</div>
-              <StarRating
-                value={ratingState[appointment.appointment_id] || 0}
-                onChange={(star) =>
-                  onRatingChange(appointment.appointment_id, star)
-                }
-                disabled={!!submitting[appointment.appointment_id]}
-              />
-              <button
-                className="mt-2 bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 w-full"
-                disabled={
-                  !ratingState[appointment.appointment_id] ||
-                  submitting[appointment.appointment_id]
-                }
-                onClick={() => {
-                  onRatingSubmit(appointment.appointment_id, appointment.tutor_id);
-                  onClose();
-                }}
-              >
-                {submitting[appointment.appointment_id]
-                  ? "Submitting..."
-                  : "Submit Rating"}
-              </button>
-            </div>
-          )}
-
-        {/* Show thank you if already rated */}
-        {appointment.status === "completed" &&
-          feedbacks[appointment.appointment_id] && (
-            <div className="mb-4 text-green-700 font-medium text-center">
-              Thank you for your feedback!
-            </div>
-          )}
-
         {/* Action Buttons */}
         <div className="flex gap-2">
           <button
@@ -205,9 +141,6 @@ const AppointmentModal = ({
 const Schedules = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [feedbacks, setFeedbacks] = useState({}); // { appointment_id: true }
-  const [ratingState, setRatingState] = useState({}); // { appointment_id: rating }
-  const [submitting, setSubmitting] = useState({}); // { appointment_id: true/false }
   const [selectedFilter, setSelectedFilter] = useState("upcoming");
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -230,30 +163,8 @@ const Schedules = () => {
     }
   };
 
-  // Fetch feedbacks for all appointments
-  const getFeedbacks = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:5000/appointment/feedback/tutee",
-        {
-          headers: { token },
-        }
-      );
-      // Build a map: { appointment_id: true }
-      const feedbackMap = {};
-      response.data.forEach((fb) => {
-        if (fb.appointment_id) feedbackMap[fb.appointment_id] = true;
-      });
-      setFeedbacks(feedbackMap);
-    } catch (err) {
-      setFeedbacks({});
-    }
-  };
-
   useEffect(() => {
     getAppointments();
-    getFeedbacks();
   }, []);
 
   const handleDelete = async (appointmentId) => {
@@ -271,30 +182,6 @@ const Schedules = () => {
     } catch (err) {
       console.error(err.message);
       toast.error("Error deleting appointment");
-    }
-  };
-
-  const handleRatingChange = (appointmentId, rating) => {
-    setRatingState((prev) => ({ ...prev, [appointmentId]: rating }));
-  };
-
-  const handleSubmitRating = async (appointmentId, tutorId) => {
-    const rating = ratingState[appointmentId];
-    if (!rating) return;
-    setSubmitting((prev) => ({ ...prev, [appointmentId]: true }));
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `http://localhost:5000/appointment/${appointmentId}/feedback`,
-        { rating },
-        { headers: { token } }
-      );
-      await getFeedbacks(); // Refresh feedbacks from backend
-      toast.success("Feedback submitted successfully!");
-    } catch (err) {
-      toast.error("Error submitting feedback");
-    } finally {
-      setSubmitting((prev) => ({ ...prev, [appointmentId]: false }));
     }
   };
 
@@ -614,11 +501,6 @@ const Schedules = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         onDelete={handleDelete}
-        onRatingSubmit={handleSubmitRating}
-        feedbacks={feedbacks}
-        ratingState={ratingState}
-        onRatingChange={handleRatingChange}
-        submitting={submitting}
       />
     </div>
   );

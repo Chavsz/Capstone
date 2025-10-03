@@ -407,10 +407,6 @@ const Appointment = () => {
                           {tutorDetails[tutor.user_id]?.specialization ||
                             "No specialization"}
                         </p>
-                        <div className="flex items-center gap-1 mt-1">
-                          <span className="text-xs">5.0</span>
-                          <span className="text-yellow-400 text-xs">★</span>
-                        </div>
                       </div>
                     </div>
                   ))}
@@ -453,10 +449,6 @@ const Appointment = () => {
                   {tutorDetails[selectedTutor.user_id]?.topics ||
                     "Topics not specified"}
                 </p>
-                <div className="flex items-center gap-1 mt-2">
-                  <span className="font-semibold">5.0</span>
-                  <span className="text-yellow-400">★</span>
-                </div>
               </div>
 
               {/* Available Schedules */}
