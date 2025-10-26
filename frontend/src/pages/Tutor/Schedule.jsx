@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import StarDisplay from "../../components/star-display";
 
 // Modal component for appointment details
 const AppointmentModal = ({
@@ -99,13 +98,6 @@ const AppointmentModal = ({
               {appointment.status}
             </span>
           </div>
-          {appointment.status === "completed" &&
-            feedbacks[appointment.appointment_id] && (
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-gray-700">Rating:</span>
-                <StarDisplay value={feedbacks[appointment.appointment_id]} />
-              </div>
-            )}
         </div>
 
         {/* Action Buttons */}
@@ -174,7 +166,6 @@ const AppointmentModal = ({
 const Schedule = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [feedbacks, setFeedbacks] = useState({}); // { appointment_id: rating }
   const [userId, setUserId] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("confirmed");
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -222,32 +213,12 @@ const Schedule = () => {
     }
   };
 
-  // Fetch feedbacks for all appointments for this tutor
-  const getFeedbacks = async (uid) => {
-    try {
-      if (!uid) return;
-      const response = await axios.get(
-        `http://localhost:5000/appointment/tutor/${uid}/appointment-feedback`
-      );
-      // Map feedbacks by appointment_id
-      const feedbackMap = {};
-      response.data.forEach((fb) => {
-        if (fb.appointment_id) feedbackMap[fb.appointment_id] = fb.rating;
-      });
-      setFeedbacks(feedbackMap);
-    } catch (err) {
-      setFeedbacks({});
-    }
-  };
 
   useEffect(() => {
     getAppointments();
     getUserId();
   }, []);
 
-  useEffect(() => {
-    if (userId) getFeedbacks(userId);
-  }, [userId]);
 
   const handleStatusUpdate = async (appointmentId, status) => {
     try {
@@ -582,7 +553,6 @@ const Schedule = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         onStatusUpdate={handleStatusUpdate}
-        feedbacks={feedbacks}
       />
     </div>
   );

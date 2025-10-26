@@ -199,93 +199,8 @@ router.delete("/admin/:id", authorization, async (req, res) => {
   }
 });
 
-// Submit feedback (rating only) for a completed appointment
-router.post("/:id/feedback", authorization, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { rating } = req.body;
-    const user_id = req.user;
 
-    // Validate rating
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      return res
-        .status(400)
-        .json({ error: "Rating must be an integer between 1 and 5." });
-    }
 
-    // Check appointment exists, belongs to user, and is completed
-    const appointmentResult = await pool.query(
-      `SELECT * FROM appointment WHERE appointment_id = $1 AND user_id = $2 AND status = 'completed'`,
-      [id, user_id]
-    );
-    if (appointmentResult.rows.length === 0) {
-      return res
-        .status(403)
-        .json({ error: "You can only rate your own completed appointments." });
-    }
-
-    // Check if feedback already exists for this appointment
-    const feedbackResult = await pool.query(
-      `SELECT * FROM feedback WHERE appointment_id = $1`,
-      [id]
-    );
-    if (feedbackResult.rows.length > 0) {
-      return res
-        .status(400)
-        .json({ error: "Feedback already submitted for this appointment." });
-    }
-
-    // Insert feedback (no comment)
-    const insertResult = await pool.query(
-      `INSERT INTO feedback (appointment_id, rating) VALUES ($1, $2) RETURNING *`,
-      [id, rating]
-    );
-
-    res.json({
-      message: "Feedback submitted successfully.",
-      feedback: insertResult.rows[0],
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// Get all feedback for a tutor (by tutor_id)
-router.get("/tutor/:id/feedback", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(
-      `SELECT f.feedback_id, f.appointment_id, f.rating, f.created_at 
-       FROM feedback f
-       JOIN appointment a ON f.appointment_id = a.appointment_id
-       WHERE a.tutor_id = $1`,
-      [id]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// Get feedback ratings for all appointments for a tutor
-router.get("/tutor/:id/appointment-feedback", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(
-      `SELECT a.appointment_id, f.rating 
-       FROM appointment a
-       LEFT JOIN feedback f ON f.appointment_id = a.appointment_id
-       WHERE a.tutor_id = $1`,
-      [id]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
 
 // Get count of confirmed appointments for tutee (recently confirmed)
 router.get("/tutee/confirmed-count", authorization, async (req, res) => {
@@ -306,32 +221,7 @@ router.get("/tutee/confirmed-count", authorization, async (req, res) => {
   }
 });
 
-// Get all feedbacks for admin
-router.get("/feedback/admin", authorization, async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM feedback");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error" });
-  }
-});
 
-// Get evaluated appointments for admin (appointments that have feedback)
-router.get("/evaluated/admin", authorization, async (req, res) => {
-  try {
-    const result = await pool.query(`
-      SELECT a.*, f.rating, f.created_at as feedback_date
-      FROM appointment a
-      INNER JOIN feedback f ON a.appointment_id = f.appointment_id
-      ORDER BY f.created_at DESC
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error" });
-  }
-});
 
 // Get count of pending appointments for tutor
 router.get("/tutor/pending-count", authorization, async (req, res) => {

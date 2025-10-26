@@ -28,7 +28,6 @@ const TutorDashboard = () => {
   const [userId, setUserId] = useState("");
   const [announcement, setAnnouncement] = useState(null);
   const [appointments, setAppointments] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
   const [areaRange, setAreaRange] = useState("7d");
 
   async function getName() {
@@ -205,11 +204,6 @@ const TutorDashboard = () => {
           total={completedAppointments.length}
           style={cardStyle()}
           text={cardText()}
-        />
-        <Cards
-          title="Evaluations"
-          icon={<fiIcons.FiCheckSquare />}
-          total={feedbacks.length}
         />
         <Cards
           title="Tutee Request"

@@ -12,7 +12,6 @@ import {
 
 function Dashboard() {
   const [appointments, setAppointments] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
   const [evaluatedAppointments, setEvaluatedAppointments] = useState([]);
   const [collegeData, setCollegeData] = useState([]);
 
@@ -36,28 +35,10 @@ function Dashboard() {
     return responses(response);
   }
 
-  // async function getFeedbacks() {
-  //   const response = await axios.get(
-  //     "http://localhost:5000/appointment/feedback/admin",
-  //     {
-  //       headers: { token: localStorage.getItem("token") },
-  //     }
-  //   );
-  //   setFeedbacks(response.data);
 
   //   return responses(response);
   // }
 
-  // async function getEvaluatedAppointments() {
-  //   const response = await axios.get(
-  //     "http://localhost:5000/appointment/evaluated/admin",
-  //     {
-  //       headers: { token: localStorage.getItem("token") },
-  //     }
-  //   );
-  //   setEvaluatedAppointments(response.data);
-  //   return responses(response);
-  // }
 
   async function getCollegeData() {
     try {
@@ -92,8 +73,6 @@ function Dashboard() {
     (a) => a.status === "completed"
   );
 
-  //Total number of feedbacks
-  const feedbackCount = feedbacks.length;
 
   // Date today
   const dateToday = new Date().toLocaleDateString("en-US", {
@@ -111,9 +90,6 @@ function Dashboard() {
   };
 
   const completedSessionsToday = completedAppointments.filter(
-    (a) => formatDate(a.date) === dateToday
-  );
-  const evaluatedSessionsToday = evaluatedAppointments.filter(
     (a) => formatDate(a.date) === dateToday
   );
   const bookedSessionsToday = appointments.filter(
@@ -156,22 +132,6 @@ function Dashboard() {
               }
             />
 
-            {/* Evaluations Card */}
-            <Cards
-              title="Evaluations"
-              icon={<fiIcons.FiCheckSquare />}
-              total={feedbackCount}
-              newToday={
-                evaluatedSessionsToday.length === 0
-                  ? ""
-                  : evaluatedSessionsToday.length
-              }
-              latestText={
-                evaluatedSessionsToday.length === 0
-                  ? "No evaluations today"
-                  : "Evaluations Today"
-              }
-            />
 
             {/* Student Request Card */}
             <Cards
