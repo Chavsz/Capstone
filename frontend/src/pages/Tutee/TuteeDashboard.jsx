@@ -48,20 +48,6 @@ const TuteeDashboard = () => {
     }
   };
 
-  async function fetchUnratedCount() {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/appointment/tutee/unrated-count",
-        {
-          headers: { token: localStorage.getItem("token") },
-        }
-      );
-      setUnratedCount(response.data.unrated_count);
-    } catch (err) {
-      console.error("Failed to fetch unrated count", err);
-    }
-  }
-
   async function fetchAnnouncement() {
     axios
       .get("http://localhost:5000/announcement")
@@ -80,7 +66,6 @@ const TuteeDashboard = () => {
 
   useEffect(() => {
     getName();
-    fetchUnratedCount();
     fetchAnnouncement();
     getAppointments();
   }, []);

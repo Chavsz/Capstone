@@ -44,7 +44,7 @@ router.get("/tutee", authorization, async (req, res) => {
   try {
     const user_id = req.user;
     const result = await pool.query(
-      `SELECT a.*, u.name as tutor_name, p.program, p.college, p.year_level, p.specialization 
+      `SELECT a.*, u.name as tutor_name, p.program, p.college, p.year_level, p.subject, p.specialization, p.online_link 
         FROM appointment a 
         JOIN users u ON a.tutor_id = u.user_id 
         LEFT JOIN profile p ON a.tutor_id = p.user_id 
@@ -284,28 +284,6 @@ router.get("/tutor/:id/appointment-feedback", async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
-  }
-});
-
-// Get count of completed appointments for tutee that are not yet rated
-router.get("/tutee/unrated-count", authorization, async (req, res) => {
-  try {
-    const user_id = req.user;
-    const result = await pool.query(
-      `SELECT COUNT(*) AS unrated_count
-       FROM appointment a
-       WHERE a.user_id = $1
-         AND a.status = 'completed'
-         AND NOT EXISTS (
-           SELECT 1 FROM feedback f
-           WHERE f.appointment_id = a.appointment_id
-         )`,
-      [user_id]
-    );
-    res.json({ unrated_count: parseInt(result.rows[0].unrated_count, 10) });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error" });
   }
 });
 

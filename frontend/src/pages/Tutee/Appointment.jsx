@@ -33,29 +33,19 @@ const Appointment = () => {
       const response = await axios.get(`http://localhost:5000/users/tutor`);
       setTutors(response.data);
 
-      // Fetch profiles for all tutors immediately
-      const profilePromises = response.data.map(async (tutor) => {
-        try {
-          const profileResponse = await axios.get(
-            `http://localhost:5000/profile/${tutor.user_id}`
-          );
-          if (profileResponse.data && profileResponse.data.length > 0) {
-            return { tutorId: tutor.user_id, profile: profileResponse.data[0] };
-          }
-        } catch (err) {
-          console.error(
-            `Error fetching profile for tutor ${tutor.user_id}:`,
-            err.message
-          );
-        }
-        return null;
-      });
-
-      const profileResults = await Promise.all(profilePromises);
+      // The profile data is already included in the response, no need for separate API calls
       const profilesMap = {};
-      profileResults.forEach((result) => {
-        if (result) {
-          profilesMap[result.tutorId] = result.profile;
+      response.data.forEach((tutor) => {
+        if (tutor.subject || tutor.specialization || tutor.college) {
+          profilesMap[tutor.user_id] = {
+            subject: tutor.subject,
+            specialization: tutor.specialization,
+            college: tutor.college,
+            program: tutor.program,
+            year_level: tutor.year_level,
+            profile_image: tutor.profile_image,
+            online_link: tutor.online_link
+          };
         }
       });
 
@@ -104,14 +94,27 @@ const Appointment = () => {
     });
   };
 
-  // Prevent selecting Saturdays (6) and Sundays (0)
+  // Prevent selecting past dates and weekends
   const handleDateChange = (e) => {
     const value = e.target.value;
     if (!value) {
       setFormData({ ...formData, date: "" });
       return;
     }
+    
     const selected = new Date(`${value}T00:00:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
+    
+    // Check if selected date is in the past
+    if (selected < today) {
+      toast.error("Cannot book appointments for past dates.");
+      setFormData({ ...formData, date: "" });
+      e.target.value = "";
+      return;
+    }
+    
+    // Check if selected date is a weekend
     const day = selected.getDay();
     if (day === 0 || day === 6) {
       toast.error("Weekends are not available.");
@@ -119,6 +122,7 @@ const Appointment = () => {
       e.target.value = "";
       return;
     }
+    
     setFormData({ ...formData, date: value });
   };
 
@@ -172,8 +176,16 @@ const Appointment = () => {
       return;
     }
 
-    // Extra guard: prevent booking on weekends
+    // Extra guard: prevent booking on past dates and weekends
     const selected = new Date(`${formData.date}T00:00:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selected < today) {
+      toast.error("Cannot book appointments for past dates.");
+      return;
+    }
+    
     const day = selected.getDay();
     if (day === 0 || day === 6) {
       toast.error("Selected date falls on a weekend. Please choose a weekday.");
@@ -224,11 +236,10 @@ const Appointment = () => {
 
   // Filter tutors by selected subject and search term
   const filteredTutors = tutors.filter((tutor) => {
-    const tutorSpecialization =
-      tutorDetails[tutor.user_id]?.specialization || "";
+    const tutorSubject = tutorDetails[tutor.user_id]?.subject || "";
     const matchesSubject =
       !selectedSubject ||
-      tutorSpecialization.toLowerCase().includes(selectedSubject.toLowerCase());
+      tutorSubject.toLowerCase().includes(selectedSubject.toLowerCase());
     const matchesSearch = tutor.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -419,8 +430,8 @@ const Appointment = () => {
                         </div>
                         <p className="font-medium text-sm">{tutor.name}</p>
                         <p className="text-xs text-gray-600">
-                          {tutorDetails[tutor.user_id]?.specialization ||
-                            "No specialization"}
+                          {tutorDetails[tutor.user_id]?.subject ||
+                            "No subject"}
                         </p>
                       </div>
                     </div>
@@ -457,12 +468,12 @@ const Appointment = () => {
                     "College not specified"}
                 </p>
                 <p className="text-gray-600">
-                  {tutorDetails[selectedTutor.user_id]?.specialization ||
-                    "No specialization"}
+                  {tutorDetails[selectedTutor.user_id]?.subject ||
+                    "No subject"}
                 </p>
                 <p className="text-gray-600">
-                  {tutorDetails[selectedTutor.user_id]?.topics ||
-                    "Topics not specified"}
+                  {tutorDetails[selectedTutor.user_id]?.specialization ||
+                    "No specialization"}
                 </p>
               </div>
 

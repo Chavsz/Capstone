@@ -44,7 +44,7 @@ app.get("/users", authorization, async (req, res) => {
 app.get("/users/tutor", async (req, res) => {
   try {
     const users = await pool.query(`
-      SELECT u.user_id, u.name, u.email, u.role, p.program, p.college, p.year_level, p.specialization, p.topics, p.profile_image
+      SELECT u.user_id, u.name, u.email, u.role, p.program, p.college, p.year_level, p.subject, p.specialization, p.profile_image, p.online_link
       FROM users u
       LEFT JOIN profile p ON u.user_id = p.user_id
       WHERE u.role = 'tutor'

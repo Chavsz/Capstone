@@ -179,7 +179,7 @@ router.put("/:id", upload, async (req, res) => {
 //display tutors
 router.get("/tutor_subjects", async (req, res) => {
   const result = await pool.query(` 
-    SELECT u.name, u.user_id, p.specialization, p.profile_image
+    SELECT u.name, u.user_id, p.subject, p.profile_image
     FROM users u
     JOIN profile p ON u.user_id = p.user_id`);
   res.json(result.rows);

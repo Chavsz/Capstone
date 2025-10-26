@@ -8,27 +8,10 @@ import { IoPersonCircleOutline } from "react-icons/io5";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [unratedCount, setUnratedCount] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [confirmedCount, setConfirmedCount] = useState(0);
   const dropdownRef = useRef(null);
-
-  // Fetch unrated appointments count
-  const getUnratedCount = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:5000/appointment/tutee/unrated-count",
-        {
-          headers: { token },
-        }
-      );
-      setUnratedCount(response.data.unrated_count);
-    } catch (err) {
-      console.error("Error fetching unrated count:", err.message);
-    }
-  };
 
   // Fetch unread notifications
   const getUnreadNotifications = async () => {
@@ -98,7 +81,6 @@ const Header = () => {
 
   // Fetch data on component mount
   useEffect(() => {
-    getUnratedCount();
     getUnreadNotifications();
     getConfirmedCount();
   }, []);
@@ -106,7 +88,6 @@ const Header = () => {
   const toggleDropdown = () => {
     if (!isDropdownOpen) {
       // Refresh data when opening dropdown
-      getUnratedCount();
       getUnreadNotifications();
       getConfirmedCount();
     }
@@ -114,7 +95,7 @@ const Header = () => {
   };
 
   // Calculate total notifications // confirmedCount
-  const totalNotifications = unratedCount + unreadCount;
+  const totalNotifications = unreadCount;
 
   return (
     <div className="pt-3 px-3 bg-white">
@@ -171,18 +152,6 @@ const Header = () => {
                       </p>
                     </div>
                   ))}
-
-                  {/* Unrated Appointments */}
-                  {unratedCount > 0 && (
-                    <div className="bg-orange-50 border border-orange-200 rounded-md p-3">
-                      <p className="text-orange-600 text-[14px] font-semibold">
-                        {unratedCount} appointment{unratedCount > 1 ? 's' : ''} to rate
-                      </p>
-                      <p className="text-orange-600 text-sm mt-1">
-                        Rate your completed sessions to help other students
-                      </p>
-                    </div>
-                  )}
 
                   {/* No notifications */}
                   {totalNotifications === 0 && (

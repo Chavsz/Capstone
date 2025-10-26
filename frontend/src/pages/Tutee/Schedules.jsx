@@ -119,6 +119,19 @@ const AppointmentModal = ({
               {appointment.status}
             </span>
           </div>
+          {appointment.status === "confirmed" && appointment.online_link && (
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-gray-700">Online Link:</span>
+              <a
+                href={appointment.online_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline text-sm break-all"
+              >
+                Join Meeting
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}
@@ -436,9 +449,14 @@ const Schedules = () => {
                             {formatTime(appointment.start_time)} -{" "}
                             {formatTime(appointment.end_time)}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 mb-1">
                             {appointment.mode_of_session}
                           </div>
+                          {/* {appointment.status === "confirmed" && appointment.online_link && (
+                            <div className="text-xs text-green-600 font-medium">
+                              Online link available
+                            </div>
+                          )} */}
                         </div>
                       </div>
                     ))}
@@ -481,9 +499,14 @@ const Schedules = () => {
                             {formatTime(appointment.start_time)} -{" "}
                             {formatTime(appointment.end_time)}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 mb-1">
                             {appointment.mode_of_session}
                           </div>
+                          {/* {appointment.status === "confirmed" && appointment.online_link && (
+                            <div className="text-xs text-green-600 font-medium">
+                              Online link available
+                            </div>
+                          )} */}
                         </div>
                       </div>
                     ))}
