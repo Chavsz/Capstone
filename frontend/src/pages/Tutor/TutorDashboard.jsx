@@ -22,33 +22,10 @@ import * as fiIcons from "react-icons/fi";
 // Components
 import { Cards } from "../../components/cards";
 
-// Star display component
-// const StarDisplay = ({ value }) => {
-//   const rounded = Math.round(value * 10) / 10;
-//   return (
-//     <div className="flex items-center gap-1">
-//       {[1, 2, 3, 4, 5].map((star) => (
-//         <span
-//           key={star}
-//           className={`text-2xl ${
-//             star <= Math.round(rounded) ? "text-yellow-400" : "text-gray-300"
-//           }`}
-//         >
-//           ★
-//         </span>
-//       ))}
-//       <span className="ml-2 text-lg font-semibold text-gray-700">
-//         {rounded}
-//       </span>
-//     </div>
-//   );
-// };
-
 const TutorDashboard = () => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [userId, setUserId] = useState("");
-  const [avgRating, setAvgRating] = useState(null);
   const [announcement, setAnnouncement] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
@@ -83,26 +60,6 @@ const TutorDashboard = () => {
     }
   }
 
-  // // Fetch feedbacks and calculate average rating
-  // async function getAverageRating(uid) {
-  //   try {
-  //     if (!uid) return;
-  //     const response = await axios.get(
-  //       `http://localhost:5000/appointment/tutor/${uid}/feedback`
-  //     );
-  //     const feedbacks = response.data;
-  //     if (feedbacks.length === 0) {
-  //       setAvgRating(null);
-  //       return;
-  //     }
-  //     const avg =
-  //       feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length;
-  //     setAvgRating(avg);
-  //   } catch (err) {
-  //     setAvgRating(null);
-  //   }
-  // }
-
   const getAppointments = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -132,31 +89,11 @@ const TutorDashboard = () => {
     }
   }
 
-  async function getFeedbacks() {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:5000/appointment/feedback/tutor/${userId}`,
-        { headers: { token } }
-      );
-      setFeedbacks(response.data);
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
   useEffect(() => {
     getName();
     getAnnouncement();
     getAppointments();
   }, []);
-
-  useEffect(() => {
-    if (userId) {
-      // getAverageRating(userId);
-      getFeedbacks();
-    }
-  }, [userId]);
 
   // Helper: Filter appointments by date range
   function filterByRange(appts, range) {
@@ -260,17 +197,6 @@ const TutorDashboard = () => {
       <h2 className="ttext-[24px] font-bold text-blue-600">
         Welcome, {name}!
       </h2>
-      {/* Show average rating if available */}
-      {/* <div className="mt-2">
-            {avgRating !== null ? (
-              <div className="flex items-center gap-2">
-                <span className="text-gray-700 font-medium">Your Rating:</span>
-                <StarDisplay value={avgRating} />
-              </div>
-            ) : (
-              <span className="text-gray-500">No ratings yet</span>
-            )}
-          </div> */}
 
       <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-7 mt-6">
         <Cards

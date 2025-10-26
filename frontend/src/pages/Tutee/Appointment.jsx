@@ -17,7 +17,7 @@ const Appointment = () => {
   const [formData, setFormData] = useState({
     subject: "",
     topic: "",
-    mode_of_session: "Face-to-Face",
+    mode_of_session: "",
     date: "",
     start_time: "",
     end_time: "",
@@ -199,7 +199,7 @@ const Appointment = () => {
       setFormData({
         subject: "",
         topic: "",
-        mode_of_session: "Face-to-Face",
+        mode_of_session: "",
         date: "",
         start_time: "",
         end_time: "",
@@ -297,6 +297,21 @@ const Appointment = () => {
                 className="border border-gray-300 rounded-md p-3 w-full"
                 required
               />
+            </div>
+
+            {/* Mode of Session */}
+            <div>
+              <h3 className="font-semibold text-lg mb-3">Mode of Session</h3>
+              <select
+                name="mode_of_session"
+                value={formData.mode_of_session}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded-md p-3 w-[280px]"
+                required
+              >
+                <option value="Face-to-Face">Face-to-Face</option>
+                <option value="Online">Online</option>
+              </select>
             </div>
 
             {/* Choose Date and Time */}

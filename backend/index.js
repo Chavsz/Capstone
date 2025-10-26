@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 const authorization = require("./middleware/authorization");
+const { autoDeclinePendingAppointments } = require("./routes/appointment");
 
 //middleware
 
@@ -116,10 +117,18 @@ app.use("/landing", require("./routes/landing"));
 app.use("/event", require("./routes/event"));
 
 //appointmentpage
-app.use("/appointment", require("./routes/appointment"));
+app.use("/appointment", require("./routes/appointment").router);
 
 //announcementpage
 app.use("/announcement", require("./routes/announcement"));
+
+// Set up scheduled job to check for auto-decline every hour
+setInterval(async () => {
+  await autoDeclinePendingAppointments();
+}, 60 * 60 * 1000); // Run every hour (60 minutes * 60 seconds * 1000 milliseconds)
+
+// Run auto-decline check immediately on server start
+autoDeclinePendingAppointments();
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");

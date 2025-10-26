@@ -19,6 +19,7 @@ const Profile = () => {
     subject: "",
     specialization: "",
     profile_image: "",
+    online_link: "",
   });
   const [showEditModal, setShowEditModal] = useState(false);
   const [form, setForm] = useState(profile);
@@ -250,7 +251,7 @@ const Profile = () => {
               </p>
               <p>
                 <span className="font-semibold">Subject:</span>{" "}
-                <span>{profile.specialization || ""}</span>
+                <span>{profile.subject || ""}</span>
               </p>
               <p>
                 <span className="font-semibold">Program Course:</span>{" "}
@@ -262,7 +263,11 @@ const Profile = () => {
               </p>
               <p>
                 <span className="font-semibold">Specialization:</span>{" "}
-                <span>{profile.topics || ""}</span>
+                <span>{profile.specialization || ""}</span>
+              </p>
+              <p>
+                <span className="font-semibold">Online Link:</span>{" "}
+                <span>{profile.online_link || "Not provided"}</span>
               </p>
             </div>
           </div>
@@ -519,6 +524,19 @@ const Profile = () => {
                     name="specialization"
                     value={form.specialization || ""}
                     onChange={handleChange}
+                    className="block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Online Link
+                  </label>
+                  <input
+                    type="url"
+                    name="online_link"
+                    value={form.online_link || ""}
+                    onChange={handleChange}
+                    placeholder="https://meet.google.com/your-meeting-link"
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>

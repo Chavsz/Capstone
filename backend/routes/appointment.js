@@ -130,15 +130,17 @@ router.put("/:id/status", authorization, async (req, res) => {
     );
 
     // If appointment is confirmed, create a notification for the student
-    if (status === 'confirmed') {
+    if (status === "confirmed") {
       const student_id = appointment.rows[0].user_id;
       const tutor_name = await pool.query(
         "SELECT name FROM users WHERE user_id = $1",
         [user_id]
       );
-      
-      const notificationContent = `Your appointment has been confirmed by ${tutor_name.rows[0]?.name || 'your tutor'}`;
-      
+
+      const notificationContent = `Your appointment has been confirmed by ${
+        tutor_name.rows[0]?.name || "your tutor"
+      }`;
+
       await pool.query(
         "INSERT INTO notification (user_id, notification_content, status) VALUES ($1, $2, 'unread')",
         [student_id, notificationContent]
@@ -353,24 +355,6 @@ router.get("/evaluated/admin", authorization, async (req, res) => {
   }
 });
 
-// get all feedbacks by tutor_id
-router.get("/feedback/tutor/:id", authorization, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(
-      `SELECT f.* 
-       FROM feedback f
-       JOIN appointment a ON f.appointment_id = a.appointment_id
-       WHERE a.tutor_id = $1`,
-      [id]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
 // Get count of pending appointments for tutor
 router.get("/tutor/pending-count", authorization, async (req, res) => {
   try {
@@ -412,16 +396,16 @@ router.put("/notifications/:id/read", authorization, async (req, res) => {
   try {
     const { id } = req.params;
     const user_id = req.user;
-    
+
     const result = await pool.query(
       "UPDATE notification SET status = 'read' WHERE notification_id = $1 AND user_id = $2 RETURNING *",
       [id, user_id]
     );
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Notification not found" });
     }
-    
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -444,4 +428,58 @@ router.get("/notifications/unread-count", authorization, async (req, res) => {
   }
 });
 
-module.exports = router;
+// Auto-decline appointments that have been pending for more than 14 hours
+const autoDeclinePendingAppointments = async () => {
+  try {
+    // Find appointments that have been pending for more than 14 hours
+    const result = await pool.query(
+      `SELECT appointment_id, user_id, tutor_id, subject, topic, date, start_time, end_time
+      FROM appointment 
+      WHERE status = 'pending' 
+      AND created_at < NOW() - INTERVAL '14 hours'`,
+      []
+    );
+
+    if (result.rows.length > 0) {
+      console.log(`Found ${result.rows.length} appointments to auto-decline`);
+
+      // Update all found appointments to declined status
+      const updateResult = await pool.query(
+        `UPDATE appointment 
+        SET status = 'declined', updated_at = NOW() 
+        WHERE appointment_id = ANY($1)`,
+        [result.rows.map((row) => row.appointment_id)]
+      );
+
+      // Create notifications for students about auto-declined appointments
+      for (const appointment of result.rows) {
+        const notificationContent = `Your appointment for ${appointment.subject} - ${appointment.topic} on ${appointment.date} at ${appointment.start_time} has been automatically declined due to no response from the tutor within 14 hours.`;
+
+        await pool.query(
+          "INSERT INTO notification (user_id, notification_content, status) VALUES ($1, $2, 'unread')",
+          [appointment.user_id, notificationContent]
+        );
+      }
+
+      console.log(
+        `Auto-declined ${updateResult.rowCount} appointments and sent notifications`
+      );
+    } 
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+// Manual endpoint to trigger auto-decline (for testing)
+router.post("/auto-decline", authorization, async (req, res) => {
+  try {
+    await autoDeclinePendingAppointments();
+    res.json({ message: "Auto-decline process completed" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Export the auto-decline function for use in the main server
+module.exports = { router, autoDeclinePendingAppointments };

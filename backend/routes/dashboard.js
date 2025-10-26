@@ -58,7 +58,7 @@ router.get("/profile", authorization, async (req, res) => {
 
 // Update tutor profile
 router.put("/profile", authorization, async (req, res) => {
-  const { nickname, program, college, year_level, subject, specialization, profile_image } = req.body;
+  const { nickname, program, college, year_level, subject, specialization, profile_image, online_link } = req.body;
   try {
     // Upsert profile: update if exists, else insert
     const existing = await pool.query(
@@ -68,13 +68,13 @@ router.put("/profile", authorization, async (req, res) => {
     let result;
     if (existing.rows.length > 0) {
       result = await pool.query(
-        `UPDATE profile SET nickname = $1, program = $2, college = $3, year_level = $4, subject = $5, specialization = $6, profile_image = $7 WHERE user_id = $8 RETURNING *`,
-        [nickname, program, college, year_level, subject, specialization, profile_image, req.user]
+        `UPDATE profile SET nickname = $1, program = $2, college = $3, year_level = $4, subject = $5, specialization = $6, profile_image = $7, online_link = $8 WHERE user_id = $9 RETURNING *`,
+        [nickname, program, college, year_level, subject, specialization, profile_image, online_link, req.user]
       );
     } else {
       result = await pool.query(
-        `INSERT INTO profile (user_id, nickname, program, college, year_level, subject, specialization, profile_image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-        [nickname, req.user, program, college, year_level, subject, specialization, profile_image]
+        `INSERT INTO profile (user_id, nickname, program, college, year_level, subject, specialization, profile_image, online_link) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+        [req.user, nickname, program, college, year_level, subject, specialization, profile_image, online_link]
       );
     }
     res.json(result.rows[0]);
