@@ -338,6 +338,48 @@ const autoDeclinePendingAppointments = async () => {
   }
 };
 
+// Check for ended appointments and create notifications for tutors
+const checkEndedAppointments = async () => {
+  try {
+    // Find confirmed appointments that have just ended (within the last minute)
+    // and haven't already generated an end notification today
+    const result = await pool.query(
+      `SELECT a.appointment_id, a.tutor_id, a.subject, a.topic, a.date, a.start_time, a.end_time, u.name as student_name
+      FROM appointment a
+      JOIN users u ON a.user_id = u.user_id
+      WHERE a.status = 'confirmed' 
+      AND a.date = CURRENT_DATE
+      AND a.end_time <= CURRENT_TIME
+      AND a.end_time >= CURRENT_TIME - INTERVAL '1 minute'
+      AND NOT EXISTS (
+        SELECT 1 FROM notification n 
+        WHERE n.user_id = a.tutor_id 
+        AND n.notification_content LIKE '%has ended%'
+        AND n.created_at >= CURRENT_DATE
+        AND n.notification_content LIKE '%' || a.subject || '%'
+        AND n.notification_content LIKE '%' || a.topic || '%'
+      )`,
+      []
+    );
+
+    if (result.rows.length > 0) {
+      console.log(`Found ${result.rows.length} appointments that have ended`);
+
+      // Create notifications for tutors about ended appointments
+      for (const appointment of result.rows) {
+        const notificationContent = `Your appointment with ${appointment.student_name} for ${appointment.subject} - ${appointment.topic} has ended at ${appointment.end_time}.`;
+
+        await pool.query(
+          "INSERT INTO notification (user_id, notification_content, status) VALUES ($1, $2, 'unread')",
+          [appointment.tutor_id, notificationContent]
+        );
+      }
+    }
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
 // Manual endpoint to trigger auto-decline (for testing)
 router.post("/auto-decline", authorization, async (req, res) => {
   try {
@@ -349,5 +391,63 @@ router.post("/auto-decline", authorization, async (req, res) => {
   }
 });
 
-// Export the auto-decline function for use in the main server
-module.exports = { router, autoDeclinePendingAppointments };
+// Manual endpoint to trigger appointment end check (for testing)
+router.post("/check-ended", authorization, async (req, res) => {
+  try {
+    await checkEndedAppointments();
+    res.json({ message: "Appointment end check completed" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Test endpoint to create a sample appointment that ends soon (for testing)
+router.post("/test-appointment", authorization, async (req, res) => {
+  try {
+    const user_id = req.user;
+    
+    // Get a tutor for testing
+    const tutorResult = await pool.query(
+      "SELECT user_id FROM users WHERE role = 'tutor' LIMIT 1"
+    );
+    
+    if (tutorResult.rows.length === 0) {
+      return res.status(400).json({ error: "No tutors found for testing" });
+    }
+    
+    const tutor_id = tutorResult.rows[0].user_id;
+    
+    // Create a test appointment that ends in 1 minute
+    const now = new Date();
+    const endTime = new Date(now.getTime() + 60000); // 1 minute from now
+    
+    const result = await pool.query(
+      `INSERT INTO appointment (user_id, tutor_id, subject, topic, mode_of_session, date, start_time, end_time, status) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'confirmed') 
+       RETURNING *`,
+      [
+        user_id,
+        tutor_id,
+        "Test Subject",
+        "Test Topic",
+        "Online",
+        now.toISOString().split('T')[0], // Today's date
+        now.toTimeString().split(' ')[0].substring(0, 5), // Current time HH:MM
+        endTime.toTimeString().split(' ')[0].substring(0, 5), // End time HH:MM
+      ]
+    );
+
+    res.json({ 
+      message: "Test appointment created successfully",
+      appointment: result.rows[0],
+      note: "This appointment will end in 1 minute and should trigger a notification"
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Export the functions for use in the main server
+module.exports = { router, autoDeclinePendingAppointments, checkEndedAppointments };
