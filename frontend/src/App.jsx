@@ -19,8 +19,16 @@ import TutorPage from "./pages/Tutor/TutorPage"; //role = tutor
 import AdminPage from "./pages/AdminnStaff/AdminPage"; //role = admin
 
 // Role-based dashboard component
-function RoleBasedDashboard({ setAuth }) {
-  const role = localStorage.getItem("role");
+function RoleBasedDashboard({ setAuth, currentRole, setCurrentRole }) {
+  const role = currentRole || localStorage.getItem("role");
+
+  // Update currentRole if localStorage role is different
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    if (storedRole !== currentRole) {
+      setCurrentRole(storedRole);
+    }
+  }, [currentRole, setCurrentRole]);
 
   switch (role) {
     case "admin":
@@ -39,6 +47,7 @@ function RoleBasedDashboard({ setAuth }) {
 function App() {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentRole, setCurrentRole] = useState(localStorage.getItem("role"));
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);
@@ -60,6 +69,20 @@ function App() {
   useEffect(() => {
     isAuth();
   }, [isAuth]);
+
+  // Listen for role changes from Switch components
+  useEffect(() => {
+    const handleRoleChange = (event) => {
+      const newRole = event.detail.newRole;
+      setCurrentRole(newRole);
+    };
+
+    window.addEventListener('roleChanged', handleRoleChange);
+    
+    return () => {
+      window.removeEventListener('roleChanged', handleRoleChange);
+    };
+  }, []);
 
   return (
     <div>
@@ -92,7 +115,7 @@ function App() {
           path="/dashboard/*"
           element={
             isAuthenticated ? (
-              <RoleBasedDashboard setAuth={setAuth} />
+              <RoleBasedDashboard setAuth={setAuth} currentRole={currentRole} setCurrentRole={setCurrentRole} />
             ) : (
               <Navigate to="/login" />
             )

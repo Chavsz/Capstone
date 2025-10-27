@@ -202,7 +202,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-white py-3 px-6">
       {/* Page Header */}
-      <h1 className="text-2xl font-bold text-blue-900 mb-6">My Profile</h1>
+      <h1 className="text-2xl font-bold text-blue-600 mb-6">My Profile</h1>
 
       {/* Student Information Card */}
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6 max-w">

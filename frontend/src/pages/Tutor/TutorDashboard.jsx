@@ -185,7 +185,7 @@ const TutorDashboard = () => {
   return (
     <div className="flex-1 flex flex-col bg-white px-6 py-3">
       <div className="flex justify-between items-center">
-        <h1 className="text-1xl font-bold text-blue-600">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-blue-600">Dashboard</h1>
 
         {/* Show date today */}
         <p className="text-[13px] font-extralight text-[#696969] flex items-center gap-2">

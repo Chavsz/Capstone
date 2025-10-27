@@ -10,6 +10,7 @@ import TuteeDashboard from "./TuteeDashboard";
 import Profile from "./Profile";
 import Schedules from "./Schedules";
 import Appointment from "./Appointment";
+import Switch from "./Switch";
 
 function TuteePage({ setAuth }) {
   return (
@@ -20,15 +21,16 @@ function TuteePage({ setAuth }) {
       <div className="flex flex-col">
         <Header />
         <div className="flex-1">
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={<TuteeDashboard setAuth={setAuth} />}
-          />
-          <Route exact path="/profile" element={<Profile />} />
-          <Route exact path="/appointment" element={<Appointment />} />
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={<TuteeDashboard setAuth={setAuth} />}
+            />
+            <Route exact path="/profile" element={<Profile />} />
+            <Route exact path="/appointment" element={<Appointment />} />
             <Route exact path="/schedules" element={<Schedules />} />
+            <Route exact path="/switch" element={<Switch />} />
           </Routes>
         </div>
       </div>

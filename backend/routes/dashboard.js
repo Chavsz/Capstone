@@ -280,4 +280,49 @@ router.get("/students", authorization, async (req, res) => {
   }
 });
 
+// Switch user role
+router.put("/switch-role", authorization, async (req, res) => {
+  try {
+    const { newRole } = req.body;
+    
+    // Validate the new role
+    if (!newRole || !['tutor', 'student'].includes(newRole)) {
+      return res.status(400).json({ error: "Invalid role. Must be 'tutor' or 'student'" });
+    }
+    
+    // Get current user's role
+    const currentUser = await pool.query(
+      "SELECT role FROM users WHERE user_id = $1",
+      [req.user]
+    );
+    
+    if (currentUser.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    const currentRole = currentUser.rows[0].role;
+    
+    // Check if user is trying to switch to the same role
+    if (currentRole === newRole) {
+      return res.status(400).json({ error: "User is already in this role" });
+    }
+    
+    // Update the user's role in the database
+    const result = await pool.query(
+      "UPDATE users SET role = $1 WHERE user_id = $2 RETURNING user_id, name, role",
+      [newRole, req.user]
+    );
+    
+    res.json({
+      success: true,
+      message: `Role successfully changed from ${currentRole} to ${newRole}`,
+      user: result.rows[0]
+    });
+    
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;
