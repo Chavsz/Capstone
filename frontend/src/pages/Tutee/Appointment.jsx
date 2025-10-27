@@ -88,10 +88,19 @@ const Appointment = () => {
   };
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+  };
+
+  const handleModeChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      mode_of_session: value,
+    }));
   };
 
   // Prevent selecting past dates and weekends
@@ -168,6 +177,7 @@ const Appointment = () => {
     if (
       !formData.subject ||
       !formData.topic ||
+      !formData.mode_of_session ||
       !formData.date ||
       !formData.start_time ||
       !formData.end_time
@@ -196,12 +206,14 @@ const Appointment = () => {
 
     try {
       const token = localStorage.getItem("token");
+      const appointmentData = {
+        tutor_id: selectedTutor.user_id,
+        ...formData,
+      };
+      
       const response = await axios.post(
         "http://localhost:5000/appointment",
-        {
-          tutor_id: selectedTutor.user_id,
-          ...formData,
-        },
+        appointmentData,
         {
           headers: { token },
         }
@@ -220,7 +232,7 @@ const Appointment = () => {
       setSelectedSubject("");
     } catch (err) {
       console.error(err.message);
-      toast.success("Error creating appointment. Please try again.");
+      toast.error(`Error creating appointment: ${err.response?.data || err.message}`);
     } finally {
       setLoading(false);
     }
@@ -316,10 +328,11 @@ const Appointment = () => {
               <select
                 name="mode_of_session"
                 value={formData.mode_of_session}
-                onChange={handleInputChange}
+                onChange={handleModeChange}
                 className="border border-gray-300 rounded-md p-3 w-[280px]"
                 required
               >
+                <option value="">Select mode</option>
                 <option value="Face-to-Face">Face-to-Face</option>
                 <option value="Online">Online</option>
               </select>

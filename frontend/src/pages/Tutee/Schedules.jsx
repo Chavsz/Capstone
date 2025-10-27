@@ -132,6 +132,19 @@ const AppointmentModal = ({
               </a>
             </div>
           )}
+          {appointment.status === "confirmed" && appointment.file_link && (
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-gray-700">Materials:</span>
+              <a
+                href={appointment.file_link}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="text-blue-600 hover:text-blue-800 underline text-sm break-all"
+              >
+                {appointment.file_link}
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}

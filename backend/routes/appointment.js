@@ -44,7 +44,7 @@ router.get("/tutee", authorization, async (req, res) => {
   try {
     const user_id = req.user;
     const result = await pool.query(
-      `SELECT a.*, u.name as tutor_name, p.program, p.college, p.year_level, p.subject, p.specialization, p.online_link 
+      `SELECT a.*, u.name as tutor_name, p.program, p.college, p.year_level, p.subject, p.specialization, p.online_link, p.file_link 
         FROM appointment a 
         JOIN users u ON a.tutor_id = u.user_id 
         LEFT JOIN profile p ON a.tutor_id = p.user_id 

@@ -20,6 +20,7 @@ const Profile = () => {
     specialization: "",
     profile_image: "",
     online_link: "",
+    file_link: "",
   });
   const [showEditModal, setShowEditModal] = useState(false);
   const [form, setForm] = useState(profile);
@@ -268,6 +269,10 @@ const Profile = () => {
               <p>
                 <span className="font-semibold">Online Link:</span>{" "}
                 <span>{profile.online_link || "Not provided"}</span>
+              </p>
+              <p>
+                <span className="font-semibold">File Link:</span>{" "}
+                <span>{profile.file_link || "Not provided"}</span>
               </p>
             </div>
           </div>
@@ -537,6 +542,19 @@ const Profile = () => {
                     value={form.online_link || ""}
                     onChange={handleChange}
                     placeholder="https://meet.google.com/your-meeting-link"
+                    className="block w-full border border-gray-300 rounded-md px-3 py-2"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    File Link
+                  </label>
+                  <input
+                    type="url"
+                    name="file_link"
+                    value={form.file_link || ""}
+                    onChange={handleChange}
+                    // placeholder="https://drive.google.com/file/d/your-file-id/view?usp=sharing"
                     className="block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>

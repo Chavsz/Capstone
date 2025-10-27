@@ -23,7 +23,8 @@ CREATE TABLE profile (
   topics TEXT, --change name to specialization
   profile_image VARCHAR(255),
   nickname VARCHAR(100),
-  online_link VARCHAR(255)
+  online_link VARCHAR(255),
+  file_link VARCHAR(100)
 );
 
 --Schedule table
