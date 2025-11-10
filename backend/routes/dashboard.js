@@ -9,7 +9,14 @@ router.get("/", authorization, async (req, res) => {
     // res.json(req.user);
 
     const user = await pool.query("SELECT name, role FROM users WHERE user_id = $1", [req.user]);
-    res.json(user.rows[0]);
+    const userRow = user.rows[0];
+    let canSwitchToTutor = false;
+    if (userRow && userRow.role === 'student') {
+      // If user has an existing tutor profile, consider them approved to switch back
+      const profile = await pool.query("SELECT 1 FROM profile WHERE user_id = $1 LIMIT 1", [req.user]);
+      canSwitchToTutor = profile.rows.length > 0;
+    }
+    res.json({ ...userRow, can_switch_to_tutor: canSwitchToTutor });
 
   } catch (err) {
     console.error(err.message);
@@ -301,6 +308,18 @@ router.put("/switch-role", authorization, async (req, res) => {
     }
     
     const currentRole = currentUser.rows[0].role;
+    
+    // Allow only:
+    // - tutor -> student
+    // - student -> tutor IF user has an existing tutor profile (approved tutor)
+    let allowed = false;
+    if (currentRole === 'tutor' && newRole === 'student') {
+      allowed = true;
+    } else if (currentRole === 'student' && newRole === 'tutor') {
+      const profile = await pool.query("SELECT 1 FROM profile WHERE user_id = $1 LIMIT 1", [req.user]);
+      allowed = profile.rows.length > 0;
+    }
+    if (!allowed) return res.status(403).json({ error: "Switch not allowed." });
     
     // Check if user is trying to switch to the same role
     if (currentRole === newRole) {

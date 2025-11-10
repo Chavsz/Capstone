@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import * as mdIcons from "react-icons/md";
 import * as fiIcons from "react-icons/fi";
-import * as piIcons from "react-icons/pi";
 
 const RouteSelect = () => {
   const [selected, setSelected] = useState(window.location.pathname);
@@ -55,13 +54,6 @@ const RouteSelect = () => {
         selected={selected === "/dashboard/event"}
         Icon={mdIcons.MdOutlineAnnouncement}
         title="Events"
-        handleSelect={handleSelect}
-      />
-      <Route
-        to="/dashboard/switch"
-        selected={selected === "/dashboard/switch"}
-        Icon={piIcons.PiUserSwitchBold}
-        title="Switch"
         handleSelect={handleSelect}
       />
     </div>

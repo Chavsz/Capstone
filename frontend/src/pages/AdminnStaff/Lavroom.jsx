@@ -51,6 +51,8 @@ const Lavroom = () => {
         return "bg-green-100 text-green-800";
       case "declined":
         return "bg-red-100 text-red-800";
+      case "completed":
+        return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -77,7 +79,7 @@ const Lavroom = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-white p-6">
-        <h1 className="text-[#132c91] font-bold text-2xl">Schedules</h1>
+        <h1 className="text-blue-600 font-bold text-2xl">Schedules</h1>
         <div className="mt-6 text-center">Loading appointments...</div>
       </div>
     );
@@ -85,17 +87,16 @@ const Lavroom = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-[24px] font-bold text-blue-600">Lavroom</h1>
+      <h1 className="text-[24px] font-bold text-blue-600 mb-6">Lavroom</h1>
 
-      <div className="bg-gray-100 p-6 rounded-lg mt-6">
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-6">
           {appointments.map((appointment) => (
             <div
               key={appointment.appointment_id}
-              className="bg-[#fafafa] p-6 rounded-lg shadow-md"
+              className="bg-white p-5 rounded-lg shadow-md border border-gray-200"
             >
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-[#132c91]">
+                <h3 className="text-lg font-semibold text-blue-600">
                   {appointment.subject}
                 </h3>
                 <span
@@ -106,7 +107,7 @@ const Lavroom = () => {
                   {appointment.status}
                 </span>
               </div>
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start mb-2">
                 <div>
                   <p className="text-gray-600">
                     Tutor: {appointment.tutor_name}
@@ -126,7 +127,7 @@ const Lavroom = () => {
 
                   <button 
                   onClick={() => handleDelete(appointment.appointment_id)}
-                  className="bg-red-500 text-white rounded-md px-4 py-2 text-sm hover:bg-red-400 mt-4"
+                  className="bg-red-400 text-white rounded-md px-4 py-2 text-sm hover:bg-red-400 mt-4"
                 >
                   Delete
                 </button>
@@ -136,7 +137,6 @@ const Lavroom = () => {
           ))}
         </div>
       </div>
-    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import * as mdIcons from "react-icons/md";
@@ -6,6 +6,31 @@ import * as piIcons from "react-icons/pi";
 
 const RouteSelect = () => {
   const [selected, setSelected] = useState(window.location.pathname);
+  const [canSwitchToTutor, setCanSwitchToTutor] = useState(
+    typeof window !== "undefined" && localStorage.getItem("canSwitchToTutor") === "true"
+  );
+
+  useEffect(() => {
+    const updateFlag = () => {
+      const val = typeof window !== "undefined" && localStorage.getItem("canSwitchToTutor") === "true";
+      setCanSwitchToTutor(Boolean(val));
+    };
+
+    // Update when role or capability flags change
+    const onRoleChanged = () => updateFlag();
+    const onCanSwitchUpdated = () => updateFlag();
+
+    window.addEventListener("roleChanged", onRoleChanged);
+    window.addEventListener("canSwitchUpdated", onCanSwitchUpdated);
+
+    // Also run once on mount
+    updateFlag();
+
+    return () => {
+      window.removeEventListener("roleChanged", onRoleChanged);
+      window.removeEventListener("canSwitchUpdated", onCanSwitchUpdated);
+    };
+  }, []);
 
   const handleSelect = (to) => {
     setSelected(to);
@@ -36,13 +61,15 @@ const RouteSelect = () => {
         title="Schedules"
         handleSelect={handleSelect}
       />
-      <Route
-        to="/dashboard/switch"
-        selected={selected === "/dashboard/switch"}
-        Icon={piIcons.PiUserSwitchBold}
-        title="Switch"
-        handleSelect={handleSelect}
-      />
+      {canSwitchToTutor && (
+        <Route
+          to="/dashboard/switch"
+          selected={selected === "/dashboard/switch"}
+          Icon={piIcons.PiUserSwitchBold}
+          title="Switch"
+          handleSelect={handleSelect}
+        />
+      )}
     </div>
   );
 };

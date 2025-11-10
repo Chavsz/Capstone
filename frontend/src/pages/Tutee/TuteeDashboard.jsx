@@ -25,6 +25,12 @@ const TuteeDashboard = () => {
         setRole(response.data.role);
         localStorage.setItem("role", response.data.role);
       }
+      // expose whether the user can switch back to tutor (approved tutor)
+      if (typeof window !== "undefined") {
+        const can = response.data && response.data.can_switch_to_tutor ? "true" : "false";
+        localStorage.setItem("canSwitchToTutor", can);
+        window.dispatchEvent(new CustomEvent("canSwitchUpdated", { detail: { value: can } }));
+      }
     } catch (err) {
       console.error(err.message);
     }

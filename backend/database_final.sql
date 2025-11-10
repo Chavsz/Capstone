@@ -117,7 +117,7 @@ INSERT INTO users (user_name, user_email, user_password, user_role) VALUES ('Cha
 
 --queries
 SELECT * FROM users;
-UPDATE users SET user_role = 'admin' WHERE user_name = 'Chavy';
+UPDATE users SET user_role = 'admin' WHERE name = 'Chavy';
 
 --tutor datas
 
@@ -138,6 +138,9 @@ justine@gmail.com
 diane@gmail.com
 john@gmail.com
 ghost@gmail.com
+
+--check database size
+SELECT pg_size_pretty(pg_database_size('capstone_db'));
 
 
 

@@ -103,6 +103,21 @@ const Appointment = () => {
     }));
   };
 
+  const getMinSelectableDate = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const min = new Date(today);
+    min.setDate(min.getDate() + 3);
+    return min;
+  };
+
+  const formatDateYMD = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   // Prevent selecting past dates and weekends
   const handleDateChange = (e) => {
     const value = e.target.value;
@@ -112,12 +127,17 @@ const Appointment = () => {
     }
     
     const selected = new Date(`${value}T00:00:00`);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
+    const minSelectable = getMinSelectableDate();
     
-    // Check if selected date is in the past
-    if (selected < today) {
-      toast.error("Cannot book appointments for past dates.");
+    // Enforce 3-day lead time (block today and the next two days)
+    if (selected < minSelectable) {
+      toast.error(
+        `Earliest available date is ${minSelectable.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}.`
+      );
       setFormData({ ...formData, date: "" });
       e.target.value = "";
       return;
@@ -188,11 +208,16 @@ const Appointment = () => {
 
     // Extra guard: prevent booking on past dates and weekends
     const selected = new Date(`${formData.date}T00:00:00`);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const minSelectable = getMinSelectableDate();
     
-    if (selected < today) {
-      toast.error("Cannot book appointments for past dates.");
+    if (selected < minSelectable) {
+      toast.error(
+        `Selected date is too soon. Earliest available is ${minSelectable.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}.`
+      );
       return;
     }
     
@@ -277,6 +302,8 @@ const Appointment = () => {
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
+  const minDate = formatDateYMD(getMinSelectableDate());
+
   return (
     <div className="py-3 px-6 bg-white">
       <h1 className="text-blue-600 font-bold text-2xl mb-6">
@@ -349,6 +376,7 @@ const Appointment = () => {
                   name="date"
                   value={formData.date}
                   onChange={handleDateChange}
+                  min={minDate}
                   className="border border-gray-300 rounded-md p-3 w-full"
                   required
                 />
