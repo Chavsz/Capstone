@@ -8,7 +8,80 @@ const AppointmentModal = ({
   isOpen,
   onClose,
   onDelete,
+  onUpdate,
 }) => {
+  const [formData, setFormData] = useState({
+    date: "",
+    start_time: "",
+    end_time: "",
+    mode_of_session: "",
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (appointment && isOpen) {
+      const normalizeDate = (value) => {
+        if (!value) return "";
+        const parsed = new Date(value);
+        if (!Number.isNaN(parsed.getTime())) {
+          return parsed.toISOString().split("T")[0];
+        }
+        return value;
+      };
+
+      const normalizeTime = (value) => {
+        if (!value) return "";
+        return value.slice(0, 5);
+      };
+
+      setFormData({
+        date: normalizeDate(appointment.date),
+        start_time: normalizeTime(appointment.start_time),
+        end_time: normalizeTime(appointment.end_time),
+        mode_of_session: appointment.mode_of_session || "",
+      });
+      setError("");
+      setIsSaving(false);
+    }
+  }, [appointment, isOpen]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateClick = async () => {
+    if (!appointment || !onUpdate) return;
+
+    if (!formData.date || !formData.start_time || !formData.end_time) {
+      setError("Please complete the date and time fields.");
+      return;
+    }
+
+    const startDate = new Date(`1970-01-01T${formData.start_time}`);
+    const endDate = new Date(`1970-01-01T${formData.end_time}`);
+
+    if (startDate >= endDate) {
+      setError("End time must be later than start time.");
+      return;
+    }
+
+    setError("");
+    setIsSaving(true);
+
+    try {
+      await onUpdate(appointment.appointment_id, formData);
+    } catch (err) {
+      // onUpdate handles errors and user feedback
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -46,7 +119,7 @@ const AppointmentModal = ({
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold text-[#132c91]">
+          <h2 className="text-xl font-bold text-blue-600">
             Appointment Details
           </h2>
           <button
@@ -94,20 +167,61 @@ const AppointmentModal = ({
           )}
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Date:</span>
-            <span className="text-gray-900">
-              {formatDate(appointment.date)}
-            </span>
+            {appointment.status === "pending" ? (
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-900"
+              />
+            ) : (
+              <span className="text-gray-900">
+                {formatDate(appointment.date)}
+              </span>
+            )}
           </div>
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Time:</span>
-            <span className="text-gray-900">
-              {formatTime(appointment.start_time)} -{" "}
-              {formatTime(appointment.end_time)}
-            </span>
+            {appointment.status === "pending" ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="time"
+                  name="start_time"
+                  value={formData.start_time}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-900"
+                />
+                <span className="text-gray-500 text-sm">to</span>
+                <input
+                  type="time"
+                  name="end_time"
+                  value={formData.end_time}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-900"
+                />
+              </div>
+            ) : (
+              <span className="text-gray-900">
+                {formatTime(appointment.start_time)} -{" "}
+                {formatTime(appointment.end_time)}
+              </span>
+            )}
           </div>
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Mode:</span>
-            <span className="text-gray-900">{appointment.mode_of_session}</span>
+            {appointment.status === "pending" ? (
+              <input
+                type="text"
+                name="mode_of_session"
+                value={formData.mode_of_session}
+                onChange={handleInputChange}
+                placeholder="Mode of session"
+                className="border border-gray-300 rounded-md px-2 py-1 text-sm text-gray-900 w-40"
+              />
+            ) : (
+              <span className="text-gray-900">{appointment.mode_of_session}</span>
+            )}
           </div>
           <div className="flex justify-between items-center">
             <span className="font-semibold text-gray-700">Status:</span>
@@ -148,7 +262,21 @@ const AppointmentModal = ({
         </div>
 
         {/* Action Buttons */}
+        {error && (
+          <p className="text-sm text-red-600 mb-2" role="alert">
+            {error}
+          </p>
+        )}
         <div className="flex gap-2">
+          {appointment.status === "pending" && (
+            <button
+              onClick={handleUpdateClick}
+              className="bg-blue-600 text-white rounded-md px-4 py-2 text-sm hover:bg-blue-700 flex-1 disabled:bg-blue-300 disabled:cursor-not-allowed"
+              disabled={isSaving}
+            >
+              {isSaving ? "Saving..." : "Update Appointment"}
+            </button>
+          )}
           <button
             onClick={() => {
               onDelete(appointment.appointment_id);
@@ -208,6 +336,28 @@ const Schedules = () => {
     } catch (err) {
       console.error(err.message);
       toast.error("Error deleting appointment");
+    }
+  };
+
+  const handleAppointmentUpdate = async (appointmentId, updatedFields) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:5000/appointment/${appointmentId}`,
+        updatedFields,
+        {
+          headers: { token },
+        }
+      );
+      toast.success("Appointment updated successfully");
+      await getAppointments();
+      setIsModalOpen(false);
+      setSelectedAppointment(null);
+      return true;
+    } catch (err) {
+      console.error(err.message);
+      toast.error("Error updating appointment");
+      return false;
     }
   };
 
@@ -537,6 +687,7 @@ const Schedules = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         onDelete={handleDelete}
+        onUpdate={handleAppointmentUpdate}
       />
     </div>
   );

@@ -24,6 +24,7 @@ const Appointment = () => {
   });
   const [loading, setLoading] = useState(false);
   const [loadingProfiles, setLoadingProfiles] = useState(true);
+  const [currentTutorPage, setCurrentTutorPage] = useState(0);
 
   const subjects = ["Programming", "Calculus", "Chemistry", "Physics"];
 
@@ -169,6 +170,12 @@ const Appointment = () => {
     }
   };
 
+  const tutorsPerPage = 4;
+
+  const resetTutorPagination = () => {
+    setCurrentTutorPage(0);
+  };
+
   const handleSubjectSelect = (subject) => {
     setSelectedSubject(subject);
     setFormData({
@@ -176,6 +183,7 @@ const Appointment = () => {
       subject: subject,
     });
     setSelectedTutor(null); // Reset selected tutor when subject changes
+    resetTutorPagination();
   };
 
   const handleTutorSelect = (tutor) => {
@@ -269,6 +277,7 @@ const Appointment = () => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+    resetTutorPagination();
   };
 
   // Filter tutors by selected subject and search term
@@ -282,6 +291,33 @@ const Appointment = () => {
       .includes(searchTerm.toLowerCase());
     return matchesSubject && matchesSearch;
   });
+
+  const totalTutorPages = Math.ceil(filteredTutors.length / tutorsPerPage);
+  const paginatedTutors = filteredTutors.slice(
+    currentTutorPage * tutorsPerPage,
+    currentTutorPage * tutorsPerPage + tutorsPerPage
+  );
+
+  const handleTutorPageChange = (direction) => {
+    setCurrentTutorPage((prevPage) => {
+      if (direction === "prev") {
+        return Math.max(prevPage - 1, 0);
+      }
+      if (direction === "next") {
+        return Math.min(
+          prevPage + 1,
+          Math.max(totalTutorPages - 1, 0)
+        );
+      }
+      return prevPage;
+    });
+  };
+
+  useEffect(() => {
+    if (currentTutorPage > 0 && currentTutorPage >= totalTutorPages) {
+      setCurrentTutorPage(Math.max(totalTutorPages - 1, 0));
+    }
+  }, [currentTutorPage, totalTutorPages]);
 
   // Helper function to format time
   const formatTime = (timeString) => {
@@ -426,18 +462,31 @@ const Appointment = () => {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleTutorPageChange("prev")}
+                    disabled={currentTutorPage === 0}
+                    className="text-gray-500 hover:text-gray-700 disabled:text-gray-300 transition-colors"
                   >
                     ←
                   </button>
                   <button
                     type="button"
-                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => handleTutorPageChange("next")}
+                    disabled={
+                      totalTutorPages === 0 ||
+                      currentTutorPage >= totalTutorPages - 1
+                    }
+                    className="text-gray-500 hover:text-gray-700 disabled:text-gray-300 transition-colors"
                   >
                     →
                   </button>
                 </div>
               </div>
+
+              {totalTutorPages > 1 && (
+                <div className="text-sm text-gray-500 mb-2 text-right">
+                  Page {currentTutorPage + 1} of {totalTutorPages}
+                </div>
+              )}
 
               {/* Search Tutors */}
               <input
@@ -453,9 +502,13 @@ const Appointment = () => {
                 <div className="flex items-center justify-center py-8">
                   <div className="text-gray-500">Loading tutors...</div>
                 </div>
+              ) : paginatedTutors.length === 0 ? (
+                <div className="flex items-center justify-center py-8 text-gray-500">
+                  No tutors found. Try adjusting your filters.
+                </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
-                  {filteredTutors.slice(0, 4).map((tutor) => (
+                  {paginatedTutors.map((tutor) => (
                     <div
                       key={tutor.user_id}
                       onClick={() => handleTutorSelect(tutor)}
@@ -485,7 +538,7 @@ const Appointment = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#132c91] text-white rounded-md p-3 w-full disabled:opacity-50 hover:bg-[#0f1f6b] transition-colors"
+              className="bg-blue-600 text-white rounded-md p-3 w-full disabled:opacity-50 hover:bg-blue-700 transition-colors"
             >
               {loading ? "Creating..." : "Book Appointment"}
             </button>

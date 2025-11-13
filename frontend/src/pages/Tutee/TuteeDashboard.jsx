@@ -3,13 +3,11 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 //component
-
 import { CardsOne } from "../../components/cards";
 
 const TuteeDashboard = () => {
   const [name, setName] = useState("");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
-  const [unratedCount, setUnratedCount] = useState(0);
   const [announcement, setAnnouncement] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +120,6 @@ const TuteeDashboard = () => {
       </div>
 
       {/* Notices */}
-
       <div className="flex justify-end items-center">
         <div className="bg-blue-600 cursor-pointer  md:px-8 md:py-2 border-none rounded-3xl  md:text-md text-white hover:bg-blue-700 transition-colors duration-300">
           <Link to="/dashboard/appointment">

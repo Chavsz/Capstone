@@ -11,6 +11,7 @@ const Header = () => {
   const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [confirmedCount, setConfirmedCount] = useState(0);
+  const [upcomingSessions, setUpcomingSessions] = useState([]);
   const dropdownRef = useRef(null);
 
   // Fetch unread notifications
@@ -28,6 +29,46 @@ const Header = () => {
       setUnreadCount(unread.length);
     } catch (err) {
       console.error("Error fetching notifications:", err.message);
+    }
+  };
+
+  const getUpcomingSessions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5000/appointment/tutee", {
+        headers: { token },
+      });
+
+      const now = new Date();
+      const upcoming = (response.data || [])
+        .filter((appointment) => {
+          if (appointment.status !== "confirmed") {
+            return false;
+          }
+
+          if (!appointment.date || !appointment.start_time) {
+            return false;
+          }
+
+          const startDate = new Date(`${appointment.date}T${appointment.start_time}`);
+          if (isNaN(startDate.getTime())) {
+            return false;
+          }
+
+          const diffMs = startDate.getTime() - now.getTime();
+          return diffMs > 0 && diffMs <= 20 * 60 * 1000;
+        })
+        .map((appointment) => {
+          const startDate = new Date(`${appointment.date}T${appointment.start_time}`);
+          const diffMs = Math.max(startDate.getTime() - now.getTime(), 0);
+          const minutesUntil = Math.max(Math.ceil(diffMs / (60 * 1000)), 0);
+          return { appointment, minutesUntil };
+        })
+        .sort((a, b) => a.minutesUntil - b.minutesUntil);
+
+      setUpcomingSessions(upcoming);
+    } catch (err) {
+      console.error("Error fetching upcoming sessions:", err.message);
     }
   };
 
@@ -83,6 +124,15 @@ const Header = () => {
   useEffect(() => {
     getUnreadNotifications();
     getConfirmedCount();
+    getUpcomingSessions();
+
+    const intervalId = setInterval(() => {
+      getUpcomingSessions();
+    }, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   const toggleDropdown = () => {
@@ -90,12 +140,13 @@ const Header = () => {
       // Refresh data when opening dropdown
       getUnreadNotifications();
       getConfirmedCount();
+      getUpcomingSessions();
     }
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   // Calculate total notifications // confirmedCount
-  const totalNotifications = unreadCount;
+  const totalNotifications = unreadCount + upcomingSessions.length;
 
   return (
     <div className="pt-3 px-3 bg-white">
@@ -124,6 +175,37 @@ const Header = () => {
                 </h3>
                 
                 <div className="space-y-3">
+                  {upcomingSessions.length > 0 && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                      <p className="text-blue-800 font-medium">
+                        Upcoming session{upcomingSessions.length > 1 ? "s" : ""} soon
+                      </p>
+                      <div className="mt-2 space-y-2">
+                        {upcomingSessions.map(({ appointment, minutesUntil }) => (
+                          <div key={appointment.appointment_id} className="text-blue-700 text-sm">
+                            <p className="font-semibold">
+                              In {minutesUntil} {minutesUntil === 1 ? "minute" : "minutes"}
+                            </p>
+                            <p>
+                              {appointment.tutor_name ? `With ${appointment.tutor_name}` : "Tutoring session"} at{" "}
+                              {new Date(`2000-01-01T${appointment.start_time}`).toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true,
+                              })}{" "}
+                              on{" "}
+                              {new Date(appointment.date).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
 
                   {/* Confirmed Appointments */}
                   {/* {confirmedCount > 0 && (

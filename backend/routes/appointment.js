@@ -154,6 +154,53 @@ router.put("/:id/status", authorization, async (req, res) => {
   }
 });
 
+// Update appointment details (only by the student when status is pending)
+router.put("/:id", authorization, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date, start_time, end_time, mode_of_session } = req.body;
+    const user_id = req.user;
+
+    if (!date || !start_time || !end_time || !mode_of_session) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const appointment = await pool.query(
+      "SELECT status FROM appointment WHERE appointment_id = $1 AND user_id = $2",
+      [id, user_id]
+    );
+
+    if (appointment.rows.length === 0) {
+      return res
+        .status(403)
+        .json({ error: "Not authorized to update this appointment" });
+    }
+
+    if (appointment.rows[0].status !== "pending") {
+      return res
+        .status(400)
+        .json({ error: "Only pending appointments can be updated" });
+    }
+
+    const result = await pool.query(
+      `UPDATE appointment 
+       SET date = $1,
+           start_time = $2,
+           end_time = $3,
+           mode_of_session = $4,
+           updated_at = NOW()
+       WHERE appointment_id = $5
+       RETURNING *`,
+      [date, start_time, end_time, mode_of_session, id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // Delete appointment (only by the student who created it)
 router.delete("/:id", authorization, async (req, res) => {
   try {
@@ -336,7 +383,6 @@ const autoDeclinePendingAppointments = async () => {
 const checkEndedAppointments = async () => {
   try {
     // Find confirmed appointments that have just ended (within the last minute)
-    // and haven't already generated an end notification today
     const result = await pool.query(
       `SELECT a.appointment_id, a.tutor_id, a.subject, a.topic, a.date, a.start_time, a.end_time, u.name as student_name
       FROM appointment a
@@ -348,7 +394,7 @@ const checkEndedAppointments = async () => {
       AND NOT EXISTS (
         SELECT 1 FROM notification n 
         WHERE n.user_id = a.tutor_id 
-        AND n.notification_content LIKE '%has ended%'
+        AND n.notification_content LIKE '%has ended%' 
         AND n.created_at >= CURRENT_DATE
         AND n.notification_content LIKE '%' || a.subject || '%'
         AND n.notification_content LIKE '%' || a.topic || '%'
