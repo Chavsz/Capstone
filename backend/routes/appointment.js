@@ -309,8 +309,6 @@ const autoDeclinePendingAppointments = async () => {
     );
 
     if (result.rows.length > 0) {
-      console.log(`Found ${result.rows.length} appointments to auto-decline`);
-
       // Update all found appointments to declined status
       const updateResult = await pool.query(
         `UPDATE appointment 
@@ -328,10 +326,6 @@ const autoDeclinePendingAppointments = async () => {
           [appointment.user_id, notificationContent]
         );
       }
-
-      console.log(
-        `Auto-declined ${updateResult.rowCount} appointments and sent notifications`
-      );
     } 
   } catch (err) {
     console.error(err.message);
